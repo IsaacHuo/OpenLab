@@ -1,6 +1,6 @@
 # OpenLab Harness: first runtime specification
 
-Status: accepted implementation design, updated 2026-10-24. The repository contains no implemented Harness, SDK or runtime security boundary. [ADR 0002](decisions/0002-workspace-and-harness.md) selects this first runtime and supersedes the earlier OpenCode-first decision.
+Status: accepted implementation design, updated 2026-10-24. Current source implements an initial generic Harness and supervised worker; see [development](development.md) for its verified scope and remaining application gates. No runtime sandbox is provided. [ADR 0002](decisions/0002-workspace-and-harness.md) selects this first runtime and supersedes the earlier OpenCode-first decision.
 
 ## Responsibility and first milestone
 

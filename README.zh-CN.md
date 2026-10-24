@@ -1,5 +1,7 @@
 # OpenLab
 
+当前开发源码已加入平台档案、通用 Harness 和受监督的 worker。已实现范围、验证结果与剩余应用验收项见[开发说明](docs/development.md)和[实施计划](docs/implementation-plan.md)。v0.0.1 发布范围仍为仓库基础设施。
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/openlab-mark-inverse.svg">
   <img src="assets/brand/openlab-mark.svg" alt="OpenLab 烧瓶与波浪标识" width="112" height="112">
