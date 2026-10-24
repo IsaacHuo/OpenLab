@@ -10,6 +10,8 @@ The original Chinese vision was copied byte-for-byte; its SHA-256 is `d016e43369
 
 The online merge and release evidence is retained in the foundation PR, push workflow and v0.0.1 Release linked below. These live records are the authority for the final publishing outcome.
 
+GitHub page inspection confirmed the README mark, navigation and license display. The initial remote Mermaid renderer failed in that inspection, so both READMEs now use a repository-owned SVG architecture diagram that loads without a diagram rendering service. The Windows/Linux PR checks and the main push checks passed for the foundation merge; subsequent workflow runs record the rendering fix and release gate outcomes.
+
 ## Baseline checks
 
 - `npm ci`: install development dependencies from the committed lockfile.

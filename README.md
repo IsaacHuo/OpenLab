@@ -42,17 +42,7 @@ The initial application is intended to start locally and open in a browser. User
 
 ## Architecture direction
 
-```mermaid
-flowchart TD
-    UI[Browser workspace] --> API[Local control plane]
-    API --> DATA[Project metadata and research files]
-    API --> ADAPTER[Runtime adapter]
-    ADAPTER --> AGENT[OpenCode runtime]
-    API --> SKILLS[Versioned skill catalog]
-    AGENT --> TOOLS[Controlled retrieval and research tools]
-    TOOLS --> SOURCES[Literature and data providers]
-    AGENT --> MODELS[User-selected model providers]
-```
+![Planned OpenLab architecture](assets/docs/architecture.svg)
 
 OpenLab will own projects, run records, artifacts, and provenance. A replaceable adapter will connect an existing agent runtime. The [architecture](docs/architecture.md) separates this design from functionality already implemented.
 
