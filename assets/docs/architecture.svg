@@ -1,13 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="736" height="528" viewBox="0 0 736 528" role="img" aria-labelledby="title description">
-  <title id="title">OpenLab architecture direction</title>
-  <desc id="description">The browser connects to the local control plane, which owns project storage, the skill catalog and a replaceable runtime adapter. OpenCode connects controlled retrieval tools and user-selected model providers. This is a planned architecture.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="788" viewBox="0 0 960 788" role="img" aria-labelledby="title description">
+  <title id="title">Planned OpenLab research platform architecture</title>
+  <desc id="description">A replaceable browser workspace combines project navigation, conversation with execution state, and live artifacts. OpenLab Platform owns the API, AG-UI gateway, conversations, execution records, sources, artifact revisions, credentials and skill configuration. RuntimeAdapter connects the default OpenLab Harness or future external runtimes to platform-managed tools and models. No application implementation is delivered by this diagram.</desc>
   <style>
     .node { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.5; }
+    .platform { fill: #f0f9ff; stroke: #0284c7; stroke-width: 1.5; }
     .core { fill: #e0f2fe; stroke: #0284c7; }
-    .label { fill: #0f172a; font: 15px system-ui, sans-serif; text-anchor: middle; }
+    .future { stroke-dasharray: 6 4; }
+    .label { fill: #0f172a; font: 16px "Segoe UI", Arial, sans-serif; text-anchor: middle; }
+    .heading { font-weight: 600; font-size: 18px; }
+    .small { font-size: 14px; }
     .arrow { fill: none; stroke: #64748b; stroke-width: 2; marker-end: url(#arrow); }
     @media (prefers-color-scheme: dark) {
       .node { fill: #1e293b; stroke: #94a3b8; }
+      .platform { fill: #0f253a; stroke: #38bdf8; }
       .core { fill: #0c4a6e; stroke: #38bdf8; }
       .label { fill: #f1f5f9; }
     }
@@ -17,33 +22,49 @@
       <path d="M 0 0 L 10 5 L 0 10 Z" fill="#64748b"/>
     </marker>
   </defs>
-  <g class="arrow">
-    <path d="M 368 72 V 112"/>
-    <path d="M 368 168 V 196 H 128 V 224"/>
-    <path d="M 368 168 V 224"/>
-    <path d="M 368 168 V 196 H 608 V 224"/>
-    <path d="M 368 280 V 336"/>
-    <path d="M 368 392 V 420 H 128 V 448"/>
-    <path d="M 368 392 V 420 H 608 V 448"/>
-  </g>
   <g>
-    <rect class="node" x="256" y="16" width="224" height="56" rx="10"/>
-    <rect class="node core" x="256" y="112" width="224" height="56" rx="10"/>
-    <rect class="node" x="16" y="224" width="224" height="56" rx="10"/>
-    <rect class="node" x="256" y="224" width="224" height="56" rx="10"/>
-    <rect class="node" x="496" y="224" width="224" height="56" rx="10"/>
-    <rect class="node" x="256" y="336" width="224" height="56" rx="10"/>
-    <rect class="node" x="16" y="448" width="224" height="56" rx="10"/>
-    <rect class="node" x="496" y="448" width="224" height="56" rx="10"/>
+    <rect class="node" x="32" y="16" width="896" height="88" rx="12"/>
+    <rect class="platform" x="32" y="152" width="896" height="188" rx="12"/>
+    <rect class="node" x="56" y="224" width="424" height="92" rx="8"/>
+    <rect class="node" x="504" y="224" width="400" height="92" rx="8"/>
+    <rect class="node core" x="336" y="396" width="288" height="60" rx="10"/>
+    <rect class="node core" x="264" y="508" width="432" height="80" rx="10"/>
+    <rect class="node future" x="728" y="508" width="200" height="80" rx="10"/>
+    <rect class="platform" x="32" y="648" width="896" height="108" rx="12"/>
+    <rect class="node" x="56" y="688" width="424" height="48" rx="8"/>
+    <rect class="node" x="504" y="688" width="400" height="48" rx="8"/>
+  </g>
+  <g class="arrow">
+    <path d="M 480 104 V 152"/>
+    <path d="M 480 340 V 396"/>
+    <path d="M 480 456 V 508"/>
+    <path class="future" d="M 624 426 H 828 V 508"/>
+    <path d="M 480 588 V 648"/>
+    <path class="future" d="M 828 588 V 648"/>
   </g>
   <g class="label">
-    <text x="368" y="50">Browser workspace</text>
-    <text x="368" y="146">Local control plane</text>
-    <text x="128" y="258">Project metadata + files</text>
-    <text x="368" y="258">Runtime adapter</text>
-    <text x="608" y="258">Versioned skill catalog</text>
-    <text x="368" y="370">OpenCode runtime</text>
-    <text x="128" y="482">Retrieval tools + sources</text>
-    <text x="608" y="482">User-selected models</text>
+    <text class="heading" x="480" y="46">Replaceable browser workspace</text>
+    <text x="480" y="78">Projects + history  |  Conversation + execution state  |  Live artifacts</text>
+    <text class="small" x="640" y="132">Same-origin Platform access only</text>
+    <text class="heading" x="480" y="184">OpenLab Platform: API + AG-UI gateway</text>
+    <text class="small" x="480" y="208">Persist research records before projecting UI events</text>
+    <text x="268" y="252">Projects, conversations, runs + steps</text>
+    <text x="268" y="279">Sources, drafts + immutable revisions</text>
+    <text class="small" x="268" y="301">SQLite metadata + ordinary project files</text>
+    <text x="704" y="252">Versioned Skills + capability policy</text>
+    <text x="704" y="279">Selected credentials + configuration</text>
+    <text class="small" x="704" y="301">Human decisions + archive export</text>
+    <text class="small" x="688" y="372">Events, answers, permissions + cancel</text>
+    <text class="heading" x="480" y="433">RuntimeAdapter</text>
+    <text class="heading" x="480" y="539">OpenLab Harness: default runtime</text>
+    <text class="small" x="480" y="560">Single agent; static registration</text>
+    <text class="small" x="480" y="580">Replaceable model, tools, loop, context + storage</text>
+    <text x="828" y="539">Future runtimes</text>
+    <text class="small" x="828" y="566">OpenCode + others</text>
+    <text class="small" x="663" y="622">Scoped host services</text>
+    <text class="heading" x="480" y="676">Platform-managed access</text>
+    <text x="268" y="718">Research tools + evidence + artifacts</text>
+    <text x="704" y="718">User-selected model providers</text>
+    <text class="small" x="480" y="780">Implementation design only; no runnable application in v0.0.1</text>
   </g>
 </svg>

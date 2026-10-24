@@ -15,4 +15,15 @@ OpenLab's Apache-2.0 license applies to OpenLab-authored material. Referenced or
 
 The npm lockfile records exact development dependencies and integrity hashes. Their license metadata is available in the installed packages. CI downloads actionlint (MIT) and Gitleaks (MIT) from their official releases; pinned versions, archive URLs, and SHA-256 digests are recorded in [the tool manifest](scripts/tools.json). These executables are cached locally and are not included in the source release.
 
-GitHub Actions used by the workflows retain their upstream licenses and are pinned to immutable commit SHAs. OpenCode is an architectural runtime selection, not a bundled dependency in v0.0.1. Any future application distribution must include an updated dependency and license inventory.
+GitHub Actions used by the workflows retain their upstream licenses and are pinned to immutable commit SHAs. Any future application distribution must include an updated dependency and license inventory.
+
+## Planned application components and design references
+
+- [assistant-ui](https://github.com/assistant-ui/assistant-ui) is the planned conversation foundation, with its [official AG-UI adapter](https://www.assistant-ui.com/docs/runtimes/ag-ui/overview).
+- [AG-UI](https://docs.ag-ui.com/introduction) is the selected frontend interaction protocol. OpenLab retains its own research archive and runtime contracts.
+- [shadcn/ui AI Elements](https://ui.shadcn.com/docs/ai-elements) provides supporting UI composition patterns; copied component code must retain applicable source and license records.
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) is an interaction-pattern reference; no SDK or hosted service is selected for the first release.
+- OpenCode was the original first-runtime selection in ADR 0001. [ADR 0002](docs/decisions/0002-workspace-and-harness.md) selects self-developed OpenLab Harness and retains OpenCode as an optional future adapter.
+- DeepSeek Harness is named in the supplied planning material as architectural inspiration. No upstream implementation or license has been independently established in this revision; no code is copied or bundled on that basis.
+
+These application components are not installed or bundled in v0.0.1. The referenced documentation was reviewed on 2026-10-24; exact dependency/component revisions, license terms and compatibility must be recorded before implementation distribution. A design reference does not imply upstream endorsement.
