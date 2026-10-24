@@ -40,17 +40,7 @@ OpenLab 致力于建立本地优先的科研工作空间，将已有的开源科
 
 ## 架构方向
 
-```mermaid
-flowchart TD
-    UI[浏览器工作空间] --> API[本地控制层]
-    API --> DATA[项目元数据与研究文件]
-    API --> ADAPTER[运行时适配器]
-    ADAPTER --> AGENT[OpenCode 运行时]
-    API --> SKILLS[版本化技能目录]
-    AGENT --> TOOLS[受控检索与科研工具]
-    TOOLS --> SOURCES[文献与数据源]
-    AGENT --> MODELS[用户选择的模型服务]
-```
+![OpenLab 规划架构：浏览器、本地控制层、项目文件、技能目录与运行时适配器](assets/docs/architecture.svg)
 
 平台持有项目、运行记录、成果和来源信息，通过可替换的适配器连接 Agent 运行时。实现边界见[架构文档](docs/architecture.md)。
 
