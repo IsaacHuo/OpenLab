@@ -2,7 +2,10 @@
 
 The product mark redraws the flask-and-wave reference supplied by IsaacHuo using mathematical SVG geometry. The SVG files contain paths and references to paths only: no embedded bitmap, texture, font, or raster filter. The source reference is not bundled in the repository.
 
-![OpenLab mark](../assets/brand/openlab-mark.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../assets/brand/openlab-mark-inverse.svg">
+  <img src="../assets/brand/openlab-mark.svg" alt="OpenLab mark" width="256" height="256">
+</picture>
 
 ## Geometry
 

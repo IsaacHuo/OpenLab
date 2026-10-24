@@ -1,6 +1,9 @@
 # OpenLab
 
-<img src="assets/brand/openlab-mark.svg" alt="OpenLab 烧瓶与波浪标识" width="112" height="112">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/openlab-mark-inverse.svg">
+  <img src="assets/brand/openlab-mark.svg" alt="OpenLab 烧瓶与波浪标识" width="112" height="112">
+</picture>
 
 开放式科研操作系统 · The Open Research Operating System
 

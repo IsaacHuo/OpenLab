@@ -1,6 +1,9 @@
 # OpenLab
 
-<img src="assets/brand/openlab-mark.svg" alt="OpenLab flask and wave mark" width="112" height="112">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/openlab-mark-inverse.svg">
+  <img src="assets/brand/openlab-mark.svg" alt="OpenLab flask and wave mark" width="112" height="112">
+</picture>
 
 The Open Research Operating System
 
