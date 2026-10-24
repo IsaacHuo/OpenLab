@@ -25,7 +25,9 @@ OpenLab 致力于建立本地优先的科研工作空间，将已有的开源科
 | 文档、工作流与密钥扫描 | GitHub Actions 与本地工具提供 |
 | Windows 优先、本地启动、浏览器交互 | 计划实现 |
 | 项目管理、技能安装、模型配置与文献研究 | 计划实现 |
-| 通过 OpenCode 执行 Supervisor-Skills | 计划集成，尚未通过执行验证 |
+| OpenLab Harness：默认单 Agent 文献研究运行时 | 已定义规格，待实现及原生 Windows 验证 |
+| 通过平台运行时适配器执行 Supervisor-Skills | 计划集成，尚未通过执行验证 |
+| 对话、执行状态与实时研究产物工作台 | 已确定 assistant-ui 与 AG-UI 方向，目前没有可运行界面 |
 | 来源追踪、运行历史与成果导出 | 已定义规格，待实现 |
 
 ## 首个科研版本
@@ -40,15 +42,20 @@ OpenLab 致力于建立本地优先的科研工作空间，将已有的开源科
 
 ## 架构方向
 
-![OpenLab 规划架构：浏览器、本地控制层、项目文件、技能目录与运行时适配器](assets/docs/architecture.svg)
+![OpenLab 规划架构：科研工作台、平台 API 与 AG-UI 网关、平台研究记录、运行时适配器及 OpenLab Harness](assets/docs/architecture.svg)
 
-平台持有项目、运行记录、成果和来源信息，通过可替换的适配器连接 Agent 运行时。实现边界见[架构文档](docs/architecture.md)。
+OpenLab 是开放科研平台，不是某个 Agent 框架的封装。平台持有项目、对话、执行记录、成果和来源信息；运行时、模型、科研工具和界面必须能够独立替换，研究记录与成果由 OpenLab 及用户掌握。
+
+科研工作台采用“项目导航 + 对话与执行状态 + 实时研究产物”布局。assistant-ui 提供对话基础，平台网关采用 AG-UI，shadcn/ui 与 AI Elements 补充计划、审批和引用等视图；CopilotKit 作为交互模式参考，首版不引入其 SDK。首个运行时改为通过 RuntimeAdapter 接入的最小自研 OpenLab Harness；OpenCode 保留为后续可选适配器。实现边界见[架构文档](docs/architecture.md)与[新技术决策](docs/decisions/0002-workspace-and-harness.md)。
 
 ## 文档导航
 
 - [原始产品愿景](docs/vision.zh-CN.md)：保留用户提供的完整规划。
 - [产品规格](docs/product.md)：用户、首版流程和验收条件。
 - [架构与接口](docs/architecture.md)、[技术决策](docs/decisions/0001-foundation.md)。
+- [科研工作台规格](docs/workspace.md)：布局、交互状态、实时成果与界面验收。
+- [OpenLab Harness 规格](docs/harness.md)：最小运行时、可替换接口与验证条件。
+- [工作台与 Harness 决策](docs/decisions/0002-workspace-and-harness.md)：记录界面协议和默认运行时的路线变更。
 - [日志与科研追溯规范](docs/logging.md)。
 - [产品标识与矢量文件](docs/brand.md)：精确镜像轮廓、圆弧与中心对称波浪。
 - [仓库维护与发布](docs/maintaining.md)、[验证记录](docs/verification.md)、[变更日志](CHANGELOG.md)。

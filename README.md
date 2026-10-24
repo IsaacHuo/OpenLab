@@ -25,7 +25,9 @@ OpenLab is a local-first research workspace being designed to connect open resea
 | Automated documentation, workflow, and secret checks | Available in GitHub Actions and local tooling |
 | Local service with browser UI, Windows first | Planned |
 | Projects, skill installation, model configuration, and literature research | Planned |
-| Supervisor-Skills execution through OpenCode | Planned; not an endorsed or verified integration yet |
+| OpenLab Harness: default single-agent literature runtime | Specified; implementation and native Windows validation planned |
+| Supervisor-Skills execution through the platform runtime adapter | Planned; not an endorsed or verified integration yet |
+| Conversation, execution state, and live artifacts workspace | Specified with assistant-ui and AG-UI; no runnable UI yet |
 | Source tracking, execution history, and artifact export | Specified; implementation planned |
 
 ## First research release
@@ -44,7 +46,9 @@ The initial application is intended to start locally and open in a browser. User
 
 ![Planned OpenLab architecture](assets/docs/architecture.svg)
 
-OpenLab will own projects, run records, artifacts, and provenance. A replaceable adapter will connect an existing agent runtime. The [architecture](docs/architecture.md) separates this design from functionality already implemented.
+OpenLab is an open research platform, not a wrapper around a single agent framework. It will own projects, conversations, execution records, sources, artifacts and provenance. Agent runtimes, models, scientific tools and user interfaces must be independently replaceable; research records remain owned by OpenLab and its users.
+
+The planned workspace combines project navigation, conversation with execution state, and live artifacts. assistant-ui provides the conversation foundation; the Platform gateway uses AG-UI. shadcn/ui and AI Elements supply supporting views, while CopilotKit is an interaction reference without an SDK dependency. The first runtime is the minimal self-developed OpenLab Harness behind RuntimeAdapter; OpenCode is a later optional adapter. See [architecture](docs/architecture.md) and [ADR 0002](docs/decisions/0002-workspace-and-harness.md) for the current design and its implementation gates.
 
 ## Documentation
 
@@ -53,7 +57,10 @@ OpenLab will own projects, run records, artifacts, and provenance. A replaceable
 | [Original vision, Chinese](docs/vision.zh-CN.md) | Founding product vision, preserved as supplied |
 | [Product specification](docs/product.md) | Users, first milestone, behavior, and acceptance criteria |
 | [Architecture and contracts](docs/architecture.md) | Components, research objects, and runtime interface |
+| [Research workspace](docs/workspace.md) | Three-region layout, interaction states, live artifacts and UI acceptance |
+| [OpenLab Harness](docs/harness.md) | Minimal first runtime, replaceable capabilities and execution gates |
 | [Technical decisions](docs/decisions/0001-foundation.md) | Accepted baseline and implementation gates |
+| [Workspace and Harness decision](docs/decisions/0002-workspace-and-harness.md) | Current UI/protocol and default-runtime selection; supersedes OpenCode first |
 | [Logging and provenance](docs/logging.md) | Diagnostics, research records, retention, and export |
 | [Product mark](docs/brand.md) | Vector assets, exact symmetry, and reproduction |
 | [Repository operations](docs/maintaining.md) | GitHub settings, labels, checks, and release procedure |

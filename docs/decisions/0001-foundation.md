@@ -2,6 +2,8 @@
 
 Date: 2026-10-24. Status: accepted design; repository governance implemented in v0.0.1, application decisions await implementation.
 
+Historical decision record: [ADR 0002](0002-workspace-and-harness.md) supersedes decision 5's OpenCode-first selection, the OpenCode-specific feasibility gate, and the deferred-internal-runtime alternative below. OpenLab Harness is now the planned first runtime; other foundation decisions remain in force. The original decisions are retained here for traceability.
+
 ## Context
 
 OpenLab begins with an empty public repository and a long-term cross-disciplinary research vision. The first user-facing value is a traceable literature task using existing research skills. The project needs reliable contribution and release practices before claiming runtime capabilities.

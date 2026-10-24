@@ -4,7 +4,15 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ## [Unreleased]
 
-No unreleased changes.
+### Added
+
+- Research workspace specification covering conversation, execution state, live artifact revisions, evidence navigation, responsive layouts and application acceptance scenarios.
+- Minimal OpenLab Harness specification and ADR 0002 selecting a self-developed first runtime, AG-UI at the Platform gateway and assistant-ui for conversation.
+
+### Changed
+
+- Product, architecture, logging, architecture diagram and bilingual README now describe Platform-owned conversations, steps, human interactions and artifacts independently of runtime, model, tools and UI.
+- OpenCode becomes an optional future adapter; ADR 0001 preserves the historical selection with a supersession notice. This revision delivers documentation only, with no application code or new runtime dependency.
 
 ## [0.0.1] - 2026-10-24
 

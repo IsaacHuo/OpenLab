@@ -12,6 +12,14 @@ The online merge and release evidence is retained in the foundation PR, push wor
 
 GitHub page inspection confirmed the README mark, navigation and license display. The initial remote Mermaid renderer failed in that inspection, so both READMEs now use a repository-owned SVG architecture diagram that loads without a diagram rendering service. The Windows/Linux PR checks and the main push checks passed for the foundation merge; subsequent workflow runs record the rendering fix and release gate outcomes.
 
+## Workspace and Harness documentation validation, 2026-10-24
+
+This revision adds workspace and minimal Harness specifications, ADR 0002, and coordinated updates to product, architecture, provenance, third-party references, bilingual README, changelog and the SVG architecture diagram. It supplies no application code or runtime packages. ADR 0001 retains the superseded OpenCode-first decision as history; current specifications select OpenLab Harness and AG-UI.
+
+On native Windows with Node.js 24.19.0, `npm run check` passed Markdown lint, repository/link validation and all nine existing tooling tests. `git diff --check` passed. The SVG was rendered locally for layout inspection; this verifies a documentation diagram, not an implemented research workspace. The application acceptance matrices in [workspace](workspace.md#application-acceptance-scenarios) and [Harness](harness.md#implementation-gates) remain unexecuted implementation gates.
+
+The Chinese vision is byte-identical to the committed file at the start of this revision. Both have SHA-256 `4a1089d837bfaea988418ceffec5b395e9c39fbd2c85c42cdabe69a31fab191f`. This differs from the historical source hash recorded above; this revision verifies preservation against Git, not equality to the original external source. No vision content or line endings were changed.
+
 ## Baseline checks
 
 - `npm ci`: install development dependencies from the committed lockfile.
@@ -31,4 +39,4 @@ The implementation is accepted when the foundation PR passes required checks and
 
 Static validation checks local document links, YAML structure and Issue Form fields. GitHub's rendering and form behavior should also be inspected on the published default branch. Badges and remote resources depend on their services and are not fetched during PR lint.
 
-No application, OpenCode execution, scientific result, sandbox, research export, or diagnostic bundle has been implemented or tested by this foundation release. Native Windows runtime feasibility, full-text verification, retrieval reliability, and Supervisor-Skills licensing resolution remain explicit application gates in the [product](product.md), [architecture](architecture.md), and [third-party record](../THIRD_PARTY_NOTICES.md).
+No application, OpenLab Harness or external-runtime execution, scientific result, sandbox, research export, or diagnostic bundle has been implemented or tested by this foundation release or the documentation revision above. Native Windows runtime feasibility, assistant-ui/AG-UI compatibility, full-text verification, retrieval reliability, and Supervisor-Skills licensing resolution remain explicit application gates in the [product](product.md), [architecture](architecture.md), [Harness](harness.md), and [third-party record](../THIRD_PARTY_NOTICES.md).

@@ -7,7 +7,7 @@ Status: implementation specification. v0.0.1 supplies repository and CI logs; ap
 | Record | Purpose | Default contents |
 | --- | --- | --- |
 | Operational log | Diagnose platform health | Structured events, sanitized errors, timing and correlation IDs |
-| Research execution record | Understand and review a research result | Confirmed brief, versions, tools, sources, artifacts, policy decisions and limitations |
+| Research execution record | Understand and review a research result | Conversations, plan/confirmation, versions, steps/tools, human decisions, sources, artifact drafts/revisions and limitations |
 | CI and release log | Verify a repository change | Check results, workflow run and commit, release validation and publication outcome |
 
 Operational logs must not become a duplicate research archive. A failed or negative scientific result remains in the research record rather than disappearing with log rotation.
@@ -36,7 +36,13 @@ Defaults: rotate at 10 MiB per file, retain the active file plus at most five ar
 
 ## Research provenance
 
-For each run preserve the confirmed brief, integration revision and hash, runtime/adapter versions, model/provider identifiers, non-secret parameters, available usage, input hashes, tool calls with appropriate redaction, source evidence, artifacts and hashes, decisions, terminal state, errors and limitations. Mark unavailable values as unknown rather than reconstructing them from memory.
+For each run preserve the proposed and confirmed brief/plan version, conversation and message IDs/content, integration revision and hash, runtime/adapter versions, model/provider identifiers, non-secret parameters, available usage, input hashes, ordered steps/tool calls with appropriate redaction, source evidence, saved artifact drafts, immutable revisions and hashes, decisions, terminal state, errors and limitations. Mark unavailable values as unknown rather than reconstructing them from memory. Research conversations are project content and must not be duplicated into operational logs.
+
+Preserve question/permission prompts, scoped requests, interaction versions, accepted responses, denial/cancellation decisions and their timestamps. A user-facing activity summary may be recorded; hidden model reasoning is not required research evidence. Imported or replayed decisions are historical and cannot grant new access. Runtime identity and session pointers are diagnostic metadata, not the identifiers of Platform research objects.
+
+The canonical event sequence is append-only per run. Persist state transitions and events before projecting them through AG-UI. Retain the projection version for cursor interpretation; replay reconstructs views without invoking tools or models. HTTP closure, a pending question and confirmed execution termination must remain distinguishable. A requested cancellation and its confirmed result are separate records.
+
+Every artifact revision preserves producing run/step IDs, source and claim associations, relative content path and SHA-256. Keep immutable revisions even when a later run produces a replacement. Save streaming content as an explicitly mutable draft with its saved version/sequence, and retain the latest saved partial draft after failure, cancellation or interruption. Artifact/source events refer to these objects rather than embedding whole files. Exports snapshot draft bytes with a checksum and incomplete label; this does not make the live draft a committed revision.
 
 Source records distinguish metadata existence from content verification. Claim associations identify a checked supporting location or explicitly remain unverified/model-proposed. Preserve conflicting evidence, failed retrieval, insignificant results and abandoned hypotheses. A model's self-attestation is recorded as such; it does not upgrade a source or claim to verified.
 
@@ -50,4 +56,6 @@ Build the bundle from allowlisted fields, run a second secret-pattern check, and
 
 ## Implementation verification
 
-Test log rotation and age cleanup, disabled/debug logging, malformed provider errors, nested token fields, URLs containing credentials, Unicode paths, disk-full behavior, and diagnostic exclusion of a synthetic credential and private document. Verify that cleanup leaves research records intact and that a failed run retains sources and partial artifacts. Match the [research contracts](architecture.md) in export/import tests.
+Test log rotation and age cleanup, disabled/debug logging, malformed provider errors, nested token fields, URLs containing credentials, Unicode paths, disk-full behavior, and diagnostic exclusion of a synthetic credential and private document. Verify that cleanup leaves research records intact and that a failed run retains sources and partial artifacts. Match the [research contracts](architecture.md) in export/import tests, including messages, steps, decision history, draft labels and revision hashes.
+
+Test event ordering and deduplication on reconnect, a storage error before publication, question/permission response races, cancellation versus completion, and restart reconciliation. Confirm that replay/import does not execute calls or apply historical approvals, and that an independent reader can inspect the archive after removing the original runtime and UI library. These checks require future application code; the current repository checks validate documentation and tooling only.
