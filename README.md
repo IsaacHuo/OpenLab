@@ -19,6 +19,8 @@ OpenLab is a local-first research workspace being designed to connect open resea
 
 **v0.0.1 establishes repository governance and design documents. There is no runnable research application or installer in this release.** The commands below validate this repository; they do not launch OpenLab. Screenshots and research demonstrations will be added when the corresponding functionality is available.
 
+Current development source adds the platform archive, generic Harness and supervised worker. See [development](docs/development.md) and the [implementation plan](docs/implementation-plan.md) for implemented scope and remaining application gates.
+
 | Capability | Status |
 | --- | --- |
 | Contribution, issue, review, and release processes | Available in this repository |

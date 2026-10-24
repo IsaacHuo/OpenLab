@@ -22,6 +22,12 @@ The Chinese vision is byte-identical to the committed file at the start of this 
 
 ## Baseline checks
 
+### Initial application core, 2026-10-24
+
+On native Windows x64 with Node.js 24.19.0, strict TypeScript validation and 28 tests passed (19 application-core tests and nine governance tests). Core cases include confirmation before dispatch, substitute model/tool/context/sink and RuntimeAdapter implementations, validated questions and denied permission, duplicate/stale decisions, usage/turn limits, worker cancellation, restart reconciliation, SQLite transaction rollback, Unicode/space-containing paths, junction rejection, immutable revisions, corrupted archive rejection and offline export/import. These do not establish browser UI or full literature research acceptance.
+
+Two opt-in calls to `https://api.deepseek.com` with `deepseek-flash` passed Chinese text streaming and a structured `record_probe` tool call. The provider reported input/output usage of 19/8 and 285/39 tokens respectively. The selected credential was stored locally with Windows user-scoped protection and was excluded from source and verification output. The sanitized machine record remains in the local ignored cache; `scripts/live-model-smoke.mjs` supplies the repeatable procedure. This is narrow model-interface evidence, not a completed research task or a claim about all DeepSeek models.
+
 - `npm ci`: install development dependencies from the committed lockfile.
 - `npm run check`: Markdown style, internal links and anchors, YAML parsing, required files, Issue Form fields, immutable Actions references, version consistency, label configuration, and release-policy tests.
 - `npm run check:actions`: validate workflow syntax and expression semantics with pinned actionlint.
@@ -39,4 +45,4 @@ The implementation is accepted when the foundation PR passes required checks and
 
 Static validation checks local document links, YAML structure and Issue Form fields. GitHub's rendering and form behavior should also be inspected on the published default branch. Badges and remote resources depend on their services and are not fetched during PR lint.
 
-No application, OpenLab Harness or external-runtime execution, scientific result, sandbox, research export, or diagnostic bundle has been implemented or tested by this foundation release or the documentation revision above. Native Windows runtime feasibility, assistant-ui/AG-UI compatibility, full-text verification, retrieval reliability, and Supervisor-Skills licensing resolution remain explicit application gates in the [product](product.md), [architecture](architecture.md), [Harness](harness.md), and [third-party record](../THIRD_PARTY_NOTICES.md).
+The foundation release and historical documentation revision above supplied no application execution. Current development core verification is recorded separately above. A complete research application, scientific result, sandbox, diagnostic bundle, assistant-ui/AG-UI compatibility, full-text verification, retrieval reliability and Supervisor-Skills licensing resolution remain explicit application gates in the [product](product.md), [architecture](architecture.md), [Harness](harness.md), and [third-party record](../THIRD_PARTY_NOTICES.md).

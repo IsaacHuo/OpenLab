@@ -15,6 +15,8 @@ OpenLab's Apache-2.0 license applies to OpenLab-authored material. Referenced or
 
 The npm lockfile records exact development dependencies and integrity hashes. Their license metadata is available in the installed packages. CI downloads actionlint (MIT) and Gitleaks (MIT) from their official releases; pinned versions, archive URLs, and SHA-256 digests are recorded in [the tool manifest](scripts/tools.json). These executables are cached locally and are not included in the source release.
 
+The initial application core uses Node.js 24's built-in APIs, including SQLite and child processes, without an additional runtime npm dependency. Development adds TypeScript 7.0.2 (Apache-2.0) and `@types/node` 24.19.2 (MIT); exact transitive packages and integrity hashes are in the lockfile. Their package license metadata was inspected on 2026-10-24. The DeepSeek API is an external user-configured service; no DeepSeek implementation is bundled.
+
 GitHub Actions used by the workflows retain their upstream licenses and are pinned to immutable commit SHAs. Any future application distribution must include an updated dependency and license inventory.
 
 ## Planned application components and design references
