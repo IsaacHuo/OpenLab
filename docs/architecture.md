@@ -2,6 +2,8 @@
 
 Status: accepted design for implementation, updated 2026-10-24. No application service, database, runtime adapter, or sandbox ships in v0.0.1. See [product behavior](product.md), [workspace](workspace.md), [Harness](harness.md), and the current [decision record](decisions/0002-workspace-and-harness.md).
 
+Current development implements the local service, archive, supervised Harness and browser workspace. See [development](development.md), [OpenAPI](openapi.json) and [verification](verification.md) for exact scope; descriptions below retain the target contracts and do not establish untested guarantees.
+
 ## Deployment and component boundaries
 
 Use a modular local service that serves the browser UI and platform API from one loopback origin. Keep persistence and execution behind the service. Start with one process for the control plane and a separately supervised agent runtime; do not introduce a distributed scheduler or message broker.
@@ -137,6 +139,6 @@ Initial retrieval adapters target public scholarly metadata APIs (Crossref and O
 - Prevent global user skills, hooks and configuration from leaking into a managed execution. Validate this behavior against the pinned runtime before declaring the integration executable.
 - Confine project file operations through platform tools; disable arbitrary shell access in the literature release. Inspect resolved paths and links before reading, writing, or exporting files.
 - Treat retrieved text as evidence, not authority to change policy. Tool permissions come from the platform/user, not a downloaded Skill or paper.
-- Project files and research records must remain usable if the runtime or UI library is removed. Export/import tests, a second runtime test double, a substitute model and an independent AG-UI consumer are required evidence for that guarantee; none has been implemented yet.
+- Project files and research records must remain usable if the runtime or UI library is removed. Export/import tests, a second runtime test double, a substitute model and an independent AG-UI consumer provide current development evidence for that boundary; detailed coverage and limits are in [verification](verification.md).
 
 Runtime log and research-record retention follow the separate [logging and provenance specification](logging.md). These application guarantees require implementation tests before being presented as shipped behavior.

@@ -2,7 +2,7 @@
 
 [English](CONTRIBUTING.md)
 
-当前仓库提供项目治理、文档和维护工具，科研应用尚未实现。贡献内容需要清楚区分已经可用的功能与设计方案。
+当前仓库提供项目治理、文档、维护工具和本地科研预览。[产品规格](docs/product.md)定义目标行为，[开发说明](docs/development.md)记录已实现范围。贡献内容需要清楚区分已经可用的功能与设计方案。
 
 ## 开始贡献
 
@@ -19,11 +19,15 @@ npm.cmd ci
 npm.cmd run check
 npm.cmd run check:actions
 npm.cmd run check:secrets
+npm.cmd run build
+npm.cmd run test:browser
 ```
 
 PowerShell 执行策略可能阻止 `npm.ps1`，使用 `npm.cmd` 即可。工作流检查和密钥扫描支持 Windows x64、Linux x64，首次运行需要联网，固定版本工具经 SHA-256 校验后存入 `.cache/`。Windows 使用系统自带的 curl 下载；网络阻止直接下载时回退到 GitHub CLI。其他系统可执行文档检查，暂由 CI 执行这两项工具检查。
 
 `npm run check` 包括 Markdown 格式、内部链接、仓库配置与自动化测试。原始中文愿景逐字保留，不参与风格检查。外部网址不参与本地链接检查，避免网络波动阻塞 PR。
+
+应用检查包括服务端与浏览器 TypeScript，以及受控运行时、存储和 API 测试。浏览器验收通过 Playwright 使用已安装的 Chrome，连接独立的合成本地服务，覆盖桌面、窄屏和 axe 检查，不使用你的模型凭据。真实模型和检索测试需要单独执行，见[开发说明](docs/development.md)。运行 `npm start` 前先构建浏览器产物。
 
 ## 提交与审查
 

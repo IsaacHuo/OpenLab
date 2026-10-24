@@ -6,6 +6,8 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ### Added
 
+- Runnable bilingual React/assistant-ui workspace with official AG-UI adapter, projects/history, human decisions, live report revisions, source/step navigation, protected settings, material previews and keyboard-accessible drawers/divider.
+- Native Chrome desktop/mobile acceptance and axe checks, a real browser DeepSeek/Crossref metadata research/export record, and native Windows credential module isolation checks.
 - Authenticated loopback research API and OpenAPI definition, protected provider settings/capability tests, pinned inert skill installation, Crossref metadata/source tools, scoped public-page permissions and persisted AG-UI replay.
 - Economics/English and humanities/Chinese live DeepSeek/Crossref metadata research, report revision and archive round-trip smoke tests; full-text and browser acceptance remain pending.
 - Initial TypeScript platform archive, generic single-agent Harness, supervised IPC worker and streaming model adapter, with confirmation, interaction validation, cancellation, restart reconciliation and immutable report archives.

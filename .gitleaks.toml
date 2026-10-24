@@ -4,5 +4,5 @@ title = "OpenLab repository secret scanning"
 useDefault = true
 
 [[allowlists]]
-description = "Generated dependencies and verified tool caches"
-paths = ['''(^|/)node_modules/''', '''(^|/)\.cache/''', '''(^|/)\.git/''']
+description = "Generated dependencies, verified caches and untracked local application/test data"
+paths = ['''(^|/)node_modules/''', '''(^|/)\.cache/''', '''(^|/)\.git/''', '''(^|/)\.openlab/''', '''(^|/)dist/''', '''(^|/)test-results/''', '''(^|/)playwright-report/''']

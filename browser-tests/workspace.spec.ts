@@ -1,0 +1,87 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import type { Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { writeFileSync } from 'node:fs';
+
+async function launch(page: Page) {
+  const { launchUrl } = JSON.parse(readFileSync('.cache/browser-launch.json', 'utf8'));
+  await page.goto(launchUrl);
+  await expect(page.getByRole('button', { name: '新建项目', exact: false })).toBeVisible();
+}
+async function project(page: Page, name: string) {
+  await page.getByRole('button', { name: '新建项目', exact: false }).click();
+  await page.getByLabel('项目名称', { exact: true }).fill(name);
+  await page.getByRole('button', { name: '保存项目', exact: true }).click();
+  await expect(page.getByLabel('研究问题', { exact: true })).toBeEnabled();
+}
+test('desktop research, structured input, denied permission, revisions, citations and replay', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await launch(page); await project(page, '合成经济学与人文研究');
+  await page.getByLabel('研究问题', { exact: true }).fill('fixture economics input');
+  await page.getByRole('button', { name: '生成计划', exact: false }).click();
+  await expect(page.getByRole('button', { name: '确认计划并开始' })).toBeVisible();
+  await expect(page.locator('.user-message')).toContainText('fixture economics input');
+  await expect(page.locator('.chat-message')).toContainText(['fixture economics input', 'Synthetic fixture plan']);
+  await page.getByRole('button', { name: '确认计划并开始' }).click();
+  await expect(page.getByText('Choose a fixture discipline / 选择测试学科', { exact: true })).toBeVisible();
+  await expect(page.locator('.artifact-pane')).toContainText('Synthetic saved draft');
+  await page.getByLabel('研究问题', { exact: true }).fill('next unsent draft');
+  await expect(page.getByRole('button', { name: '生成计划', exact: false })).toBeDisabled();
+  await page.reload();
+  await expect(page.getByText('Choose a fixture discipline / 选择测试学科', { exact: true })).toBeVisible();
+  await page.getByRole('radio', { name: 'economics', exact: true }).check();
+  await page.getByRole('button', { name: '提交回答' }).click();
+  await expect(page.getByRole('button', { name: '允许这项操作' })).toBeVisible();
+  await page.getByRole('button', { name: '拒绝', exact: true }).click();
+  await expect(page.getByText('已完成 · 请审阅证据', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: '有更新的已保存版本 →' })).toBeVisible();
+  await page.getByRole('button', { name: '有更新的已保存版本 →' }).click();
+  await expect(page.locator('.artifact-pane')).toContainText('Synthetic final report');
+  await page.locator('.artifact-pane').getByRole('button', { name: 'Evidence', exact: true }).click();
+  await expect(page.locator('.source-detail')).toContainText('Synthetic economics evidence A');
+  await expect(page.locator('.source-detail')).toContainText('模型解读未经核实');
+  await page.getByRole('button', { name: '查看步骤', exact: false }).first().click();
+  await expect(page.locator('.highlighted-step').first()).toBeVisible();
+  await page.getByRole('button', { name: '重载对话' }).click();
+  await expect(page.locator('.user-message')).toHaveCount(1);
+  await expect(page.locator('.user-message')).toContainText('fixture economics input');
+  const separator = page.getByRole('separator', { name: '调整产物栏宽度' });
+  await separator.focus(); await page.keyboard.press('ArrowLeft'); await expect(separator).toHaveAttribute('aria-valuenow', '430');
+  const download = page.waitForEvent('download'); await page.getByRole('link', { name: '导出项目' }).click();
+  expect((await download).suggestedFilename()).toMatch(/^openlab-.*\.json$/);
+  await page.screenshot({ path: '.cache/workspace-desktop.png', fullPage: true });
+  const accessibility = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  writeFileSync('.cache/accessibility-desktop.json', JSON.stringify(accessibility, null, 2));
+  expect(accessibility.violations.map(value => ({ id: value.id, targets: value.nodes.slice(0, 5).map(node => node.target) }))).toEqual([]);
+  expect(errors).toEqual([]);
+});
+test('mobile drawers, language, attachment preview and confirmed cancellation', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(JSON.parse(readFileSync('.cache/browser-launch.json', 'utf8')).launchUrl);
+  await page.getByRole('button', { name: '项目', exact: true }).click();
+  await page.getByRole('button', { name: '新建项目', exact: false }).click();
+  await page.getByLabel('项目名称', { exact: true }).fill('移动端合成研究');
+  await page.getByRole('button', { name: '保存项目', exact: true }).click();
+  await expect(page.getByLabel('研究问题', { exact: true })).toBeEnabled();
+  await page.locator('input[type=file]').first().setInputFiles({ name: '中文附件.md', mimeType: 'text/markdown', buffer: Buffer.from('# 合成附件\n\nUTF-8 text evidence.') });
+  await page.getByRole('button', { name: '产物', exact: true }).click();
+  await page.getByRole('tab', { name: '附件', exact: false }).click();
+  await page.getByRole('button', { name: '中文附件.md', exact: false }).click();
+  await expect(page.locator('.drawer-artifacts')).toContainText('UTF-8 text evidence.');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await page.getByLabel('研究问题', { exact: true }).fill('cancellation fixture');
+  await page.getByRole('button', { name: '生成计划', exact: false }).click();
+  await expect(page.getByRole('button', { name: '确认计划并开始' })).toBeVisible();
+  await page.getByRole('button', { name: '停止运行', exact: true }).click();
+  await expect(page.getByText('已取消 · 进程已停止', { exact: true }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Create plan', exact: false })).toBeVisible();
+  await page.screenshot({ path: '.cache/workspace-mobile.png', fullPage: true });
+  const accessibility = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  writeFileSync('.cache/accessibility-mobile.json', JSON.stringify(accessibility, null, 2));
+  expect(accessibility.violations.map(value => ({ id: value.id, targets: value.nodes.slice(0, 5).map(node => node.target) }))).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

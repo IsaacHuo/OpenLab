@@ -14,7 +14,8 @@ export const windowsProtection: SecretProtection = {
 };
 function powershell(command: string, input: string): string {
   if (process.platform !== 'win32') throw new DomainError('Persistent credentials currently require Windows user-scoped protection');
-  const result = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], { input, encoding: 'utf8', windowsHide: true, timeout: 15_000 });
+  const systemRoot = process.env.SystemRoot ?? 'C:\\Windows';
+  const result = spawnSync(join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe'), ['-NoProfile', '-NonInteractive', '-Command', command], { input, encoding: 'utf8', windowsHide: true, timeout: 15_000, env: { ...process.env, PSModulePath: join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'Modules') } });
   if (result.status !== 0 || !result.stdout.trim()) throw new DomainError('Windows credential protection failed');
   return result.stdout.trim();
 }
@@ -38,7 +39,7 @@ export class Settings {
     const model = text(input.model, 'model', 200);
     // Validate before persisting; credentials cannot be embedded in a URL.
     new CompatibleModel({ baseUrl, model, apiKey });
-    const entry: ProviderEntry = { id: randomUUID(), name: text(input.name, 'provider name', 200), baseUrl, model, thinkingDisabled: input.thinkingDisabled === true };
+    const entry: ProviderEntry = { id: randomUUID(), name: text(input.name, 'provider name', 200), baseUrl, model, thinkingDisabled: new URL(baseUrl).hostname === 'api.deepseek.com' };
     writeFileSync(join(this.root, 'credentials', `${entry.id}.dpapi`), this.protection.protect(apiKey), { flag: 'wx', mode: 0o600 });
     this.save([...this.list(), entry]);
     return entry;

@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { randomUUID, createHash } from 'node:crypto';
-import { mkdirSync, realpathSync, existsSync, lstatSync, writeFileSync, readFileSync, renameSync, openSync, fsyncSync, closeSync } from 'node:fs';
+import { mkdirSync, realpathSync, existsSync, lstatSync, writeFileSync, readFileSync, renameSync, openSync, fsyncSync, closeSync, unlinkSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { DomainError, id, object, text, terminal } from './contracts.ts';
 import type { Json, ObjectData, ResearchEvent, Run } from './contracts.ts';
@@ -9,19 +9,33 @@ export interface RecordEntry { id: string; kind: string; projectId: string; data
 export const hash = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 const kinds = new Set(['project', 'conversation', 'run', 'message', 'source', 'artifact', 'revision', 'material']);
 export class Store {
-  db: DatabaseSync;
+  db!: DatabaseSync;
   root: string;
+  ownerToken = randomUUID();
   constructor(root: string) {
     mkdirSync(root, { recursive: true });
     this.root = realpathSync(root);
+    const lock = join(this.root, 'owner.lock');
+    if (existsSync(lock)) {
+      if (lstatSync(lock).isSymbolicLink()) throw new DomainError('Unsafe archive ownership file');
+      const owner = JSON.parse(readFileSync(lock, 'utf8')) as { pid: number };
+      if (!Number.isSafeInteger(owner.pid) || owner.pid <= 0) throw new DomainError('Invalid archive ownership file');
+      let alive = true;
+      try { process.kill(owner.pid, 0); } catch (error) { alive = (error as NodeJS.ErrnoException).code !== 'ESRCH'; }
+      if (alive) throw new DomainError('This data root is already open in another OpenLab process', 409);
+      unlinkSync(lock);
+    }
+    writeFileSync(lock, JSON.stringify({ pid: process.pid, token: this.ownerToken }), { flag: 'wx', mode: 0o600 });
+    try {
     this.db = new DatabaseSync(join(this.root, 'openlab.sqlite'));
     this.db.exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL;');
     const version = this.db.prepare('PRAGMA user_version').get() as { user_version: number };
-    if (version.user_version > 1) { this.db.close(); throw new DomainError('This archive needs a newer OpenLab version'); }
+    if (version.user_version > 1) throw new DomainError('This archive needs a newer OpenLab version');
     this.db.exec(`CREATE TABLE IF NOT EXISTS records (id TEXT PRIMARY KEY, kind TEXT NOT NULL, project_id TEXT NOT NULL, data TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS records_project ON records(project_id, kind);
       CREATE TABLE IF NOT EXISTS events (run_id TEXT NOT NULL, seq INTEGER NOT NULL, at TEXT NOT NULL, kind TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(run_id, seq));
       PRAGMA user_version=1;`);
+    } catch (error) { this.db?.close(); this.releaseOwnership(); throw error; }
   }
   transaction<T>(fn: () => T): T {
     this.db.exec('BEGIN IMMEDIATE');
@@ -109,6 +123,32 @@ export class Store {
     if (hash(content) !== revision.hash) throw new DomainError('Artifact checksum mismatch', 500);
     return { revision, content };
   }
+  material(projectId: string, name: string, bytes: Buffer): ObjectData {
+    this.get('project', projectId);
+    if (!bytes.length || bytes.length > 10_000_000) throw new DomainError('Material must be between 1 byte and 10 MB');
+    const materialId = randomUUID();
+    const filename = text(name, 'filename', 250).split(/[\\/]/).at(-1)!;
+    let contentType = 'application/octet-stream';
+    let preview: Json = null;
+    if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) contentType = 'image/png';
+    else if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) contentType = 'image/jpeg';
+    else if (/\.(md|txt)$/i.test(filename)) {
+      try { preview = new TextDecoder('utf-8', { fatal: true }).decode(bytes).slice(0, 50_000); }
+      catch { throw new DomainError('Text material must use UTF-8'); }
+      if (String(preview).includes('\0')) throw new DomainError('Binary data cannot be previewed as text');
+      contentType = /\.md$/i.test(filename) ? 'text/markdown' : 'text/plain';
+    }
+    this.writeImmutable(this.file(projectId, 'materials', materialId, 'content.bin'), bytes);
+    const material: ObjectData = { id: materialId, projectId, name: filename, contentType, preview, bytes: bytes.length, hash: hash(bytes), createdAt: new Date().toISOString() };
+    this.put('material', materialId, projectId, material);
+    return material;
+  }
+  readMaterial(materialId: string): { material: ObjectData; bytes: Buffer } {
+    const material = this.get('material', materialId);
+    const bytes = readFileSync(this.file(String(material.projectId), 'materials', materialId, 'content.bin'));
+    if (hash(bytes) !== material.hash || bytes.length !== material.bytes) throw new DomainError('Material checksum mismatch');
+    return { material, bytes };
+  }
   export(projectId: string): ObjectData {
     this.get('project', projectId);
     const rows = this.db.prepare('SELECT * FROM records WHERE project_id=? ORDER BY rowid').all(id(projectId));
@@ -117,11 +157,13 @@ export class Store {
     if (runs.some(r => !terminal.has((r.data as unknown as Run).state))) throw new DomainError('Finish or cancel active runs before export', 409);
     const files: ObjectData = {};
     for (const record of records.filter(r => r.kind === 'revision')) files[record.id] = this.readRevision(record.id).content;
+    for (const record of records.filter(r => r.kind === 'material')) files[record.id] = this.readMaterial(record.id).bytes.toString('base64');
     return { schemaVersion: 1, projectId, records: records as unknown as Json, events: runs.flatMap(r => this.events(r.id)) as unknown as Json, files };
   }
   import(value: unknown): string {
     const archive = object(value);
     if (archive.schemaVersion !== 1 || !Array.isArray(archive.records) || !Array.isArray(archive.events)) throw new DomainError('Unsupported archive');
+    if (archive.records.length > 10_000 || archive.events.length > 100_000) throw new DomainError('Archive exceeds record limit');
     const files = object(archive.files);
     const records = archive.records.map(value => {
       const record = object(value);
@@ -135,6 +177,38 @@ export class Store {
     const mapping = new Map(records.map(r => [r.id, randomUUID()]));
     if (mapping.size !== records.length) throw new DomainError('Duplicate archive identifiers');
     const projectId = mapping.get(originalProject)!;
+    const byId = new Map(records.map(record => [record.id, record]));
+    const reference = (value: Json | undefined, kind: string) => {
+      if (typeof value !== 'string' || byId.get(value)?.kind !== kind) throw new DomainError('Archive contains a missing or foreign reference');
+    };
+    for (const record of records) {
+      const data = record.data;
+      if (record.kind !== 'project' && data.projectId !== originalProject) throw new DomainError('Archive contains foreign project data');
+      if (record.kind === 'project') { text(data.name, 'project name', 200); if (typeof data.archived !== 'boolean') throw new DomainError('Invalid archived project'); }
+      if (record.kind === 'conversation') text(data.name, 'conversation name', 200);
+      if (record.kind === 'run') {
+        reference(data.conversationId, 'conversation');
+        text(data.question, 'question', 20_000); object(data.decisions); object(data.limits);
+        const config = object(data.config);
+        const keys = new Set(['providerId', 'model', 'skillId', 'skillRevision', 'skillPath', 'runtimeId', 'retrievalId', 'language', 'materialIds']);
+        for (const [key, value] of Object.entries(config)) {
+          if (!keys.has(key)) throw new DomainError('Archive run contains private or unsupported configuration');
+          if (key === 'materialIds') { if (!Array.isArray(value)) throw new DomainError('Invalid archive materials'); for (const materialId of value) reference(materialId, 'material'); }
+          else text(value, 'selection', 500);
+        }
+        if (data.parentRunId) reference(data.parentRunId, 'run');
+      }
+      if (record.kind === 'message') { reference(data.runId, 'run'); reference(data.conversationId, 'conversation'); if (typeof data.content !== 'string' || data.content.length > 2_000_000 || !['user', 'assistant'].includes(String(data.role))) throw new DomainError('Invalid archived message'); }
+      if (record.kind === 'artifact') { reference(data.runId, 'run'); reference(data.latest, 'revision'); }
+      if (record.kind === 'revision') { reference(data.runId, 'run'); reference(data.artifactId, 'artifact'); id(text(data.stepId)); }
+      if (record.kind === 'source') {
+        text(data.title, 'source title', 2000);
+        const url = new URL(text(data.url));
+        if (url.protocol !== 'https:' || url.username || url.password) throw new DomainError('Invalid archived source URL');
+        if (!['unverified', 'metadata_verified', 'content_verified'].includes(String(data.verification)) || !Array.isArray(data.accesses)) throw new DomainError('Invalid archived evidence');
+        for (const access of data.accesses) reference(object(access).runId, 'run');
+      }
+    }
     const rewrite = (value: Json): Json => {
       if (typeof value === 'string') return mapping.get(value) ?? value;
       if (Array.isArray(value)) return value.map(rewrite);
@@ -147,6 +221,17 @@ export class Store {
         const content = text(files[record.id], 'artifact', 2_000_000);
         if (hash(content) !== record.data.hash || Buffer.byteLength(content) !== record.data.bytes || !records.some(r => r.kind === 'artifact' && r.id === record.data.artifactId)) throw new DomainError('Archive checksum or reference mismatch');
       }
+      if (record.kind === 'material') {
+        const bytes = Buffer.from(text(files[record.id], 'material', 14_000_000), 'base64');
+        if (hash(bytes) !== record.data.hash || bytes.length !== record.data.bytes || bytes.length > 10_000_000) throw new DomainError('Material archive checksum mismatch');
+        // Imported previews are derived from verified bytes, never trusted JSON.
+        record.data.preview = null;
+        if (['text/plain', 'text/markdown'].includes(String(record.data.contentType))) {
+          try { record.data.preview = new TextDecoder('utf-8', { fatal: true }).decode(bytes).slice(0, 50_000); }
+          catch { throw new DomainError('Invalid imported text material'); }
+        }
+        if (!['text/plain', 'text/markdown', 'image/png', 'image/jpeg', 'application/octet-stream'].includes(String(record.data.contentType))) throw new DomainError('Invalid material type');
+      }
     }
     const events = archive.events.map(value => {
       const event = object(value);
@@ -157,11 +242,12 @@ export class Store {
     this.transaction(() => {
       for (const record of records) {
         const data = rewrite(record.data) as ObjectData;
-        data.originalId = record.id;
+        data.originalId = record.data.originalId ?? record.id;
         if (record.kind === 'revision') {
           // Report bytes remain exact. IDs inside prose remain historical citations.
           this.writeImmutable(this.file(projectId, 'artifacts', String(data.artifactId), `${String(data.id)}.md`), String(files[record.id]));
         }
+        if (record.kind === 'material') this.writeImmutable(this.file(projectId, 'materials', String(data.id), 'content.bin'), Buffer.from(String(files[record.id]), 'base64'));
         if (record.kind === 'run') { data.imported = true; delete data.interaction; }
         this.put(record.kind, String(data.id), projectId, data);
       }
@@ -169,5 +255,9 @@ export class Store {
     });
     return projectId;
   }
-  close(): void { this.db.close(); }
+  private releaseOwnership(): void {
+    const lock = join(this.root, 'owner.lock');
+    if (existsSync(lock) && !lstatSync(lock).isSymbolicLink() && (JSON.parse(readFileSync(lock, 'utf8')) as { token: string }).token === this.ownerToken) unlinkSync(lock);
+  }
+  close(): void { this.db.close(); this.releaseOwnership(); }
 }

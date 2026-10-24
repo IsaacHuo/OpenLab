@@ -60,6 +60,11 @@ export async function createService(options: { platform: Platform; settings: Set
       if (path === '/api/v1/session' && method === 'GET') { json(res, { csrf }); return; }
       if (path === '/api/v1/openapi' && method === 'GET') { json(res, openapi); return; }
       if (path === '/api/v1/setup' && method === 'GET') { json(res, { node: process.version, platform: process.platform, runtime: platform.runtime.capabilities(), providers: settings.list(), retrieval: { provider: 'Crossref', configured: true, requiresNetwork: true } }); return; }
+      if (path === '/api/v1/retrieval/test' && method === 'POST') {
+        const probe = await research.getMetadata('https://api.crossref.org/works?rows=0', AbortSignal.timeout(20_000));
+        if (probe.status !== 200) throw new DomainError(`Crossref diagnostics failed (HTTP ${probe.status})`, 502);
+        json(res, { provider: 'Crossref', testedAt: new Date().toISOString(), metadataAvailable: true }); return;
+      }
       if (path === '/api/v1/projects') {
         if (method === 'GET') json(res, platform.store.list('project'));
         else if (method === 'POST') json(res, platform.project(text((await body(req)).name)), 201);
@@ -79,15 +84,21 @@ export async function createService(options: { platform: Platform; settings: Set
         else throw new DomainError('Method not allowed', 405);
         return;
       }
-      const match = path.match(/^\/api\/v1\/(projects|conversations|runs|providers|integrations|sources|artifacts)\/([^/]+)(?:\/(.*))?$/);
+      const match = path.match(/^\/api\/v1\/(projects|conversations|runs|providers|integrations|sources|artifacts|materials)\/([^/]+)(?:\/(.*))?$/);
       if (!match) throw new DomainError('API route not found', 404);
       const [, resource, resourceId, operation = ''] = match;
       if (resource === 'projects') {
         const project = platform.store.get('project', resourceId);
         if (operation === 'export' && method === 'GET') { res.setHeader('content-disposition', `attachment; filename="openlab-${resourceId}.json"`); json(res, platform.store.export(resourceId)); }
+        else if (operation === 'materials' && method === 'POST') {
+          const input = await body(req); const encoded = text(input.base64, 'material', 14_000_000);
+          const bytes = Buffer.from(encoded, 'base64');
+          if (bytes.toString('base64') !== encoded) throw new DomainError('Invalid material encoding');
+          json(res, platform.store.material(resourceId, text(input.name), bytes), 201);
+        }
         else if (operation === 'conversations' && method === 'POST') { const input = await body(req); json(res, platform.conversation(resourceId, typeof input.name === 'string' ? input.name : undefined), 201); }
         else if (!operation && method === 'PATCH') json(res, platform.updateProject(resourceId, await body(req)));
-        else if (!operation && method === 'GET') json(res, { project, conversations: platform.store.list('conversation', resourceId), runs: platform.store.list('run', resourceId), artifacts: platform.store.list('artifact', resourceId), sources: platform.store.list('source', resourceId), revisions: platform.store.list('revision', resourceId) });
+        else if (!operation && method === 'GET') json(res, { project, conversations: platform.store.list('conversation', resourceId), runs: platform.store.list('run', resourceId), artifacts: platform.store.list('artifact', resourceId), sources: platform.store.list('source', resourceId), revisions: platform.store.list('revision', resourceId), materials: platform.store.list('material', resourceId) });
         else throw new DomainError('Project operation not found', 404);
         return;
       }
@@ -101,7 +112,7 @@ export async function createService(options: { platform: Platform; settings: Set
           if (!provider?.streaming || !provider.tools || !provider.testedAt) throw new DomainError('Test the selected model provider before starting research', 409);
           const skillId = typeof input.skillId === 'string' ? input.skillId : 'builtin-literature';
           const skill = skillId === 'builtin-literature' ? { revision: '1' } : skills.load(skillId).entry;
-          json(res, platform.createRun(resourceId, { question: text(input.question), requestKey: text(input.requestKey), config: { providerId, model: provider.model, skillId, skillRevision: skill.revision, runtimeId: 'openlab-harness-1', retrievalId: 'crossref', language: input.language === 'zh' ? 'zh' : 'en' }, ...(typeof input.parentRunId === 'string' ? { parentRunId: input.parentRunId } : {}) }), 201);
+          json(res, platform.createRun(resourceId, { question: text(input.question), requestKey: text(input.requestKey), config: { providerId, model: provider.model, skillId, skillRevision: skill.revision, runtimeId: 'openlab-harness-1', retrievalId: 'crossref', language: input.language === 'zh' ? 'zh' : 'en', materialIds: platform.store.list('material', String(conversation.projectId)).map(material => String(material.id)) }, ...(input.limits ? { limits: object(input.limits) as Partial<import('./contracts.ts').Limits> } : {}), ...(typeof input.parentRunId === 'string' ? { parentRunId: input.parentRunId } : {}) }), 201);
         } else throw new DomainError('Conversation operation not found', 404);
         return;
       }
@@ -115,6 +126,10 @@ export async function createService(options: { platform: Platform; settings: Set
       }
       if (resource === 'integrations' && operation === 'enable' && method === 'POST') { json(res, skills.enable(resourceId, (await body(req)).reviewed === true)); return; }
       if (resource === 'sources' && !operation && method === 'GET') { json(res, platform.store.get('source', resourceId)); return; }
+      if (resource === 'materials' && !operation && method === 'GET') {
+        const { material, bytes } = platform.store.readMaterial(resourceId);
+        res.writeHead(200, { 'content-type': String(material.contentType), 'content-disposition': `attachment; filename*=UTF-8''${encodeURIComponent(String(material.name))}` }); res.end(bytes); return;
+      }
       if (resource === 'artifacts' && method === 'GET') {
         const artifact = platform.store.get('artifact', resourceId);
         const revisions = platform.store.list('revision', String(artifact.projectId)).filter(r => r.artifactId === resourceId);
@@ -146,7 +161,7 @@ export async function createService(options: { platform: Platform; settings: Set
             const current = platform.store.get<Run>('run', run.id);
             const events = platform.store.events(run.id, agui && projectionIndex >= 0 ? Math.max(0, sequence - 1) : sequence);
             for (const event of events) {
-              const projected = agui ? projectEvent(event, current) : [event as unknown as ObjectData];
+              const projected = agui ? projectEvent(event, current, event.kind === 'run_finished' ? platform.store.events(run.id) : []) : [event as unknown as ObjectData];
               for (let index = 0; index < projected.length; index++) {
                 if (agui && event.seq === sequence && index <= projectionIndex) continue;
                 res.write(`id: ${event.seq}${agui ? ':' + index : ''}\ndata: ${JSON.stringify(projected[index])}\n\n`);

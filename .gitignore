@@ -10,3 +10,5 @@ dist/
 Thumbs.db
 .openlab/
 *.diagnostics.zip
+test-results/
+playwright-report/

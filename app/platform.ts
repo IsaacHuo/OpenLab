@@ -26,13 +26,17 @@ export class Platform {
     for (const run of store.list<Run>('run')) if (!terminal.has(run.state)) this.event(run.id, 'interrupted', { reason: 'Control plane restarted; explicit retry required' }, r => { r.state = 'interrupted'; delete r.interaction; });
   }
   project(name: string): ObjectData {
-    const project = { id: randomUUID(), name: text(name, 'project name', 200), archived: false, createdAt: new Date().toISOString() };
+    const project = { id: randomUUID(), name: text(name, 'project name', 200), question: '', discipline: '', method: '', archived: false, createdAt: new Date().toISOString() };
     this.store.put('project', project.id, project.id, project);
     return project;
   }
   updateProject(projectId: string, changes: ObjectData): ObjectData {
     const project = this.store.get('project', projectId);
     if (changes.name !== undefined) project.name = text(changes.name, 'project name', 200);
+    for (const field of ['question', 'discipline', 'method']) if (changes[field] !== undefined) {
+      if (typeof changes[field] !== 'string' || String(changes[field]).length > 10_000) throw new DomainError(`Invalid project ${field}`);
+      project[field] = changes[field];
+    }
     if (changes.archived !== undefined) {
       if (typeof changes.archived !== 'boolean') throw new DomainError('Invalid archive flag');
       if (changes.archived && this.store.list<Run>('run', projectId).some(r => !terminal.has(r.state))) throw new DomainError('Cancel active runs before archiving', 409);
@@ -54,8 +58,12 @@ export class Platform {
     const projectId = String(conversation.projectId);
     if (this.store.get('project', projectId).archived) throw new DomainError('Reopen the project first', 409);
     text(input.question, 'question', 20_000); text(input.requestKey, 'request key', 200);
-    const configKeys = new Set(['providerId', 'model', 'skillId', 'skillRevision', 'runtimeId', 'retrievalId', 'language']);
+    const configKeys = new Set(['providerId', 'model', 'skillId', 'skillRevision', 'skillPath', 'runtimeId', 'retrievalId', 'language', 'materialIds']);
     for (const [key, value] of Object.entries(input.config)) {
+      if (key === 'materialIds') {
+        if (!Array.isArray(value) || value.length > 50 || value.some(item => typeof item !== 'string' || this.store.get('material', item).projectId !== projectId)) throw new DomainError('Invalid selected materials');
+        continue;
+      }
       if (!configKeys.has(key) || typeof value !== 'string' || value.length > 500) throw new DomainError('Run configuration accepts public selection identifiers only');
     }
     const runs = this.store.list<Run>('run', projectId).filter(r => r.conversationId === conversationId);
@@ -67,6 +75,7 @@ export class Platform {
     if (runs.some(r => !terminal.has(r.state))) throw new DomainError('Conversation already has an active run', 409);
     if (input.parentRunId && !runs.some(r => r.id === input.parentRunId && terminal.has(r.state))) throw new DomainError('Retry parent must be a terminal run in this conversation');
     const limits = { ...defaultLimits, ...input.limits };
+    if (Object.keys(limits).some(key => !(key in defaultLimits))) throw new DomainError('Unsupported run limit');
     for (const [key, value] of Object.entries(limits)) if (!Number.isSafeInteger(value) || value < 1 || value > defaultLimits[key as keyof Limits]) throw new DomainError(`Invalid ${key} limit`);
     const run: Run = { id: randomUUID(), projectId, conversationId, requestKey: input.requestKey, question: input.question, config: input.config, limits, state: 'queued', phase: 'planning', decisions: {}, createdAt: new Date().toISOString(), ...(input.parentRunId ? { parentRunId: input.parentRunId } : {}) };
     this.store.transaction(() => {
@@ -112,7 +121,7 @@ export class Platform {
       // The adapter has observed worker termination before settling start().
       try {
         const run = this.store.get<Run>('run', runId);
-        if (!terminal.has(run.state)) this.finish(runId, run.state === 'cancelling' ? 'cancelled' : error instanceof DomainError && error.status === 503 ? 'interrupted' : 'failed', error instanceof DomainError ? error.message : 'Execution failed; check provider connectivity and configuration');
+        if (!terminal.has(run.state)) this.finish(runId, run.state === 'cancelling' ? 'cancelled' : error instanceof DomainError && error.status === 503 ? 'interrupted' : 'failed', run.state === 'cancelling' ? undefined : error instanceof DomainError ? error.message : 'Execution failed; check provider connectivity and configuration');
       } catch {
         // A persistence failure prevents further dispatch and publication. Once
         // storage is restored restart reconciliation will classify the run.

@@ -8,9 +8,12 @@ const operation = (summary: string, request?: object, result?: object) => ({ sum
 const paths: Record<string, Record<string, unknown>> = {
   '/session': { post: { ...operation('Exchange the per-launch bootstrap token for an HttpOnly local session'), security: [], parameters: [{ in: 'header', name: 'x-openlab-bootstrap', required: true, schema: string }] }, get: operation('Read current CSRF token') },
   '/setup': { get: operation('Read local runtime diagnostics and public provider configuration') },
+  '/retrieval/test': { post: operation('Check the fixed metadata provider without starting research') },
   '/projects': { get: operation('List local projects', undefined, { type: 'array', items: ref('Project') }), post: operation('Create a project', object({ name: string }), ref('Project')) },
   '/projects/{projectId}': { get: operation('Read project, conversations, runs, sources and artifacts'), patch: operation('Rename, archive or reopen a project', object({ name: string, archived: boolean }, []), ref('Project')) },
   '/projects/{projectId}/conversations': { post: operation('Create a conversation', object({ name: string }, [])) },
+  '/projects/{projectId}/materials': { post: operation('Copy an inert attachment into project storage (10 MB maximum)', object({ name: string, base64: string })) },
+  '/materials/{materialId}': { get: { ...operation('Download checksum-verified original attachment bytes'), responses: { '200': { description: 'Original bytes; Content-Disposition attachment', content: { 'application/octet-stream': { schema: { type: 'string', format: 'binary' } } } } } } },
   '/projects/{projectId}/export': { get: operation('Download a versioned portable research archive', undefined, ref('Archive')) },
   '/import': { post: operation('Verify and import an archive as historical records with new identities', ref('Archive')) },
   '/conversations/{conversationId}': { get: operation('Read platform-owned messages and run history') },
