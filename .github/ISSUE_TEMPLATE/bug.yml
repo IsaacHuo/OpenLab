@@ -1,0 +1,40 @@
+name: Bug report / 缺陷报告
+description: Report a reproducible problem. Chinese and English are welcome.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "The current release contains governance and design documents. Report documentation or automation defects here; runtime features are planned."
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit / 版本或提交
+      description: Include the OpenLab version or commit and relevant tool versions.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / 环境
+      description: Operating system, browser, and local or CI execution.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction / 复现步骤
+      description: Give the smallest steps or public example that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior / 预期与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence / 脱敏证据
+      description: Attach relevant errors or screenshots. Remove credentials and private research material.

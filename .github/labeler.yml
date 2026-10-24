@@ -1,0 +1,18 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.md", "LICENSE"]
+area:governance:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**", "scripts/**", "package*.json", "VERSION", ".*ignore", ".editorconfig", ".gitattributes"]
+area:workspace:
+  - changed-files:
+      - any-glob-to-any-file: ["apps/web/**", "packages/workspace/**"]
+area:runtime:
+  - changed-files:
+      - any-glob-to-any-file: ["packages/runtime/**", "packages/adapters/**"]
+area:skills:
+  - changed-files:
+      - any-glob-to-any-file: ["packages/skills/**"]
+area:retrieval:
+  - changed-files:
+      - any-glob-to-any-file: ["packages/retrieval/**"]

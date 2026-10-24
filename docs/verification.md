@@ -1,0 +1,32 @@
+# Foundation verification
+
+This record describes the v0.0.1 acceptance boundary. Commands are repeatable; exact workflow outcomes and source commits remain in GitHub Actions and the Release.
+
+## Results recorded on 2026-10-24
+
+On Windows x64 with Node.js 24.19.0, Markdown lint, local links, YAML and policy validation, all nine automation tests, actionlint 1.7.12, and Gitleaks 8.30.1 passed. An npm dependency audit reported zero vulnerabilities after the documented KaTeX override. GitHub settings, topics, all 22 managed labels, private reporting, and both active rulesets matched the committed configuration.
+
+The original Chinese vision was copied byte-for-byte; its SHA-256 is `d016e43369ff44d929cee2896b7fdfb4e79d58dddf7837f8d5a2e1f0bb0d0299`. Git attributes preserve its original line endings. Both vector logo variants match the code generator exactly; the dark mark was rendered to a PNG for visual inspection, while the distributed assets remain pure SVG paths. The outline uses exact mirror geometry, the lower bowl is a true circular arc, and the internal wave has 180-degree rotational symmetry.
+
+The online merge and release evidence is retained in the foundation PR, push workflow and v0.0.1 Release linked below. These live records are the authority for the final publishing outcome.
+
+## Baseline checks
+
+- `npm ci`: install development dependencies from the committed lockfile.
+- `npm run check`: Markdown style, internal links and anchors, YAML parsing, required files, Issue Form fields, immutable Actions references, version consistency, label configuration, and release-policy tests.
+- `npm run check:actions`: validate workflow syntax and expression semantics with pinned actionlint.
+- `npm run check:secrets`: scan Git history and working files using pinned Gitleaks with redacted output.
+- `npm run github:verify`: compare live settings, topics, managed labels, private-reporting status and both rulesets against versioned policy.
+- `npm run release:check -- 0.0.1`: dry-run the release gate on the current main commit after its push checks succeed.
+
+Automation tests exercise valid and invalid versions, mismatched version files, missing release notes, prerelease handling, a non-main release target, failed or unrelated CI, duplicate tag rejection, and policy drift including an added bypass actor. CI runs repository checks on Windows and Linux; actionlint and Gitleaks run on Linux. Local tooling also supports Windows x64 binaries.
+
+## Online acceptance
+
+The implementation is accepted when the foundation PR passes required checks and can squash merge with one maintainer, the live repository matches versioned policy, the version tag is annotated and protected against update/deletion, and the published v0.0.1 notes identify the foundation-only scope. Verify the final results through the [checks](https://github.com/IsaacHuo/OpenLab/actions/workflows/checks.yml), [rules](https://github.com/IsaacHuo/OpenLab/rules), [issue chooser](https://github.com/IsaacHuo/OpenLab/issues/new/choose), and [release](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.0.1).
+
+## Verification limits
+
+Static validation checks local document links, YAML structure and Issue Form fields. GitHub's rendering and form behavior should also be inspected on the published default branch. Badges and remote resources depend on their services and are not fetched during PR lint.
+
+No application, OpenCode execution, scientific result, sandbox, research export, or diagnostic bundle has been implemented or tested by this foundation release. Native Windows runtime feasibility, full-text verification, retrieval reliability, and Supervisor-Skills licensing resolution remain explicit application gates in the [product](product.md), [architecture](architecture.md), and [third-party record](../THIRD_PARTY_NOTICES.md).

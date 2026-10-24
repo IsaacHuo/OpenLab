@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pdf binary
+docs/vision.zh-CN.md -text whitespace=-blank-at-eol,cr-at-eol
