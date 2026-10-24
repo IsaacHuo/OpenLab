@@ -7,7 +7,8 @@ export interface WorkerConfiguration { provider: ProviderConfig; definitions: To
 export class WorkerRuntime implements RuntimeAdapter {
   configurations: (run: Run) => Promise<WorkerConfiguration>;
   executeTool: (run: Run, call: ToolCall, host: HarnessHost, signal: AbortSignal) => Promise<Json>;
-  sessions = new Map<string, { abort: AbortController; stop: () => Promise<void> }>();
+  sessions = new Map<string, { abort: AbortController; pid?: number; stop: () => Promise<void> }>();
+  validateResult: (run: Run) => void = () => {};
   constructor(configurations: WorkerRuntime['configurations'], executeTool: WorkerRuntime['executeTool']) { this.configurations = configurations; this.executeTool = executeTool; }
   capabilities() { return { streaming: true, cancellation: true, questions: true, permissions: true, checkpoints: false as const }; }
   async start(run: Run, host: HarnessHost): Promise<void> {
@@ -30,6 +31,7 @@ export class WorkerRuntime implements RuntimeAdapter {
       for (const name of ['SystemRoot', 'WINDIR', 'TEMP', 'TMP', 'PATH']) if (process.env[name]) env[name] = process.env[name]!;
       child = fork(new URL('./worker.ts', import.meta.url), [], { env, execArgv: [], stdio: ['ignore', 'ignore', 'ignore', 'ipc'], windowsHide: true });
       const worker = child;
+      this.sessions.get(run.id)!.pid = worker.pid;
       let outcome: { success: boolean; error?: string } | undefined;
       const completion = new Promise<void>((resolve, reject) => {
         worker.on('error', () => { stopResolve(); reject(new DomainError('Runtime process could not start')); });
@@ -37,7 +39,7 @@ export class WorkerRuntime implements RuntimeAdapter {
           abort.abort();
           stopResolve();
           if (outcome?.success) resolve();
-          else reject(new DomainError(outcome?.error ?? 'Runtime process lost; explicit retry required'));
+          else reject(new DomainError(outcome?.error ?? 'Runtime process lost; explicit retry required', outcome ? 400 : 503));
         });
         worker.on('message', async (raw: unknown) => {
           try {
@@ -60,9 +62,15 @@ export class WorkerRuntime implements RuntimeAdapter {
           } catch { outcome = { success: false, error: 'Malformed runtime event' }; worker.kill(); }
         });
       });
+      void completion.catch(() => {}); // Observe an early exit if persistence fails before dispatch.
+      await host.emit('runtime_started', { executionId: String(worker.pid), checkpoints: false });
       worker.send({ type: 'start', run, ...configuration });
       await completion;
-    } finally { this.sessions.delete(run.id); stopResolve(); }
+      this.validateResult(run);
+    } finally {
+      if (child && child.exitCode === null && child.signalCode === null) { child.kill(); await stopped; }
+      this.sessions.delete(run.id); stopResolve();
+    }
   }
   async cancel(runId: string): Promise<void> { await this.sessions.get(runId)?.stop(); }
   async close(): Promise<void> { await Promise.all([...this.sessions.keys()].map(runId => this.cancel(runId))); }

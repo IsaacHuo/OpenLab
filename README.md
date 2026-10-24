@@ -1,5 +1,7 @@
 # OpenLab
 
+<div align="center">
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/openlab-mark-inverse.svg">
   <img src="assets/brand/openlab-mark.svg" alt="OpenLab flask and wave mark" width="112" height="112">
@@ -12,6 +14,8 @@ The Open Research Operating System
 [![Latest release](https://img.shields.io/github/v/release/IsaacHuo/OpenLab)](https://github.com/IsaacHuo/OpenLab/releases)
 
 [简体中文](README.zh-CN.md) · [Product specification](docs/product.md) · [Architecture](docs/architecture.md) · [Contributing](CONTRIBUTING.md)
+
+</div>
 
 OpenLab is a local-first research workspace being designed to connect open research tools, AI agents, literature, data, and compute. Research projects and their evidence belong to the researcher and should remain usable when a model or tool changes.
 

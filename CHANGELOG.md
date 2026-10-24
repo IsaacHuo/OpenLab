@@ -6,6 +6,8 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ### Added
 
+- Authenticated loopback research API and OpenAPI definition, protected provider settings/capability tests, pinned inert skill installation, Crossref metadata/source tools, scoped public-page permissions and persisted AG-UI replay.
+- Economics/English and humanities/Chinese live DeepSeek/Crossref metadata research, report revision and archive round-trip smoke tests; full-text and browser acceptance remain pending.
 - Initial TypeScript platform archive, generic single-agent Harness, supervised IPC worker and streaming model adapter, with confirmation, interaction validation, cancellation, restart reconciliation and immutable report archives.
 - Native Windows core tests, strict type checking and an explicit opt-in DeepSeek streaming/tool-call smoke test. Application UI, retrieval and full research acceptance remain pending.
 - Research workspace specification covering conversation, execution state, live artifact revisions, evidence navigation, responsive layouts and application acceptance scenarios.

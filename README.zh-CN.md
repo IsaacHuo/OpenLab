@@ -2,6 +2,8 @@
 
 当前开发源码已加入平台档案、通用 Harness 和受监督的 worker。已实现范围、验证结果与剩余应用验收项见[开发说明](docs/development.md)和[实施计划](docs/implementation-plan.md)。v0.0.1 发布范围仍为仓库基础设施。
 
+<div align="center">
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/openlab-mark-inverse.svg">
   <img src="assets/brand/openlab-mark.svg" alt="OpenLab 烧瓶与波浪标识" width="112" height="112">
@@ -14,6 +16,8 @@
 [![最新版本](https://img.shields.io/github/v/release/IsaacHuo/OpenLab)](https://github.com/IsaacHuo/OpenLab/releases)
 
 [English](README.md) · [产品规格](docs/product.md) · [架构](docs/architecture.md) · [贡献指南](CONTRIBUTING.zh-CN.md)
+
+</div>
 
 OpenLab 致力于建立本地优先的科研工作空间，将已有的开源科研工具、AI Agent、文献、数据和计算能力组织起来。研究项目、成果和证据由研究者持有，并能够在更换模型或工具后继续使用。
 
