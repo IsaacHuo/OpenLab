@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and research discussions / 使用咨询与研究讨论
+    url: https://github.com/IsaacHuo/OpenLab/discussions
+    about: Ask for help or discuss research use cases. Chinese and English are welcome.
+  - name: Report a security vulnerability privately / 私密报告安全问题
+    url: https://github.com/IsaacHuo/OpenLab/security/advisories/new
+    about: Do not publish credentials, private research material, or vulnerability details in an issue.

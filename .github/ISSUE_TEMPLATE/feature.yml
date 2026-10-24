@@ -1,0 +1,29 @@
+name: Feature request / 功能建议
+description: Describe a user problem and a proposed outcome.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Research problem and audience / 研究问题与用户
+      description: Who encounters this problem, and what are they trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed outcome / 期望结果
+      description: Describe observable behavior and how to verify success.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing tools and alternatives / 现有工具与替代方案
+      description: Link relevant projects and explain what is missing.
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Constraints / 约束
+      description: Note platform, data, accessibility, cost, or compatibility needs.

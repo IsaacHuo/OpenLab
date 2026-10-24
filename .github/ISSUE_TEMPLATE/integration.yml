@@ -1,0 +1,46 @@
+name: Tool integration / 工具集成
+description: Propose a Skill, service, tool, data provider, or research engine.
+title: "[Integration]: "
+labels: [integration]
+body:
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream project and version / 上游项目与版本
+      description: Provide the canonical repository or documentation and a version or commit.
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License and source / 许可证与来源
+      description: Link the license; identify file-level differences or unknown terms.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Integration category / 集成类型
+      options: [Skill, Tool, Service, Agent system, Research engine, Data provider]
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Requested maturity / 目标成熟度
+      options: ["L0 Discoverable", "L1 Installable", "L2 Executable", "L3 Composable", "L4 Reproducible"]
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Research use case, inputs, outputs, and dependencies / 用例、输入输出与依赖
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification and permissions / 验证方式与权限
+      description: Include an example task, expected artifacts, supported systems, and required access.
+    validations:
+      required: true

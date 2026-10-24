@@ -1,0 +1,29 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+
+// The geometry is shared by both color variants. No raster tracing or embedded images.
+export function mark(color) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="title desc" color="${color}">
+  <title id="title">OpenLab</title>
+  <desc id="desc">An open round-bottom flask with a balanced wave. The outline is mirror-symmetric and the wave has half-turn symmetry.</desc>
+  <defs>
+    <path id="shoulder" d="M 136 48 H 184 A 36 36 0 0 1 220 84 V 96 C 220 140 204 160 172 180 C 120 214 88 254 88 304"/>
+    <path id="wave" d="M 88 304 C 128 232 192 232 256 304"/>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#shoulder"/>
+    <use href="#shoulder" transform="translate(512 0) scale(-1 1)"/>
+    <path d="M 88 304 A 168 168 0 0 0 424 304"/>
+    <use href="#wave"/>
+    <use href="#wave" transform="rotate(180 256 304)"/>
+  </g>
+</svg>
+`;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  mkdirSync('assets/brand', { recursive: true });
+  writeFileSync('assets/brand/openlab-mark.svg', mark('#111111'));
+  writeFileSync('assets/brand/openlab-mark-inverse.svg', mark('#ffffff'));
+  console.log('Generated transparent SVG marks from exact shared geometry.');
+}

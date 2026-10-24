@@ -1,0 +1,8 @@
+title = "OpenLab repository secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated dependencies and verified tool caches"
+paths = ['''(^|/)node_modules/''', '''(^|/)\.cache/''', '''(^|/)\.git/''']
