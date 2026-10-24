@@ -55,6 +55,7 @@ try {
     console.log(command(binary, ['git', '--redact=100', '--no-banner', '--exit-code=1', '--log-opts=--all', '.']));
     console.log(command(binary, ['dir', '--redact=100', '--no-banner', '--exit-code=1', '.']));
   }
+  console.log(`${name} ${definition.version}: checks passed.`);
 } catch (error) {
   console.error(error.stdout || error.stderr || error.message);
   process.exitCode = 1;
