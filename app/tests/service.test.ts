@@ -1,0 +1,74 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { join } from 'node:path';
+import { fixture, SubstituteRuntime, until } from './helpers.ts';
+import { Settings } from '../settings.ts';
+import { Skills } from '../skills.ts';
+import { Research } from '../research.ts';
+import { createService } from '../service.ts';
+import type { Run, ObjectData } from '../contracts.ts';
+
+test('loopback authentication, origin/CSRF validation and public-only provider metadata', async () => {
+  const f = fixture();
+  const settings = new Settings(join(f.root, 'settings'), { protect: v => 'protected:' + v, unprotect: v => v.slice(10) });
+  const service = await createService({ platform: f.platform, settings, skills: new Skills(join(f.root, 'skills')), research: new Research(f.store) });
+  try {
+    assert.equal((await fetch(service.origin + '/api/v1/projects')).status, 401);
+    const token = new URL(service.launchUrl).hash.slice('#token='.length);
+    const auth = await fetch(service.origin + '/api/v1/session', { method: 'POST', headers: { origin: service.origin, 'x-openlab-bootstrap': token } });
+    const cookie = auth.headers.get('set-cookie')!.split(';')[0];
+    const { csrf } = await auth.json() as { csrf: string };
+    assert.ok(auth.headers.get('set-cookie')!.includes('HttpOnly'));
+    const headers = { origin: service.origin, cookie, 'content-type': 'application/json', 'x-openlab-csrf': csrf };
+    const projects = await fetch(service.origin + '/api/v1/projects', { headers });
+    assert.equal(projects.status, 200);
+    assert.equal((await fetch(service.origin + '/api/v1/projects', { method: 'POST', headers: { ...headers, 'x-openlab-csrf': 'wrong' }, body: '{}' })).status, 403);
+    assert.equal((await fetch(service.origin + '/api/v1/projects', { headers: { ...headers, origin: 'https://evil.example' } })).status, 403);
+    const created = await fetch(service.origin + '/api/v1/projects', { method: 'POST', headers, body: '{"name":"中文研究"}' });
+    assert.equal(created.status, 201);
+    const provider = await fetch(service.origin + '/api/v1/providers', { method: 'POST', headers, body: JSON.stringify({ name: 'Fixture', baseUrl: 'https://api.example.org', model: 'test', apiKey: 'test-only-secret' }) });
+    assert.equal(provider.status, 201);
+    assert.doesNotMatch(JSON.stringify(await provider.json()), /apiKey|test-only-secret/);
+  } finally { await service.close(); }
+});
+
+test('independent AG-UI consumer and domain cursor replay never create or resume work', async () => {
+  let work = 0;
+  const f = fixture(new SubstituteRuntime(async (_run, host, signal) => {
+    work++;
+    await host.wait({ kind: 'confirmation', input: 'boolean', prompt: 'Plan' }, signal);
+    await host.emit('message_start', { messageId: 'stable-message' });
+    await host.emit('message_delta', { messageId: 'stable-message', text: '中文证据' });
+    await host.emit('message_end', { messageId: '00000000-0000-4000-8000-000000000001', content: '中文证据', stepId: null });
+  }));
+  const service = await createService({ platform: f.platform, settings: new Settings(join(f.root, 'settings')), skills: new Skills(join(f.root, 'skills')), research: new Research(f.store) });
+  try {
+    const auth = await fetch(service.origin + '/api/v1/session', { method: 'POST', headers: { origin: service.origin, 'x-openlab-bootstrap': new URL(service.launchUrl).hash.slice(7) } });
+    const cookie = auth.headers.get('set-cookie')!.split(';')[0];
+    const { csrf } = await auth.json() as { csrf: string };
+    const headers = { origin: service.origin, cookie, 'content-type': 'application/json', 'x-openlab-csrf': csrf };
+    const run = f.create();
+    const waiting = await until(() => f.store.get<Run>('run', run.id), r => r.state === 'awaiting_confirmation');
+    const attached = await fetch(`${service.origin}/api/v1/runs/${run.id}/events`, { headers });
+    const reader = attached.body!.getReader();
+    await reader.read(); await reader.cancel();
+    assert.equal(f.store.get<Run>('run', run.id).state, 'awaiting_confirmation');
+    f.platform.confirm(run.id, waiting.plan!.version);
+    await f.platform.tasks.get(run.id);
+    const connect = (extra: ObjectData = {}) => fetch(`${service.origin}/api/v1/runs/${run.id}/ag-ui`, { method: 'POST', headers, body: JSON.stringify({ threadId: run.conversationId, runId: run.id, messages: [], tools: [], state: { state: 'succeeded' }, ...extra }) });
+    const first = await connect();
+    const stream = await first.text();
+    const events = stream.split('\n').filter(line => line.startsWith('data: ')).map(line => JSON.parse(line.slice(6)) as ObjectData);
+    assert.equal(events[0].type, 'RUN_STARTED');
+    assert.equal(events.at(-1)!.type, 'RUN_FINISHED');
+    assert.equal(events.filter(e => e.type === 'TEXT_MESSAGE_CONTENT' && e.delta === '中文证据').length, 1);
+    assert.equal(await (await connect()).text(), stream);
+    assert.equal(work, 1);
+    assert.equal((await connect({ threadId: 'wrong' })).status, 409);
+    const sequence = f.store.events(run.id).at(-1)!.seq;
+    const replay = await fetch(`${service.origin}/api/v1/runs/${run.id}/events?cursor=${sequence}`, { headers });
+    assert.equal(await replay.text(), '');
+    const archive = await (await fetch(`${service.origin}/api/v1/projects/${f.projectId}/export`, { headers })).json();
+    assert.equal((await fetch(service.origin + '/api/v1/import', { method: 'POST', headers, body: JSON.stringify(archive) })).status, 201);
+  } finally { await service.close(); }
+});

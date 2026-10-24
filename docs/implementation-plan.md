@@ -17,7 +17,7 @@ Each iteration uses a short-lived branch, local checks, a PR, passing required C
 | Iteration | Result |
 | --- | --- |
 | Design baseline | PR #6 merged; Windows/Linux required CI passed |
-| Platform and Harness | Source implemented; 28 tests and type checking passed on native Windows; PR checks pending |
-| Services and adapters | Pending |
+| Platform and Harness | PR #7 merged; 28 tests, type checking, Gitleaks and Windows/Linux CI passed; live DeepSeek streaming/tool calls passed |
+| Services and adapters | Implemented local API, settings, Crossref retrieval, skill installation and AG-UI projection; 38 tests passed on native Windows; two live metadata research/export/import tasks passed; PR checks pending |
 | Research workspace | Pending |
 | Application acceptance | Pending |

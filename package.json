@@ -19,6 +19,8 @@
     "check:repository": "node scripts/check-repository.mjs",
     "test": "node --test scripts/tests/*.test.mjs app/tests/*.test.ts",
     "test:live-model": "node scripts/live-model-smoke.mjs",
+    "test:live-research": "node scripts/live-research-smoke.mjs",
+    "start": "node app/main.ts",
     "check:actions": "node scripts/tool.mjs actionlint",
     "check:secrets": "node scripts/tool.mjs gitleaks",
     "github:sync": "node scripts/github.mjs sync",

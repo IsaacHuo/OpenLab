@@ -87,7 +87,7 @@ export class Store {
     if (existsSync(path)) throw new DomainError('Immutable file already exists', 409);
     renameSync(temp, path);
   }
-  artifact(run: Run, content: string, stepId: string, commit: boolean, artifactId = randomUUID()): ObjectData {
+  artifact(run: Run, content: string, stepId: string, commit: boolean, artifactId: string = randomUUID()): ObjectData {
     text(content, 'report', 2_000_000); id(stepId); id(artifactId);
     const previous = this.list('artifact', run.projectId).find(a => a.id === artifactId);
     if (previous && previous.runId !== run.id) throw new DomainError('Artifact belongs to another run');

@@ -22,6 +22,14 @@ The Chinese vision is byte-identical to the committed file at the start of this 
 
 ## Baseline checks
 
+### Research services, 2026-10-24
+
+On native Windows x64 with Node.js 24.19.0, strict type checking and 38 tests passed. Added cases cover authenticated loopback sessions, origin and CSRF rejection, disconnected subscriptions, domain/AG-UI replay with an independent consumer, inert pinned skill fixtures, invalid paths, protected/public provider separation, metadata limitations, permission denial without fetching, inaccessible content, public/reserved address policy and lost-worker interruption.
+
+Two live DeepSeek Flash/Crossref tasks completed: minimum wage/employment in English and Hamlet text research in Chinese. Each retrieved five metadata sources, committed one final Markdown report and passed export/import checks. Reported model totals across four calls per task were 8,502 and 8,499 tokens. The local sanitized record is `.cache/live-research-smoke.json`; the repeatable opt-in procedure is `scripts/live-research-smoke.mjs`. Reports explicitly limit their conclusions to available metadata. This test denied public-page reading and supplies no full-text or claim-verification evidence.
+
+The local network resolves external names to reserved VPN fake DNS ranges. General source reads correctly reject those ranges. The fixed Crossref metadata adapter uses HTTPS with redirects disabled and successfully retrieved its records. This is an environment-specific full-text limitation, not a reason to expand arbitrary network access.
+
 ### Initial application core, 2026-10-24
 
 On native Windows x64 with Node.js 24.19.0, strict TypeScript validation and 28 tests passed (19 application-core tests and nine governance tests). Core cases include confirmation before dispatch, substitute model/tool/context/sink and RuntimeAdapter implementations, validated questions and denied permission, duplicate/stale decisions, usage/turn limits, worker cancellation, restart reconciliation, SQLite transaction rollback, Unicode/space-containing paths, junction rejection, immutable revisions, corrupted archive rejection and offline export/import. These do not establish browser UI or full literature research acceptance.

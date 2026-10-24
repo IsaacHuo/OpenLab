@@ -95,6 +95,7 @@ export class Platform {
         emit: async (kind, data) => {
           const run = this.store.get<Run>('run', runId);
           if (terminal.has(run.state) || run.state === 'cancelling') throw new DomainError('Run is stopping', 409);
+          if (kind === 'tool_intent' && this.store.events(runId).some(e => e.kind === 'tool_intent' && e.data.callId === data.callId)) throw new DomainError('Tool call identifier was already dispatched', 409);
           this.event(runId, kind, data, current => {
             if (kind === 'message_end') {
               const messageId = text(data.messageId);
@@ -111,7 +112,7 @@ export class Platform {
       // The adapter has observed worker termination before settling start().
       try {
         const run = this.store.get<Run>('run', runId);
-        if (!terminal.has(run.state)) this.finish(runId, run.state === 'cancelling' ? 'cancelled' : 'failed', error instanceof DomainError ? error.message : 'Execution failed; check provider connectivity and configuration');
+        if (!terminal.has(run.state)) this.finish(runId, run.state === 'cancelling' ? 'cancelled' : error instanceof DomainError && error.status === 503 ? 'interrupted' : 'failed', error instanceof DomainError ? error.message : 'Execution failed; check provider connectivity and configuration');
       } catch {
         // A persistence failure prevents further dispatch and publication. Once
         // storage is restored restart reconciliation will classify the run.
