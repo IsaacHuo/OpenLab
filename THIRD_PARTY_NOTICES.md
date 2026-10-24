@@ -21,6 +21,12 @@ GitHub Actions used by the workflows retain their upstream licenses and are pinn
 
 ## Planned application components and design references
 
+### Implemented development dependencies
+
+Current development pins React/React DOM 19.3.1 (MIT), assistant-ui React 0.15.31 (MIT), its AG-UI adapter 0.1.0 (MIT), AG-UI client/core 1.0.3 (MIT), react-markdown 10.1.0 (MIT), and YAML 2.9.1 (ISC). Build/test tooling adds Vite 8.3.5 (MIT), its React plugin 6.1.2 (MIT), Playwright 1.64.1 (Apache-2.0), and axe-core Playwright 4.14.0 (MPL-2.0). Package license metadata was inspected on 2026-10-24. Transitive versions, integrity hashes and license metadata remain in package-lock.json; installed packages retain their license files. OpenLab's supporting UI components are original code; no shadcn or AI Elements source has been copied.
+
+Zod is overridden to 4.6.7 to avoid [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The AG-UI client already imports Zod's v4 API despite a v3 package range. Type checks, the official client and browser flows pass with the override; npm audit reports zero vulnerabilities in the verified lockfile. Review this override with future upstream upgrades.
+
 - [assistant-ui](https://github.com/assistant-ui/assistant-ui) is the planned conversation foundation, with its [official AG-UI adapter](https://www.assistant-ui.com/docs/runtimes/ag-ui/overview).
 - [AG-UI](https://docs.ag-ui.com/introduction) is the selected frontend interaction protocol. OpenLab retains its own research archive and runtime contracts.
 - [shadcn/ui AI Elements](https://ui.shadcn.com/docs/ai-elements) provides supporting UI composition patterns; copied component code must retain applicable source and license records.
@@ -28,4 +34,4 @@ GitHub Actions used by the workflows retain their upstream licenses and are pinn
 - OpenCode was the original first-runtime selection in ADR 0001. [ADR 0002](docs/decisions/0002-workspace-and-harness.md) selects self-developed OpenLab Harness and retains OpenCode as an optional future adapter.
 - DeepSeek Harness is named in the supplied planning material as architectural inspiration. No upstream implementation or license has been independently established in this revision; no code is copied or bundled on that basis.
 
-These application components are not installed or bundled in v0.0.1. The referenced documentation was reviewed on 2026-10-24; exact dependency/component revisions, license terms and compatibility must be recorded before implementation distribution. A design reference does not imply upstream endorsement.
+These application components are not installed or bundled in the historical v0.0.1 release. Current development's pinned dependencies and verification are recorded above. A design reference does not imply upstream endorsement.

@@ -7,6 +7,7 @@ import { Skills } from '../skills.ts';
 import { Research } from '../research.ts';
 import { createService } from '../service.ts';
 import type { Run, ObjectData } from '../contracts.ts';
+import { HttpAgent } from '@ag-ui/client';
 
 test('loopback authentication, origin/CSRF validation and public-only provider metadata', async () => {
   const f = fixture();
@@ -37,8 +38,8 @@ test('independent AG-UI consumer and domain cursor replay never create or resume
   const f = fixture(new SubstituteRuntime(async (_run, host, signal) => {
     work++;
     await host.wait({ kind: 'confirmation', input: 'boolean', prompt: 'Plan' }, signal);
-    await host.emit('message_start', { messageId: 'stable-message' });
-    await host.emit('message_delta', { messageId: 'stable-message', text: '中文证据' });
+    await host.emit('message_start', { messageId: '00000000-0000-4000-8000-000000000001' });
+    await host.emit('message_delta', { messageId: '00000000-0000-4000-8000-000000000001', text: '中文证据' });
     await host.emit('message_end', { messageId: '00000000-0000-4000-8000-000000000001', content: '中文证据', stepId: null });
   }));
   const service = await createService({ platform: f.platform, settings: new Settings(join(f.root, 'settings')), skills: new Skills(join(f.root, 'skills')), research: new Research(f.store) });
@@ -64,6 +65,10 @@ test('independent AG-UI consumer and domain cursor replay never create or resume
     assert.equal(events.filter(e => e.type === 'TEXT_MESSAGE_CONTENT' && e.delta === '中文证据').length, 1);
     assert.equal(await (await connect()).text(), stream);
     assert.equal(work, 1);
+    const agent = new HttpAgent({ url: `${service.origin}/api/v1/runs/${run.id}/ag-ui`, threadId: run.conversationId, headers });
+    await agent.runAgent({ runId: run.id });
+    assert.equal(agent.messages.filter(message => message.role === 'user').length, 1);
+    assert.ok(agent.messages.some(message => message.role === 'assistant' && message.content === '中文证据'));
     assert.equal((await connect({ threadId: 'wrong' })).status, 409);
     const sequence = f.store.events(run.id).at(-1)!.seq;
     const replay = await fetch(`${service.origin}/api/v1/runs/${run.id}/events?cursor=${sequence}`, { headers });

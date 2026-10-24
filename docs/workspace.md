@@ -1,6 +1,6 @@
 # Research workspace specification
 
-Status: accepted implementation design, updated 2026-10-24. No workspace application ships in v0.0.1. This document defines the first UI against the [product specification](product.md), [platform contracts](architecture.md), and [Harness specification](harness.md).
+Status: accepted implementation design, updated 2026-10-24. No workspace application ships in historical v0.0.1; current development implementation and native browser evidence are described in [development](development.md) and [verification](verification.md). This document defines the first UI against the [product specification](product.md), [platform contracts](architecture.md), and [Harness specification](harness.md).
 
 ## Research work stays visible
 
@@ -76,7 +76,7 @@ All core controls require keyboard operation and accessible labels. Restore focu
 
 ## Application acceptance scenarios
 
-These are future implementation gates, not tests passed by this documentation change.
+These are application acceptance requirements. The [verification record](verification.md) distinguishes implemented and tested cases from remaining gates; a design table alone is not evidence of completion.
 
 | Scenario | Required outcome |
 | --- | --- |

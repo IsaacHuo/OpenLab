@@ -2,7 +2,7 @@
 
 [简体中文](CONTRIBUTING.zh-CN.md)
 
-OpenLab currently contains governance, documentation, and repository tooling. The [product specification](docs/product.md) identifies planned application behavior. Contributions should distinguish working functionality from design proposals.
+OpenLab contains governance, documentation, repository tooling and a local research preview. The [product specification](docs/product.md) defines the application target; [development](docs/development.md) records implemented scope. Contributions should distinguish working functionality from design proposals.
 
 ## Start a contribution
 
@@ -19,11 +19,15 @@ npm ci
 npm run check
 npm run check:actions
 npm run check:secrets
+npm run build
+npm run test:browser
 ```
 
 On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm.ps1`. The workflow and secret checks support Windows x64 and Linux x64 and download fixed, checksum-verified binaries into `.cache/`. They need network access on first use. Windows downloads use the built-in curl, with GitHub CLI as a fallback for networks that block direct release downloads. Other platforms can run the documentation checks and rely on CI for these two binaries until tool manifests add their platform.
 
 `npm run check` runs Markdown lint, local-link and repository configuration validation, and automation tests. The original Chinese vision is preserved verbatim and excluded from style lint. External sites are not queried by the link checker because network availability must not block a documentation PR.
+
+Application checks include strict server/browser TypeScript and controlled runtime/storage/API tests. Browser acceptance uses installed Chrome through Playwright against a separate synthetic local service, including desktop/mobile and axe checks. It never needs your model key. Live model/retrieval smoke tests are separate opt-in commands documented in [development](docs/development.md). Build the browser bundle before `npm start`.
 
 ## Pull requests
 

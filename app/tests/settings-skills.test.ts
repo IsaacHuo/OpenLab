@@ -3,8 +3,14 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fixture } from './helpers.ts';
-import { Settings } from '../settings.ts';
+import { Settings, windowsProtection } from '../settings.ts';
 import { Skills } from '../skills.ts';
+
+test('native Windows credential protection round trips without inheriting PowerShell Core modules', { skip: process.platform !== 'win32' }, () => {
+  const encrypted = windowsProtection.protect('synthetic-credential-roundtrip');
+  assert.notEqual(encrypted, 'synthetic-credential-roundtrip');
+  assert.equal(windowsProtection.unprotect(encrypted), 'synthetic-credential-roundtrip');
+});
 
 test('provider public metadata never contains the protected credential', async () => {
   const f = fixture();

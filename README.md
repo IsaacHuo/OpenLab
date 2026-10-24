@@ -21,20 +21,36 @@ OpenLab is a local-first research workspace being designed to connect open resea
 
 ## Current status
 
-**v0.0.1 establishes repository governance and design documents. There is no runnable research application or installer in this release.** The commands below validate this repository; they do not launch OpenLab. Screenshots and research demonstrations will be added when the corresponding functionality is available.
+**The published v0.0.1 release is foundation-only.** Current development source includes a runnable local research preview; no installer is provided.
 
-Current development source adds the platform archive, generic Harness and supervised worker. See [development](docs/development.md) and the [implementation plan](docs/implementation-plan.md) for implemented scope and remaining application gates.
+The preview combines projects, a supervised Harness, DeepSeek-tested model configuration, Crossref metadata retrieval, plan confirmation, source-linked Markdown reports and portable research archives. See [development](docs/development.md) and the [implementation plan](docs/implementation-plan.md) for tested scope and remaining gates.
 
 | Capability | Status |
 | --- | --- |
 | Contribution, issue, review, and release processes | Available in this repository |
 | Automated documentation, workflow, and secret checks | Available in GitHub Actions and local tooling |
-| Local service with browser UI, Windows first | Planned |
-| Projects, skill installation, model configuration, and literature research | Planned |
-| OpenLab Harness: default single-agent literature runtime | Specified; implementation and native Windows validation planned |
+| Local service with browser UI, Windows first | Implemented in development source; desktop/mobile Chrome checked |
+| Projects, pinned inert skill installation, model configuration, and metadata research | Implemented; two live DeepSeek/Crossref tasks checked |
+| OpenLab Harness: default single-agent literature runtime | Implemented with supervised native Windows worker and replaceable interfaces |
 | Supervisor-Skills execution through the platform runtime adapter | Planned; not an endorsed or verified integration yet |
-| Conversation, execution state, and live artifacts workspace | Specified with assistant-ui and AG-UI; no runnable UI yet |
-| Source tracking, execution history, and artifact export | Specified; implementation planned |
+| Conversation, execution state, and live artifacts workspace | React/assistant-ui with AG-UI; plan, input, denial and replay checked |
+| Source tracking, execution history, and artifact export | Immutable revisions, material copies and verified archive round trips |
+
+## Run the development preview
+
+Use Node.js 24 on Windows:
+
+```sh
+npm ci
+npm run build
+npm start
+```
+
+Open the launch link printed in the terminal. Add and test your model provider in settings, create a project, and submit a question. Review the plan before research starts. Model planning and execution use your provider account. Windows protects credentials under the current user; saved projects remain readable without provider access. Crossref retrieval needs a network connection. Public-page reading asks for scoped access and can be unavailable; metadata alone does not verify a paper's conclusions. DeepSeek currently uses non-thinking mode.
+
+![Native Windows preview with a real DeepSeek/Crossref metadata research record](assets/docs/workspace-preview.png)
+
+This screenshot shows a real metadata-only task, not a full-text or scientific claim-verification result. [Verification details](docs/verification.md) distinguish live probes from synthetic browser fixtures.
 
 ## First research release
 

@@ -1,14 +1,14 @@
 import type { ObjectData, ResearchEvent, Run } from './contracts.ts';
 
 // Projection only. No event in this module can start or resume execution.
-export function projectEvent(event: ResearchEvent, run: Run): ObjectData[] {
+export function projectEvent(event: ResearchEvent, run: Run, history: ResearchEvent[] = []): ObjectData[] {
   const { kind, data } = event;
   const timestamp = Date.parse(event.at);
   const events: ObjectData[] = [];
   if (kind === 'run_created') return [];
   if (kind === 'run_started') {
     const messageId = `${run.id}:user`;
-    events.push({ type: 'RUN_STARTED', runId: run.id, threadId: run.conversationId }, { type: 'TEXT_MESSAGE_START', messageId, role: 'user' }, { type: 'TEXT_MESSAGE_CONTENT', messageId, delta: run.question }, { type: 'TEXT_MESSAGE_END', messageId });
+    events.push({ type: 'RUN_STARTED', runId: run.id, threadId: run.conversationId }, { type: 'MESSAGES_SNAPSHOT', messages: [{ id: messageId, role: 'user', content: run.question }] });
   }
   else if (kind === 'message_start') events.push({ type: 'TEXT_MESSAGE_START', messageId: data.messageId, role: 'assistant' });
   else if (kind === 'message_delta') events.push({ type: 'TEXT_MESSAGE_CONTENT', messageId: data.messageId, delta: data.text });
@@ -18,6 +18,16 @@ export function projectEvent(event: ResearchEvent, run: Run): ObjectData[] {
   else if (kind === 'tool_intent') events.push({ type: 'TOOL_CALL_START', toolCallId: data.callId, toolCallName: data.name }, { type: 'TOOL_CALL_ARGS', toolCallId: data.callId, delta: data.arguments }, { type: 'TOOL_CALL_END', toolCallId: data.callId });
   else if (kind === 'tool_result') events.push({ type: 'TOOL_CALL_RESULT', toolCallId: data.callId, messageId: `${String(data.callId)}:result`, role: 'tool', content: JSON.stringify(data.result) });
   else if (kind === 'run_finished') {
+    const messages = new Set<string>(); const steps = new Set<string>();
+    for (const previous of history) {
+      if (previous.seq >= event.seq) break;
+      if (previous.kind === 'message_start') messages.add(String(previous.data.messageId));
+      if (previous.kind === 'message_end') messages.delete(String(previous.data.messageId));
+      if (previous.kind === 'step_started') steps.add(String(previous.data.stepId));
+      if (previous.kind === 'step_finished') steps.delete(String(previous.data.stepId));
+    }
+    for (const messageId of messages) events.push({ type: 'TEXT_MESSAGE_END', messageId });
+    for (const stepName of steps) events.push({ type: 'STEP_FINISHED', stepName });
     events.push({ type: 'CUSTOM', name: 'openlab.run_state', value: data });
     if (data.state === 'failed' || data.state === 'interrupted') events.push({ type: 'RUN_ERROR', message: data.error ?? 'Run interrupted', code: data.state });
     else events.push({ type: 'RUN_FINISHED', runId: run.id, threadId: run.conversationId });

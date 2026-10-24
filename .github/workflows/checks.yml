@@ -33,6 +33,23 @@ jobs:
       - run: npm run check
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
+      - run: npm run build
+
+  browser:
+    name: browser acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npm run test:browser
 
   actions:
     name: actionlint
@@ -64,16 +81,18 @@ jobs:
   required-checks:
     name: required-checks
     if: ${{ always() }}
-    needs: [repository, actions, secrets]
+    needs: [repository, browser, actions, secrets]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
       - name: Require every check to succeed
         env:
           REPOSITORY_RESULT: ${{ needs.repository.result }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
           ACTIONS_RESULT: ${{ needs.actions.result }}
           SECRETS_RESULT: ${{ needs.secrets.result }}
         run: |
           test "$REPOSITORY_RESULT" = success
+          test "$BROWSER_RESULT" = success
           test "$ACTIONS_RESULT" = success
           test "$SECRETS_RESULT" = success

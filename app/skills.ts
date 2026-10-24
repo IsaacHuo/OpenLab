@@ -6,8 +6,9 @@ import { join, resolve, posix } from 'node:path';
 import { DomainError, id, text } from './contracts.ts';
 import type { ObjectData } from './contracts.ts';
 import { hash } from './store.ts';
+import { parseDocument } from 'yaml';
 
-export interface SkillEntry { id: string; source: string; revision: string; name: string; license: string; skills: string[]; enabled: boolean; maturity: 'L1'; files: { path: string; hash: string; bytes: number }[] }
+export interface SkillEntry { id: string; source: string; revision: string; name: string; license: string; skills: string[]; declarations?: { path: string; metadata: ObjectData }[]; enabled: boolean; maturity: 'L1'; files: { path: string; hash: string; bytes: number }[] }
 function safePath(path: string): void {
   if (!path || path.includes('\\') || path.split('/').some(p => !p || p === '.' || p === '..' || /[<>:"|?*\x00-\x1f]/u.test(p) || /[. ]$/.test(p) || /^\.git$/i.test(p) || /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(p))) throw new DomainError('Unsafe or unsupported skill path');
 }
@@ -71,8 +72,18 @@ export class Skills {
     const skillPaths = files.filter(file => /(^|\/)SKILL\.md$/i.test(file.path)).map(file => file.path);
     if (!skillPaths.length) throw new DomainError('Repository contains no SKILL.md');
     const skillId = randomUUID();
+    const declarations = skillPaths.map(path => {
+      const bytes = files.find(file => file.path === path)!.bytes;
+      const frontmatter = bytes.toString('utf8').match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+      if (!frontmatter) return { path, metadata: {} };
+      const document = parseDocument(frontmatter[1], { uniqueKeys: true });
+      if (document.errors.length) throw new DomainError('Invalid skill frontmatter');
+      const metadata: unknown = document.toJS({ maxAliasCount: 20 });
+      if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) throw new DomainError('Invalid skill metadata');
+      return { path, metadata: JSON.parse(JSON.stringify(metadata)) as ObjectData };
+    });
     const licenses = files.filter(file => /(^|\/)(LICENSE|LICENCE|COPYING)(\.[^/]+)?$/i.test(file.path)).map(file => `${file.path}\n${file.bytes.toString('utf8').slice(0, 12_000)}`).join('\n\n');
-    const entry: SkillEntry = { id: skillId, source, revision, name: source.split('/').at(-1) ?? 'Skill', license: licenses || 'No repository license found; inspect skill declarations before use.', skills: skillPaths, enabled: false, maturity: 'L1', files: files.map(file => ({ path: file.path, bytes: file.bytes.length, hash: hash(file.bytes) })) };
+    const entry: SkillEntry = { id: skillId, source, revision, name: typeof declarations[0]?.metadata.name === 'string' ? declarations[0].metadata.name : source.split('/').at(-1) ?? 'Skill', license: licenses || 'No repository license found; inspect skill declarations before use.', skills: skillPaths, declarations, enabled: false, maturity: 'L1', files: files.map(file => ({ path: file.path, bytes: file.bytes.length, hash: hash(file.bytes) })) };
     for (const file of files) {
       const path = join(this.root, skillId, 'upstream', file.path);
       mkdirSync(resolve(path, '..'), { recursive: true });

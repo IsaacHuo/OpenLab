@@ -3,10 +3,11 @@ import { resolve, dirname, relative, extname } from 'node:path';
 import { parseDocument } from 'yaml';
 import { readJson } from './lib.mjs';
 import { mark } from './generate-brand.mjs';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const errors = [];
-const ignore = new Set(['.git', 'node_modules', '.cache', 'dist', 'coverage']);
+const ignore = new Set(['.git', 'node_modules', '.cache', '.openlab', 'dist', 'coverage', 'test-results', 'playwright-report']);
 function walk(path) {
   return readdirSync(path, { withFileTypes: true }).flatMap((entry) => {
     if (ignore.has(entry.name)) return [];
@@ -16,6 +17,8 @@ function walk(path) {
 }
 function check(condition, message) { if (!condition) errors.push(message); }
 const files = walk(root);
+const trackedPrivate = execFileSync('git', ['ls-files', '--', '.openlab', '.cache', 'test-results', 'playwright-report'], { encoding: 'utf8', windowsHide: true }).trim();
+check(!trackedPrivate, 'Local application data, caches and test output must not be committed');
 const required = ['LICENSE', 'NOTICE', 'VERSION', 'README.md', 'README.zh-CN.md', 'CONTRIBUTING.md', 'CONTRIBUTING.zh-CN.md', 'CODE_OF_CONDUCT.md', 'SECURITY.md', 'SUPPORT.md', 'CONTRIBUTORS.md', 'THIRD_PARTY_NOTICES.md', 'CHANGELOG.md', '.github/CODEOWNERS', 'docs/vision.zh-CN.md', 'docs/product.md', 'docs/architecture.md', 'docs/logging.md', 'docs/verification.md'];
 required.forEach((file) => check(existsSync(file), `Missing required file: ${file}`));
 

@@ -18,6 +18,6 @@ Each iteration uses a short-lived branch, local checks, a PR, passing required C
 | --- | --- |
 | Design baseline | PR #6 merged; Windows/Linux required CI passed |
 | Platform and Harness | PR #7 merged; 28 tests, type checking, Gitleaks and Windows/Linux CI passed; live DeepSeek streaming/tool calls passed |
-| Services and adapters | Implemented local API, settings, Crossref retrieval, skill installation and AG-UI projection; 38 tests passed on native Windows; two live metadata research/export/import tasks passed; PR checks pending |
-| Research workspace | Pending |
+| Services and adapters | PR #8 merged; 38 native Windows tests and required Windows/Linux CI passed; two live metadata research/export/import tasks passed |
+| Research workspace | Implemented React/assistant-ui and official AG-UI adapter, project/history navigation, decisions, reports, sources, attachments and bilingual settings; 42 unit/integration tests and two desktop/mobile browser scenarios passed; exercised axe A/AA checks report no violations; a real browser/DeepSeek/Crossref loop passed; PR checks pending |
 | Application acceptance | Pending |

@@ -1,6 +1,6 @@
 # Application development
 
-The v0.0.1 release remains foundation-only. Current source includes a platform archive, generic Harness, supervised worker and local research API. There is no browser workspace build or installer yet. Follow the [implementation plan](implementation-plan.md) for remaining gates.
+The v0.0.1 release remains foundation-only. Current source includes the React/assistant-ui research workspace, platform archive, generic Harness, supervised worker and local research API. There is no installer yet. Follow the [implementation plan](implementation-plan.md) for remaining gates.
 
 ## Run checks
 
@@ -9,9 +9,13 @@ Use Node.js 24 and the committed npm lockfile:
 ```sh
 npm ci
 npm run check
+npm run build
+npm run test:browser
 ```
 
 The check includes strict TypeScript validation, documentation validation and Node's test runner. Tests use temporary directories, controlled model responses and a substitute runtime; they require no provider credential or network service. Native Windows tests cover Unicode/space-containing paths and a separately spawned worker. GitHub CI runs the same checks on Windows and Linux.
+
+Browser acceptance uses an installed Chrome through Playwright. Set `OPENLAB_BROWSER_CHANNEL` to another installed Chromium channel if necessary. The synthetic server uses a separate temporary data root and no provider credential. Tests cover desktop and 390-pixel drawers, plan confirmation, structured questions, denied access, report revisions, source/step links, conversation replay, cancellation, UTF-8 attachments and English/Chinese interaction. Axe checks the exercised screens for WCAG A/AA issues; this is automated evidence, not a complete accessibility certification.
 
 ## Implemented core
 
@@ -28,11 +32,13 @@ SQLite schema version 1 is the first development schema; no migration from a shi
 
 `npm run test:live-model` uses `OPENLAB_SMOKE_API_KEY` to test DeepSeek Flash Chinese text streaming and a structured tool call. Run it explicitly; ordinary tests and CI do not use network credentials. The script prints only test results, public endpoint/model information and usage. It writes the same sanitized record to the ignored `.cache/live-model-smoke.json`.
 
-On Windows, keep credentials encrypted with user-scoped Windows protection and pass the decrypted value only in the launching process environment. Do not put credentials in commands committed to the repository, project metadata, exports or test fixtures. The application credential/settings interface remains a later implementation item.
+On Windows, keep credentials encrypted with user-scoped Windows protection and pass the decrypted value only in the launching process environment. Do not put credentials in commands committed to the repository, project metadata, exports or test fixtures. The settings UI supplies protected provider creation, removal and capability checks. The Windows helper loads the system PowerShell module path explicitly, independently of a PowerShell Core host. The current DeepSeek configuration uses non-thinking mode; replay of private reasoning state is not implemented.
 
 ## Local research API
 
 `npm start` starts the service on an available loopback port and prints a per-launch browser link. `OPENLAB_DATA_DIR` selects the local data/configuration root (default `.openlab`); `OPENLAB_PORT` selects a fixed port when needed. Projects are under the root's `projects` directory; protected provider settings and inert skill installations remain outside exported projects. Stop with Ctrl+C to cancel active workers before closing storage.
+
+Build the browser bundle first with `npm run build`. A data-root ownership file prevents two control planes from modifying the same archive concurrently. A stale owner is reclaimed only after its process is absent. Saved records remain available after restart without executing previous decisions or model calls.
 
 The launch link's fragment is exchanged for an HttpOnly, SameSite session cookie. API mutations require the matching origin and current `x-openlab-csrf` token. Host and origin checks reject remote origins. The bootstrap/session tokens rotate on every start. The service has no externally accessible listener or hosted account. The initial API is described in [OpenAPI JSON](openapi.json), also served at authenticated `/api/v1/openapi`.
 
@@ -46,6 +52,10 @@ Install a public Git skill repository by exact 40-character commit through `/api
 
 The AG-UI endpoint attaches to an already created run. It validates the route's run/thread identities and ignores client-supplied tools/state for execution purposes. SSE replay is read-only. Domain event cursors use canonical sequence numbers; AG-UI cursors use `sequence:projection-index` so reconnecting during a projected multi-event record does not lose its remaining events. Stream closure never starts, retries or cancels work.
 
+The official assistant-ui adapter receives a platform-bound `HttpAgent`; its transport can only attach to the selected existing run. Remounting the conversation replays a fresh view rather than duplicating model work. Its local subscription abort is not a platform cancel. Decisions and explicit cancellation use separate platform commands. Sources and exact artifact revisions stay outside the UI library. Report Markdown ignores active HTML and external image embedding.
+
+Attachments are copied, hashed and exported with the project. Preview UTF-8 text/Markdown and PNG/JPEG, while other formats remain inert downloads. A run snapshots the selected material identities; saved attachment bytes are checked again before use. The current upload limit is 10 MB per material and the JSON import request limit is 32 MB. The model receives bounded text excerpts; images are preview/download material in this version, not vision model input. Public source content and model interpretations retain separate evidence labels.
+
 ## Remaining application gates
 
-The React/assistant-ui workspace, attachments, a second scholarly provider and full application acceptance remain pending. Browser compatibility and successful public full-text access have not been established. Fixture tests and the live metadata probes do not establish completion of those gates. See [verification](verification.md) for recorded outcomes.
+A second scholarly provider, successful public full-text access on this machine and final release acceptance remain pending. Current native Chrome evidence and live metadata tasks do not establish compatibility with every browser, model or scholarly provider. See [verification](verification.md) for recorded outcomes.

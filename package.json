@@ -6,7 +6,8 @@
   "description": "Repository governance and documentation tooling for OpenLab",
   "license": "Apache-2.0",
   "overrides": {
-    "katex": "0.18.2"
+    "katex": "0.18.2",
+    "zod": "4.6.7"
   },
   "engines": {
     "node": ">=24 <25"
@@ -14,7 +15,9 @@
   "scripts": {
     "brand:generate": "node scripts/generate-brand.mjs",
     "check": "npm run lint:markdown && npm run check:repository && npm run typecheck && npm test",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json",
+    "build": "vite build",
+    "test:browser": "playwright test",
     "lint:markdown": "markdownlint-cli2",
     "check:repository": "node scripts/check-repository.mjs",
     "test": "node --test scripts/tests/*.test.mjs app/tests/*.test.ts",
@@ -28,9 +31,24 @@
     "release:check": "node scripts/release.mjs check"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
     "markdownlint-cli2": "0.24.0",
     "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "dependencies": {
+    "@ag-ui/client": "1.0.3",
+    "@ag-ui/core": "1.0.3",
+    "@assistant-ui/react": "0.15.31",
+    "@assistant-ui/react-ag-ui": "0.1.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "10.1.0",
     "yaml": "2.9.1"
   }
 }
