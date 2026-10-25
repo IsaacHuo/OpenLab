@@ -6,19 +6,28 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ### Added
 
+- Static capability plugins for Markdown/LaTeX editing, recoverable drafts, immutable human revisions, comparison, BusyTeX compilation, PDF.js preview and portable v2 archives with v1 import compatibility.
+- Long-term AI collaboration instructions, roadmap, status handoff and an index of accepted technical decisions, retaining the existing specifications and ADRs.
+- Direct, confirmed metadata-tool execution without a model credential; a static runtime registry; real pinned skill/resource execution evidence and a first-preview acceptance matrix.
+
 - Runnable bilingual React/assistant-ui workspace with official AG-UI adapter, projects/history, human decisions, live report revisions, source/step navigation, protected settings, material previews and keyboard-accessible drawers/divider.
 - Native Chrome desktop/mobile acceptance and axe checks, a real browser DeepSeek/Crossref metadata research/export record, and native Windows credential module isolation checks.
 - Authenticated loopback research API and OpenAPI definition, protected provider settings/capability tests, pinned inert skill installation, Crossref metadata/source tools, scoped public-page permissions and persisted AG-UI replay.
-- Economics/English and humanities/Chinese live DeepSeek/Crossref metadata research, report revision and archive round-trip smoke tests; full-text and browser acceptance remain pending.
+- Economics/English and humanities/Chinese live DeepSeek/Crossref metadata research, report revision and archive round-trip smoke tests.
 - Initial TypeScript platform archive, generic single-agent Harness, supervised IPC worker and streaming model adapter, with confirmation, interaction validation, cancellation, restart reconciliation and immutable report archives.
-- Native Windows core tests, strict type checking and an explicit opt-in DeepSeek streaming/tool-call smoke test. Application UI, retrieval and full research acceptance remain pending.
+- Native Windows core tests, strict type checking and an explicit opt-in DeepSeek streaming/tool-call smoke test.
 - Research workspace specification covering conversation, execution state, live artifact revisions, evidence navigation, responsive layouts and application acceptance scenarios.
 - Minimal OpenLab Harness specification and ADR 0002 selecting a self-developed first runtime, AG-UI at the Platform gateway and assistant-ui for conversation.
 
 ### Changed
 
+- Apply the approved neutral workspace design and improve launch recovery, conversation/history navigation, frozen follow-up context, material selection and provider editing.
 - Product, architecture, logging, architecture diagram and bilingual README now describe Platform-owned conversations, steps, human interactions and artifacts independently of runtime, model, tools and UI.
 - OpenCode becomes an optional future adapter; ADR 0001 preserves the historical selection with a supersession notice.
+
+### Fixed
+
+- Preserve the selected report revision when navigating to its producing step, bind creation keys to limits/retry ancestry, reject invalid replay cursor indices, close interrupted AG-UI projections and retain TLS verification during isolated Windows Git installation.
 
 ## [0.0.1] - 2026-10-24
 

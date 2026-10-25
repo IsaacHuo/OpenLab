@@ -77,3 +77,57 @@ test('independent AG-UI consumer and domain cursor replay never create or resume
     assert.equal((await fetch(service.origin + '/api/v1/import', { method: 'POST', headers, body: JSON.stringify(archive) })).status, 201);
   } finally { await service.close(); }
 });
+
+test('cancellation closes an interrupted text/step projection for the official AG-UI client', async () => {
+  const f = fixture(new SubstituteRuntime(async (_run, host, signal) => {
+    await host.emit('step_started', { stepId: 'partial-step', label: 'Partial model call' });
+    await host.emit('message_start', { messageId: 'partial-message' });
+    await host.emit('message_delta', { messageId: 'partial-message', text: 'Saved partial text' });
+    await new Promise<void>((_resolve, reject) => signal.addEventListener('abort', () => reject(new Error('cancelled')), { once: true }));
+  }));
+  const service = await createService({ platform: f.platform, settings: new Settings(join(f.root, 'settings')), skills: new Skills(join(f.root, 'skills')), research: new Research(f.store) });
+  try {
+    const auth = await fetch(service.origin + '/api/v1/session', { method: 'POST', headers: { origin: service.origin, 'x-openlab-bootstrap': new URL(service.launchUrl).hash.slice(7) } });
+    const cookie = auth.headers.get('set-cookie')!.split(';')[0]; const { csrf } = await auth.json() as { csrf: string };
+    const run = f.create();
+    await until(() => f.store.events(run.id), events => events.some(event => event.kind === 'message_delta'));
+    await f.platform.cancel(run.id);
+    const agent = new HttpAgent({ url: `${service.origin}/api/v1/runs/${run.id}/ag-ui`, threadId: run.conversationId, headers: { origin: service.origin, cookie, 'x-openlab-csrf': csrf } });
+    await agent.runAgent({ runId: run.id });
+    assert.ok(agent.messages.some(message => message.role === 'assistant' && message.content === 'Saved partial text'));
+    assert.equal(f.store.get<Run>('run', run.id).state, 'cancelled');
+    assert.equal(f.store.get<Run>('run', run.id).error, undefined);
+  } finally { await service.close(); }
+});
+
+
+test('document APIs require CSRF, preserve idempotent revisions, and paginate without dispatch', async () => {
+  const f = fixture();
+  const service = await createService({ platform: f.platform, settings: new Settings(f.root), skills: new Skills(join(f.root, 'skills')), research: new Research(f.store) });
+  try {
+    const auth = await fetch(service.origin + '/api/v1/session', { method: 'POST', headers: { origin: service.origin, 'x-openlab-bootstrap': new URL(service.launchUrl).hash.slice(7) } });
+    const { csrf } = await auth.json() as { csrf: string };
+    const headers = { origin: service.origin, cookie: auth.headers.get('set-cookie')!.split(';')[0], 'content-type': 'application/json', 'x-openlab-csrf': csrf };
+    const call = (path: string, method = 'GET', input?: ObjectData) => fetch(service.origin + '/api/v1' + path, { headers, method, ...(input ? { body: JSON.stringify(input) } : {}) });
+    const path = `/conversations/${f.conversationId}/documents`;
+    const input = { name: 'Document', formatId: 'markdown', mainPath: 'report.md', content: '# Original', requestKey: 'create-once' };
+    assert.equal((await fetch(service.origin + '/api/v1' + path, { method: 'POST', headers: { ...headers, 'x-openlab-csrf': 'bad' }, body: JSON.stringify(input) })).status, 403);
+    const first = await (await call(path, 'POST', input)).json() as ObjectData;
+    const again = await (await call(path, 'POST', input)).json() as ObjectData;
+    assert.equal((first.revision as ObjectData).id, (again.revision as ObjectData).id);
+    const revision = first.revision as ObjectData;
+    const edit = { content: '# Edited', baseRevisionId: revision.id, expectedLatestRevisionId: revision.id, requestKey: 'edit-once' };
+    const saved = await call(`/artifacts/${String(revision.artifactId)}/revisions`, 'POST', edit);
+    assert.equal(saved.status, 201);
+    assert.equal((await call(`/artifacts/${String(revision.artifactId)}/revisions`, 'POST', { ...edit, requestKey: 'stale' })).status, 409);
+    assert.equal(f.store.list('run').length, 0);
+    for (let index = 0; index < 3; index++) { const run = f.create('history ' + index, 'history-' + index); await f.platform.tasks.get(run.id); }
+    const page = await (await call(`/conversations/${f.conversationId}?limit=2`)).json() as ObjectData;
+    assert.equal((page.runs as ObjectData[]).length, 2); assert.equal(page.hasMore, true);
+    const previous = await (await call(`/conversations/${f.conversationId}?limit=2&before=${String(page.nextCursor)}`)).json() as ObjectData;
+    assert.equal((previous.runs as ObjectData[]).length, 1); assert.equal(previous.hasMore, false);
+    assert.equal((await (await call(`/conversations/${f.conversationId}`)).json() as ObjectData).hasMore, false);
+    assert.equal((await call(`/conversations/${f.conversationId}?limit=2&before=not-owned`)).status, 400);
+    assert.equal(f.store.list('run').length, 3);
+  } finally { await service.close(); }
+});

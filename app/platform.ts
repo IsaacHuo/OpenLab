@@ -3,6 +3,7 @@ import { EventEmitter } from 'node:events';
 import { DomainError, terminal, text } from './contracts.ts';
 import type { Decision, HarnessHost, Interaction, Json, Limits, ObjectData, Run, RunState, RuntimeAdapter } from './contracts.ts';
 import { Store } from './store.ts';
+import { freezeContext } from './context.ts';
 
 const defaultLimits: Limits = { turns: 12, durationMs: 600_000, callMs: 90_000, tokens: 60_000 };
 const states = new Map<Interaction['kind'], RunState>([['confirmation', 'awaiting_confirmation'], ['question', 'awaiting_input'], ['permission', 'awaiting_permission']]);
@@ -52,7 +53,16 @@ export class Platform {
     this.store.put('conversation', conversation.id, projectId, conversation);
     return conversation;
   }
-  createRun(conversationId: string, input: { question: string; requestKey: string; config: ObjectData; limits?: Partial<Limits>; parentRunId?: string }): Run {
+  renameConversation(conversationId: string, changes: ObjectData): ObjectData {
+    if (Object.keys(changes).some(key => key !== 'name')) throw new DomainError('Only the conversation name can be changed');
+    const conversation = this.store.get('conversation', conversationId);
+    if (this.store.get('project', String(conversation.projectId)).archived) throw new DomainError('Reopen the project first', 409);
+    conversation.name = text(changes.name, 'conversation name', 200).trim();
+    conversation.nameSource = 'manual';
+    this.store.put('conversation', conversationId, String(conversation.projectId), conversation);
+    return conversation;
+  }
+  createRun(conversationId: string, input: { question: string; requestKey: string; config: ObjectData; limits?: Partial<Limits>; parentRunId?: string; contextRevisionId?: string | null }): Run {
     if (this.closed) throw new DomainError('Platform is shutting down', 503);
     const conversation = this.store.get('conversation', conversationId);
     const projectId = String(conversation.projectId);
@@ -61,7 +71,7 @@ export class Platform {
     const configKeys = new Set(['providerId', 'model', 'skillId', 'skillRevision', 'skillPath', 'runtimeId', 'retrievalId', 'language', 'materialIds']);
     for (const [key, value] of Object.entries(input.config)) {
       if (key === 'materialIds') {
-        if (!Array.isArray(value) || value.length > 50 || value.some(item => typeof item !== 'string' || this.store.get('material', item).projectId !== projectId)) throw new DomainError('Invalid selected materials');
+        if (!Array.isArray(value) || value.length > 50 || new Set(value).size !== value.length || value.some(item => typeof item !== 'string' || this.store.get('material', item).projectId !== projectId)) throw new DomainError('Invalid selected materials');
         continue;
       }
       if (!configKeys.has(key) || typeof value !== 'string' || value.length > 500) throw new DomainError('Run configuration accepts public selection identifiers only');
@@ -69,7 +79,7 @@ export class Platform {
     const runs = this.store.list<Run>('run', projectId).filter(r => r.conversationId === conversationId);
     const previous = runs.find(r => r.requestKey === input.requestKey);
     if (previous) {
-      if (previous.question !== input.question || JSON.stringify(previous.config) !== JSON.stringify(input.config)) throw new DomainError('Request key already used for different input', 409);
+      if (previous.question !== input.question || JSON.stringify(previous.config) !== JSON.stringify(input.config) || JSON.stringify(previous.limits) !== JSON.stringify({ ...defaultLimits, ...input.limits }) || previous.parentRunId !== input.parentRunId || previous.context?.requestedRevisionId !== input.contextRevisionId) throw new DomainError('Request key already used for different input', 409);
       return previous;
     }
     if (runs.some(r => !terminal.has(r.state))) throw new DomainError('Conversation already has an active run', 409);
@@ -78,6 +88,7 @@ export class Platform {
     if (Object.keys(limits).some(key => !(key in defaultLimits))) throw new DomainError('Unsupported run limit');
     for (const [key, value] of Object.entries(limits)) if (!Number.isSafeInteger(value) || value < 1 || value > defaultLimits[key as keyof Limits]) throw new DomainError(`Invalid ${key} limit`);
     const run: Run = { id: randomUUID(), projectId, conversationId, requestKey: input.requestKey, question: input.question, config: input.config, limits, state: 'queued', phase: 'planning', decisions: {}, createdAt: new Date().toISOString(), ...(input.parentRunId ? { parentRunId: input.parentRunId } : {}) };
+    run.context = freezeContext(this.store, projectId, conversationId, input.contextRevisionId);
     this.store.transaction(() => {
       this.store.saveRun(run);
       const messageId = randomUUID();

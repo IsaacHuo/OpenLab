@@ -49,7 +49,7 @@ test('archives reject traversal, future schemas, duplicate identifiers and execu
     assert.throws(() => f.store.file(f.projectId, 'artifacts', randomUUID(), '../escape'), /filename/);
     assert.throws(() => f.store.file('../escape', 'artifacts', randomUUID(), 'file'), /identifier/);
     const archive = f.store.export(f.projectId);
-    assert.throws(() => f.store.import({ ...archive, schemaVersion: 2 }), /Unsupported/);
+    assert.throws(() => f.store.import({ ...archive, schemaVersion: 3 }), /Unsupported/);
     const duplicate = structuredClone(archive);
     (duplicate.records as unknown[]).push((duplicate.records as unknown[])[0]);
     assert.throws(() => f.store.import(duplicate), /ownership|Duplicate/);

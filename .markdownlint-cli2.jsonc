@@ -1,6 +1,6 @@
 {
   "globs": ["**/*.md"],
-  "ignores": ["node_modules/**", ".cache/**", ".openlab/**", "dist/**", "test-results/**", "playwright-report/**", "docs/vision.zh-CN.md"],
+  "ignores": ["node_modules/**", ".agents/**", ".cache/**", ".openlab/**", "dist/**", "test-results/**", "playwright-report/**", "docs/vision.zh-CN.md"],
   "config": {
     "default": true,
     "MD013": false,

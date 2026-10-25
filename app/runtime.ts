@@ -3,7 +3,7 @@ import { DomainError, object, text } from './contracts.ts';
 import type { HarnessHost, Interaction, Json, ObjectData, Run, RuntimeAdapter, ToolCall, ToolDefinition } from './contracts.ts';
 import type { ProviderConfig } from './model.ts';
 
-export interface WorkerConfiguration { provider: ProviderConfig; definitions: ToolDefinition[]; instructions: string }
+export interface WorkerConfiguration { provider: ProviderConfig; definitions: ToolDefinition[]; instructions: string; history?: import('./contracts.ts').Message[] }
 export class WorkerRuntime implements RuntimeAdapter {
   configurations: (run: Run) => Promise<WorkerConfiguration>;
   executeTool: (run: Run, call: ToolCall, host: HarnessHost, signal: AbortSignal) => Promise<Json>;

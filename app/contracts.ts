@@ -4,12 +4,17 @@ export type RunState = 'queued' | 'running' | 'awaiting_confirmation' | 'awaitin
 export const terminal = new Set<RunState>(['succeeded', 'failed', 'cancelled', 'interrupted']);
 export interface ResearchEvent { runId: string; seq: number; at: string; kind: string; data: ObjectData }
 export interface Limits { turns: number; durationMs: number; callMs: number; tokens: number }
+export interface ResearchContext {
+  runIds: string[]; messageIds: string[]; revisionId?: string; requestedRevisionId?: string | null;
+  historyTruncated: boolean; reportTruncated: boolean;
+}
 export interface Run {
   id: string; projectId: string; conversationId: string; requestKey: string; question: string;
   state: RunState; phase: string; createdAt: string; config: ObjectData; limits: Limits;
   plan?: { version: number; text: string; tools: string[]; confirmed: boolean };
   interaction?: Interaction; decisions: Record<string, Decision>; parentRunId?: string;
   error?: string;
+  context?: ResearchContext;
 }
 export interface Interaction {
   id: string; version: number; kind: 'confirmation' | 'question' | 'permission'; prompt: string;

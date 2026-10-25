@@ -16,6 +16,7 @@ test('plan confirmation gates work and creation keys do not dispatch twice', asy
     const run = f.create();
     assert.equal(f.create().id, run.id);
     assert.throws(() => f.create('Different question'), /different input/);
+    assert.throws(() => f.platform.createRun(f.conversationId, { question: run.question, requestKey: run.requestKey, config: run.config, limits: { turns: 1 } }), /different input/);
     const waiting = await until(() => f.store.get<Run>('run', run.id), r => r.state === 'awaiting_confirmation');
     assert.equal(work, 0);
     assert.throws(() => f.platform.confirm(run.id, 99), /current plan/);

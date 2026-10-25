@@ -49,6 +49,8 @@ test('generic skill fixtures preserve original bytes, pinned metadata and inert 
       for (const file of files) assert.deepEqual(readFileSync(join(skills.root, entry.id, 'upstream', file.path)), file.bytes);
       writeFileSync(join(skills.root, entry.id, 'upstream', files[0].path), 'tampered');
       assert.throws(() => skills.load(entry.id), /checksum/);
+      skills.remove(entry.id);
+      assert.throws(() => skills.get(entry.id), /not found/);
     }
   } finally { await f.cleanup(); }
 });

@@ -19,7 +19,7 @@ function rpc(action: string, data: ObjectData, signal = abort.signal): Promise<J
   });
 }
 process.on('disconnect', () => process.exit(1));
-process.on('message', async (message: { type: string; requestId?: string; value?: Json; error?: string; run: Run; provider: ProviderConfig; definitions: ToolDefinition[]; instructions: string }) => {
+process.on('message', async (message: { type: string; requestId?: string; value?: Json; error?: string; run: Run; provider: ProviderConfig; definitions: ToolDefinition[]; instructions: string; history?: import('./contracts.ts').Message[] }) => {
   if (message.type === 'response') {
     const item = pending.get(message.requestId!);
     pending.delete(message.requestId!);
@@ -31,7 +31,7 @@ process.on('message', async (message: { type: string; requestId?: string; value?
     pending.clear();
   } else if (message.type === 'start') {
     try {
-      await executeHarness({ question: message.run.question, instructions: message.instructions, model: new CompatibleModel(message.provider), limits: message.run.limits, signal: abort.signal,
+      await executeHarness({ question: message.run.question, instructions: message.instructions, history: message.history, model: new CompatibleModel(message.provider), limits: message.run.limits, signal: abort.signal,
         host: { emit: async (kind, data) => { await rpc('emit', { kind, data }); }, wait: (interaction, signal) => rpc('wait', interaction as unknown as ObjectData, signal) },
         tools: { definitions: message.definitions, execute: (call, signal) => rpc('tool', call as unknown as ObjectData, signal) },
       });
