@@ -5,6 +5,16 @@ import { createHash } from 'node:crypto';
 import { deflateSync } from 'node:zlib';
 import type { Page } from '@playwright/test';
 
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status === testInfo.expectedStatus) return;
+  const resources = await page.evaluate(async () => {
+    const response = await fetch('/api/v1/plugins/openlab.busytex/resources');
+    return { status: response.status, body: await response.json() };
+  }).catch(error => ({ error: String(error) }));
+  const build = await page.locator('.document-build').allTextContents().catch(() => []);
+  await testInfo.attach('compiler-diagnostics', { body: JSON.stringify({ resources, build }, null, 2), contentType: 'application/json' });
+});
+
 async function document(page: Page, name: string) {
   await page.goto(JSON.parse(readFileSync('.cache/browser-launch.json', 'utf8')).launchUrl);
   await page.getByRole('button', { name: '新建项目', exact: false }).click();
@@ -124,6 +134,27 @@ test('compiler cancellation and deadline terminate a controlled stalled worker w
   await page.getByText('编译日志', { exact: true }).click();
   await expect(page.locator('.document-build pre')).toContainText('120 seconds');
   await expect(page.locator('.user-message')).toHaveCount(0);
+});
+
+test('switching documents never requests a comparison revision from the previous document', async ({ page }) => {
+  const firstCreated = page.waitForResponse(response => response.request().method() === 'POST' && response.url().endsWith('/documents'));
+  await document(page, '文档修订范围受控测试');
+  const first = await (await firstCreated).json();
+  await page.getByRole('button', { name: '编辑', exact: true }).click();
+  await page.getByRole('textbox', { name: '文档编辑器', exact: true }).fill('First document revision');
+  await page.getByRole('dialog').getByRole('button', { name: '保存修订', exact: true }).click();
+  await expect(page.locator('.document-reading')).toContainText('First document revision');
+  const foreignRequests: string[] = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.endsWith(`/revisions/${first.revision.id}`) && !path.includes(`/artifacts/${first.artifact.id}/`)) foreignRequests.push(path);
+  });
+  await page.getByRole('button', { name: '新建文档', exact: true }).click();
+  await page.getByRole('button', { name: 'LaTeX', exact: true }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: '下载源文件', exact: true })).toBeEnabled();
+  expect(foreignRequests).toEqual([]);
+  await expect(page.getByRole('alert')).toHaveCount(0);
 });
 
 test('a crashing view plugin falls back without losing download or conversation controls', async ({ page }) => {

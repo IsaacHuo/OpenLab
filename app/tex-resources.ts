@@ -44,7 +44,7 @@ export class TexResources {
                   const bytes: Buffer[] = []; let length = 0;
                   child.stdout.on('data', (value: Buffer) => { length += value.length; if (length > end - start + 1) child.kill(); else bytes.push(value); }); child.stderr.resume();
                   child.on('error', () => reject(new Error('Compiler downloads require curl on this host')));
-                  child.on('close', code => { this.children.delete(child); return code === 0 && length === end - start + 1 ? resolve(Buffer.concat(bytes)) : reject(new Error('Incomplete component download; retry to resume cached parts')); });
+                  child.on('close', code => { this.children.delete(child); return code === 0 && length === end - start + 1 ? resolve(Buffer.concat(bytes)) : reject(new Error(`Incomplete component download: ${name} bytes ${start}-${end}, curl exit ${code}, received ${length} of ${end - start + 1}; retry to resume cached parts`)); });
                 });
                 writeFileSync(part, chunks[index]);
               }

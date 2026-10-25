@@ -51,7 +51,8 @@ export function DocumentPanel({ artifacts, revisions, revisionId, catalog, conve
     void api<ObjectData[]>(`/artifacts/${artifactId}/builds`).then(value => { if (!stopped) setBuilds(value); }).catch(() => {});
     return () => { stopped = true; };
   }, [artifactId, revisionId]);
-  useEffect(() => { if (!compareId || !artifactId) { setBefore(''); return; } let stopped = false; void load(compareId).then(value => { if (!stopped) setBefore(value.content); }).catch(failure => { if (!stopped) setError(failure.message); }); return () => { stopped = true; }; }, [compareId, artifactId]);
+  const comparisonRevisionId = revisions.find(record => record.id === compareId && record.artifactId === artifactId)?.id;
+  useEffect(() => { if (!comparisonRevisionId || !artifactId) { setBefore(''); return; } let stopped = false; void load(String(comparisonRevisionId)).then(value => { if (!stopped) setBefore(value.content); }).catch(failure => { if (!stopped) setError(failure.message); }); return () => { stopped = true; }; }, [comparisonRevisionId, artifactId]);
   useEffect(() => () => { abort.current?.abort(); }, [artifactId]);
   const persistDraft = async () => {
     const input = { name: documentName || t('Untitled document', '未命名文档'), content, files: resourceInput(), baseRevisionId: baseId, expectedLatestRevisionId: expectedLatest };

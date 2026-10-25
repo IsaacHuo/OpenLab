@@ -40,6 +40,16 @@ The planning research inspected these popular projects on 2026-10-25. Star count
 
 ## Local delivery preflight, 2026-10-25
 
+### ENG-03 reproduction and local repair
+
+On Windows x64, Node.js 24.19.0 and npm 11.17.0, the initial rerun passed real XeLaTeX with the existing cache but failed plugin fault containment because an unrelated `Artifact revision not found` alert appeared. A new document-switching regression failed against the original code: the browser requested the previous document's comparison revision through the new artifact's route. The document panel now checks revision ownership before loading comparison bytes. The same regression and the full browser suite then passed: 13 scenarios, including real Chinese/BibTeX/PDF compilation, cached offline pdfLaTeX, controlled cancellation/deadline, plugin faults and responsive/axe checks. Desktop, tablet and phone document screenshots were inspected.
+
+`npm run check` passed all 57 Node tests, Markdown/repository validation and type checking; `npm run build`, actionlint 1.7.12 and Gitleaks 8.30.1 passed. The existing large-chunk advisory remains. Compiler download errors now identify the asset, byte range, curl exit and actual/expected length without exposing credentials. No model provider was called.
+
+A separate empty compiler cache was created under ignored `.cache/eng03-cold/`, leaving the working cache and user data untouched. Preparation failed after approximately 33 MB; explicit retries reused cached ranges, but further downloads also failed. This demonstrates a local cold-preparation failure, not the precise cause of the earlier Linux timeout. New CI separates `plugins:prepare` from the browser completion wait and fails visibly at preparation if it cannot reach `ready`. Failed document scenarios attach compiler resource state and build text; CI uploads `test-results/` for seven days. The Worker deadline remains 120 seconds. Remote verification of the repair is pending.
+
+### ENG-01 preflight (historical)
+
 Before submitting the existing research/document workspace changes, native Windows x64 with Node.js 24.19.0 and npm 11.17.0 passed `npm run check` (57 tests, no failures or skips), `npm run build`, all 12 `npm run test:browser` scenarios, actionlint 1.7.12 and Gitleaks 8.30.1. The build still reports existing chunks over 500 kB. These ENG-01 local preflight results cover the implementation submitted as `22d6db524c08abfd4976bded081cf415b25919c1`; `1574645b8b8bc4da9b7559d7794540e75775724c` subsequently updated only STATUS. The failed PR browser CI is recorded separately above.
 
 The real compiler test reused the pinned BusyTeX cache and passed Chinese text, math, a managed chapter, PNG, BibTeX, PDF text checks, failure preservation and the cached offline pdfLaTeX case. Controlled stalled Workers supply cancellation/deadline evidence. Fresh desktop and mobile document screenshots were inspected; generated screenshots and PDFs remain ignored. This run did not re-test cold-cache downloads or call a live model provider. Local installed Skills, hooks and unselected design drafts remain outside the source delivery.
