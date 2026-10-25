@@ -32,6 +32,7 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 - Keep comparison revision reads within the selected document; prepare pinned TeX components before browser CI and retain failed compiler diagnostics, screenshots and traces.
 - Download the unchanged, hash-pinned Fandol font from a fixed CTAN mirror after candidate CI exposed a certificate failure through the rotating mirror endpoint; retain TLS verification.
+- Merge concurrently completed material uploads into the latest conversation selection, preserving every selected file through refresh and run creation.
 - Align development and acceptance documentation with implemented plugin capabilities, request limits and independent archive/database versions; retain the initial XeLaTeX CI failure separately from the subsequent passing checks.
 - Preserve the selected report revision when navigating to its producing step, bind creation keys to limits/retry ancestry, reject invalid replay cursor indices, close interrupted AG-UI projections and retain TLS verification during isolated Windows Git installation.
 

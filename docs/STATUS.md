@@ -19,7 +19,7 @@
 | ENG-02 | 已完成 | 文档能力、限制、版本和历史证据对齐；三项文档检查通过 |
 | ENG-03 | 已完成 | 本地 57 项 Node、13 项浏览器、构建和检查通过；精确 PR CI 全通过后合并 |
 | ENG-04 | 已完成 | 30 项边界测试通过，验收映射和大写 PLAN 入口在 PR #12 通过 CI 后合并 |
-| ENG-05 | 进行中 | 本地完整候选检查通过；PR #13 首次 CI 在 Fandol 字体分片证书验证处失败，已固定镜像并验证既有哈希，待新 head CI |
+| ENG-05 | 进行中 | 固定字体镜像已通过远程准备和真实编译；随后 CI 暴露并发材料选择覆盖，确定性回归先失败后通过，正在复验候选 |
 | ENG-06 | 待开始 | 已授权按门槛发布；依赖 ENG-05、release dry-run 与精确 main push CI |
 
 ## 本轮实际验证
@@ -31,6 +31,7 @@
 - 本阶段 `npm.cmd run lint:markdown`（36 份）、`npm.cmd run check:repository`（159 个文件）及 `git diff --check` 通过，大写路径和链接已核对；详细阶段证据见 [verification](verification.md)，alpha 门槛映射见 [acceptance](acceptance.md#alpha-data-and-permission-gates-eng-04-2026-10-25)。
 - ENG-05 候选：`npm run check`（57 项）、build、browser（13 项）、actionlint、Gitleaks、npm audit（零漏洞）和空白检查通过；版本/OpenAPI 一致、依赖图未变及 154 个源码路径的排除检查通过。尚未发布；精确候选和 main CI 不用历史结果替代。
 - PR #13 首次 CI `40171037488`：仓库、actionlint、Gitleaks 通过；准备字体的一个分片 curl 60，浏览器未启动。改用固定 MIT CTAN 镜像，Node HTTPS 实取的 4,947,904 字节与既有 SHA-256 完全一致；TLS 验证保持开启。修复后 check（57 项）、actionlint、空白检查再次通过，等待新远程验证。
+- 后续 CI `40171390131`：固定字体准备和真实 TeX 通过，材料选择场景失败，整体 12/13。受控并发上传回归复现旧状态覆盖；修复为基于最新选择合并，针对场景、类型检查、构建及完整 13 项浏览器再次通过；等待新 head CI。
 
 ## 限制与下一动作
 

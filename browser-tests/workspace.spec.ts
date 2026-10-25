@@ -240,13 +240,27 @@ test('project search, conversation rename, continuous history and refresh persis
 
 test('material selections stay frozen and provider editing shows local failures', async ({ page }) => {
   await launch(page); await project(page, '材料与设置');
+  let uploaded = 0;
+  let releaseUploads!: () => void;
+  const uploadsComplete = new Promise<void>(resolve => { releaseUploads = resolve; });
+  await page.route('**/projects/*/materials', async route => {
+    if (route.request().method() !== 'POST') { await route.continue(); return; }
+    const response = await route.fetch();
+    if (++uploaded === 2) releaseUploads();
+    await uploadsComplete;
+    await route.fulfill({ response });
+  });
   for (const name of ['selected.txt', 'excluded.txt']) await page.locator('input[type=file]').first().setInputFiles({ name, mimeType: 'text/plain', buffer: Buffer.from(name + ' evidence') });
   await page.getByRole('button', { name: '研究成果', exact: true }).click();
   await page.getByRole('tab', { name: '附件', exact: false }).click();
+  await expect(page.getByRole('checkbox', { name: '用于本次研究 selected.txt' })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: '用于本次研究 excluded.txt' })).toBeChecked();
+  await page.unroute('**/projects/*/materials');
   await page.getByRole('checkbox', { name: '用于本次研究 excluded.txt' }).uncheck();
   await page.reload();
   await page.getByRole('tab', { name: '附件', exact: false }).click();
   await expect(page.getByRole('checkbox', { name: '用于本次研究 excluded.txt' })).not.toBeChecked();
+  await expect(page.getByRole('checkbox', { name: '用于本次研究 selected.txt' })).toBeChecked();
   const request = page.waitForRequest(request => request.url().endsWith('/runs') && request.method() === 'POST');
   await page.getByLabel('研究问题', { exact: true }).fill('Materials review');
   await page.getByRole('button', { name: '生成计划', exact: true }).click();
