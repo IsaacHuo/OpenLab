@@ -76,6 +76,7 @@ The planned workspace combines project navigation, conversation with execution s
 
 | Document | Purpose |
 | --- | --- |
+| [Development execution plan](PLAN.md) | Current phase, ordered tasks, acceptance exits and retained implementation history |
 | [Original vision, Chinese](docs/vision.zh-CN.md) | Founding product vision, preserved as supplied |
 | [Product specification](docs/product.md) | Users, first milestone, behavior, and acceptance criteria |
 | [Architecture and contracts](docs/architecture.md) | Components, research objects, and runtime interface |

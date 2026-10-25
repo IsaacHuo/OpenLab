@@ -1,4 +1,34 @@
-# OpenLab 当前产品完善计划
+# OpenLab 开发执行计划
+
+更新时间：2026-10-25（Asia/Shanghai）。本文件是用户指定的计划入口，文件名固定为大写 `PLAN.md`。本次按 [ROADMAP](docs/ROADMAP.md) 的 ENG-00 至 ENG-06 顺序执行；当前事实和实际检查结果见 [STATUS](docs/STATUS.md)，详细证据见 [verification](docs/verification.md)。下方保留前两轮历史台账，不把历史限制误当成本轮授权。
+
+## 当前阶段：ENG-04 数据与权限验收
+
+- 前置：ENG-03 已通过本地构建、57 项 Node 测试和 13 项浏览器；[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 的 Windows/Linux/browser、actionlint、Gitleaks、required-checks 全通过，已合并至 main `c9a96f3`。
+- 范围：将 alpha 数据和权限门槛逐项映射到现有实现及测试，不改变已确认的架构。
+- 完成条件：新轮确认、权限拒绝、只读重放、取消/重启、凭据隔离、人工修订、档案 v1/v2 和跨项目引用各有通过证据；预览限制明确记录。
+- 精确验证：`node --test app/tests/platform.test.ts app/tests/runtime.test.ts app/tests/service.test.ts app/tests/store.test.ts app/tests/documents.test.ts app/tests/context.test.ts app/tests/workflow.test.ts`；本轮已运行 30 项，全部通过。
+- 交付：更新验收表、STATUS 和本文件，通过本地文档检查及精确 PR CI 后合并。
+
+## 阶段清单
+
+| 阶段 | 状态 | 验收出口与交付 |
+| --- | --- | --- |
+| ENG-00 协作入口 | 已完成 | AGENTS、路线图、状态与决策可独立读取 |
+| ENG-01 收敛既有实现 | 已完成 | 项目源码、设计与许可纳入 PR #11，本地工具和研究数据排除 |
+| ENG-02 文档口径 | 已完成 | 能力、限制、版本及历史证据对齐，文档检查通过 |
+| ENG-03 构建与浏览器 | 已完成 | CI 独立准备 TeX；跨文档对比回归先失败后通过；本地 13 项和远程门槛通过，PR #11 已合并 |
+| ENG-04 数据与权限 | 进行中 | 30 项边界测试通过，验收表与预览限制需提交并通过 PR 门槛 |
+| ENG-05 alpha 候选 | 待 ENG-04 | 统一版本 `0.1.0-alpha.1`、启动说明、许可和发布说明；完整检查、构建、浏览器、actionlint、Gitleaks 及精确候选 CI |
+| ENG-06 源码预发布 | 待 ENG-05 | 精确 main 的 push CI、release dry-run 通过后，按既有工作流创建不可变 tag 和 GitHub prerelease，核对版本/提交/说明一致 |
+
+## 执行约束和完成边界
+
+2026-10-25 用户已授权连续推进上述阶段，逐阶段提交、建立或更新 PR，并在 required-checks 通过及讨论解决后合并，无需逐阶段确认。发布仍须满足 ENG-05/06 门槛；不绕过 CI，不调用付费模型，不读取或发布用户研究数据，不使用子 Agent。
+
+本轮完成对象是 ENG-00 至 ENG-06 的源码预览路线，不将第二检索源、研究全文提取、任意代码执行、动态外部插件、多 Agent、安装包和团队部署等远期候选视为已经实现。候选须另行具备明确需求及验收。
+
+## 历史：产品完善与插件工作台（2026-10-24）
 
 状态：两轮实施完成，2026-10-24。基于当前工作区增量实现，保留已有未提交改动；完成后保留本文件。
 

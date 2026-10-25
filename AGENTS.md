@@ -30,7 +30,7 @@ Match verification to the scope and risk of the change. Prefer an explicitly req
 
 ## Start each task
 
-1. Read [current status](docs/STATUS.md), [roadmap](docs/ROADMAP.md) and [decision index](docs/DECISIONS.md). Follow their links to the specification for the affected behavior.
+1. Read the root [execution plan](PLAN.md), [current status](docs/STATUS.md), [roadmap](docs/ROADMAP.md) and [decision index](docs/DECISIONS.md). Keep the plan filename uppercase. Follow their links to the specification for the affected behavior.
 2. Inspect the branch, HEAD, staged/unstaged changes and relevant untracked files. Existing work is part of the working context, not permission to discard or publish it. Do not automatically stash, reset, clean, stage everything, commit or switch branches to obtain a clean baseline.
 3. Select one bounded task with an ID, dependencies, affected paths, observable completion conditions and exact validation commands. A new conversation should be able to finish and verify it without relying on the previous chat. Split unrelated behaviors; keep necessary API, persistence, UI and test wiring together.
 4. Check existing code and tests before adding an abstraction or dependency. Record a concrete blocker when a missing decision changes scope, compatibility, data safety or authorization; continue independent authorized work.

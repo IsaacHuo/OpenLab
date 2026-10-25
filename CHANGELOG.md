@@ -21,6 +21,7 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ### Changed
 
+- Make uppercase `PLAN.md` the visible execution-plan entry, retain historical ledgers, and map alpha data/permission gates to controlled and native-worker evidence.
 - Apply the approved neutral workspace design and improve launch recovery, conversation/history navigation, frozen follow-up context, material selection and provider editing.
 - Product, architecture, logging, architecture diagram and bilingual README now describe Platform-owned conversations, steps, human interactions and artifacts independently of runtime, model, tools and UI.
 - OpenCode becomes an optional future adapter; ADR 0001 preserves the historical selection with a supersession notice.

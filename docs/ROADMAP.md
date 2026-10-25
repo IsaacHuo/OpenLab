@@ -19,7 +19,8 @@
 | [product](product.md)、[architecture](architecture.md)、[workspace](workspace.md)、[harness](harness.md)、[logging](logging.md) | 产品行为与架构目标；原有历史描述继续保留 |
 | [已确认 UI](../doc/design/README.md) | 视觉、交互、令牌与用户确认的后续修订 |
 | [development](development.md)、[plugins](plugins.md)、[OpenAPI](openapi.json) | 当前实现、操作方法、插件与接口契约 |
-| [implementation-plan](implementation-plan.md)、[plan.md](../plan.md) | 已有迭代计划与两轮已完成执行台账；保留历史，不另抄一份任务状态 |
+| [PLAN.md](../PLAN.md) | 用户指定的根计划入口：当前阶段、阶段清单和验收出口；保留前两轮历史台账 |
+| [implementation-plan](implementation-plan.md) | 第一应用迭代的历史实施与验证索引；当前任务合同在本路线图，实际结果在 STATUS |
 | [acceptance](acceptance.md)、[verification](verification.md) | 验收场景、测试条件、实际证据及局限 |
 | [CONTRIBUTING](../CONTRIBUTING.md)、[maintaining](maintaining.md) | 贡献、CI、GitHub 管理与发布流程 |
 
@@ -62,7 +63,7 @@
 ### ENG-01 盘点并收敛现有改动范围（建议首先执行）
 
 - 依赖：ENG-00。
-- 范围：检查 Git 中已有改动、`plan.md`、设计规格、依赖及新文件；交付结论写入 STATUS。2026-10-25 用户授权将已有项目改动提交并推送，沿用现有 PR/CI 规则，不增加业务功能。
+- 范围：检查 Git 中已有改动、`PLAN.md`、设计规格、依赖及新文件；交付结论写入 STATUS。2026-10-25 用户授权将已有项目改动提交并推送，沿用现有 PR/CI 规则，不增加业务功能。
 - 交付：按已完成行为划分待提交批次，列清依赖和遗漏文件；区分产品源码/测试/许可、已确认设计、本地 `.agents/` 与 `.codex/` 配置、`output/` 未选稿、忽略的数据和缓存。检查 tracked、staged、unstaged、untracked，不使用全量暂存。
 - 完成条件：每类改动都有保留/纳入交付/待确认的处置，源码所引用的新文件不会漏交；按新增授权提交、推送项目文件并提供 PR；保留用户所有既有内容和本地工具。需要用户决定的文件列为后续集成阻塞，不妨碍完成盘点。
 - 验证：`git status --short --branch`、`git diff --stat`、`git diff --cached --stat`、`git ls-files --others --exclude-standard`、`git diff --check`；逐类核对路径和 import/资源引用，STATUS 记录基线 SHA。单纯盘点无需重跑未变化的完整测试。
