@@ -1,12 +1,12 @@
 # OpenLab 长期开发路线图
 
-本文件整理已有项目的后续工作，不重新立项。首次检查日期：2026-10-25；基于分支 `codex/research-acceptance`、HEAD `ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7` 及检查时已有的未提交实现。任务执行状态统一记录在 [STATUS](STATUS.md)。首次规划仅修改协作文档；随后用户已明确授权按仓库规则提交、推送已有项目改动。本次授权不包含合并 main 或发布版本。
+本文件整理已有项目的后续工作，不重新立项。首次检查日期：2026-10-25；当时基于分支 `codex/research-acceptance`、HEAD `ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7` 及已有未提交实现。随后 ENG-01 按用户授权完成项目提交和推送；实现提交为 `22d6db524c08abfd4976bded081cf415b25919c1`，交接提交为 `1574645b8b8bc4da9b7559d7794540e75775724c`，[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 尚未合并。任务执行状态统一记录在 [STATUS](STATUS.md)。ENG-02 仅对齐文档，不自动提交、推送、合并 main 或发布版本。
 
 ## 目标与现有基线
 
 长期目标沿用[原始愿景](vision.zh-CN.md)：让研究项目、证据和成果由用户持有，模型、工具、运行时和界面可以替换。近期目标是把已经可运行的本地研究与文档工作台收敛为可复核、可维护的研究预览，再通过既有发布门槛准备 `v0.1.0-alpha.1`。
 
-当前已有 TypeScript/Node.js 24、React/Vite、SQLite 与普通文件、受监督 Harness、Crossref、计划确认、来源追溯、导入导出；未提交实现还包含连续研究上下文、静态插件、Markdown/LaTeX 编辑、修订比较、BusyTeX 与 PDF.js。详细进度和验证边界见 [STATUS](STATUS.md)，不把这些能力重新列为待开发。
+当前源码已有 TypeScript/Node.js 24、React/Vite、SQLite 与普通文件、受监督 Harness、Crossref、计划确认、来源追溯、导入导出，以及连续研究上下文、静态插件、Markdown/LaTeX 编辑、修订比较、BusyTeX 与 PDF.js；后两轮实现已纳入 PR #11。详细进度和验证边界见 [STATUS](STATUS.md)，不把这些能力重新列为待开发。2026-10-25 检查发现该 PR 浏览器 CI 为 11 项通过、1 项失败；本地 57/12 的历史结果不代表合并门槛通过。
 
 ## 文档分工
 
@@ -71,16 +71,16 @@
 
 - 依赖：ENG-01 的改动分类与实现清单。
 - 范围：`docs/development.md`、`acceptance.md`、`verification.md`、`implementation-plan.md` 及必要的文档入口；不改原始愿景和历史 ADR 正文来伪造新状态。
-- 交付：明确历史 45/5、51/8 与最新 57/12 的验证所属阶段；区分普通请求 32 MB 与导入 128 MB、档案 v2 与数据库版本；将过时“下一轮”措辞定位为历史或更新为当前事实。确认 README/安全说明的“历史发布”与“当前源码”边界没有混淆。
+- 交付：明确历史 45/3、45/5、51/8 与最近 Windows 本地 57/12 的验证所属阶段，另列精确 PR 修订的 CI 结果；区分普通请求 32 MB 与导入 128 MB、档案 v2 与数据库版本；将过时“下一轮”措辞定位为历史或更新为当前事实。确认 README/安全说明的“历史发布”与“当前源码”边界没有混淆。
 - 完成条件：当前数值和能力说明可追到代码或具日期的证据，旧记录被明确标为历史，未验证的保证不升级；共享双语说明若有变化同步更新。
 - 验证：`npm run lint:markdown`、`npm run check:repository`、`git diff --check`；对照 `app/service.ts`、`store.ts`、测试声明及验证记录逐项人工核对。测试数仅作为记录，不建立数量断言。
 
 ### ENG-03 复核构建与浏览器验收可复现性
 
 - 依赖：ENG-02；实际提交范围和测试入口已清楚。
-- 范围：既有 `package.json`、`playwright.config.ts`、`scripts/browser-fixture.mjs`、两份浏览器 spec、`.github/workflows/checks.yml` 的验证与必要操作文档。
-- 交付：在隔离测试目录执行现有构建/浏览器场景，记录 Chrome、编译资源冷缓存准备和已有缓存条件；确认研究夹具无真实模型调用，真实 TeX 与停滞 Worker 故障测试分开。若失败，记录最小复现并拆出有验收的修复任务。
-- 完成条件：`npm run build` 和现有 12 项浏览器场景有本次结果；中文 TeX/PDF、失败保留旧 PDF、取消/超时、响应式与 axe 的证据边界清楚；冷缓存或 CI 环境限制有具体处理动作，不能用旧截图替代结果。
+- 范围：既有 `package.json`、`playwright.config.ts`、`scripts/browser-fixture.mjs`、两份浏览器 spec、`.github/workflows/checks.yml` 及编译资源准备路径的验证、最小修复与必要操作文档。
+- 交付：优先复现 [PR #11 的真实 XeLaTeX 超时](verification.md#pr-11-ci-inspection-2026-10-25)，先取得准备状态、编译日志及失败截图/trace，再按证据最小修复；日志不足时不能断言冷缓存是根因。在隔离测试目录执行现有构建/浏览器场景，记录 Chrome、编译资源冷缓存准备和已有缓存条件；确认研究夹具无真实模型调用，真实 TeX 与停滞 Worker 故障测试分开。若修复超出本任务范围，记录最小复现并拆出有验收的修复任务。
+- 完成条件：`npm run build` 和现有 12 项浏览器场景通过并有本次结果；中文 TeX/PDF、失败保留旧 PDF、取消/超时、响应式与 axe 的证据边界清楚；冷缓存或 CI 环境限制有具体处理动作，不能用旧截图替代结果。针对 PR 超时的修复须有对应场景的通过证据；没有新远程结果时保持 CI 未复验状态，不能将 ENG-04 的依赖视为通过。
 - 验证：`npm run build`、`npm run test:browser`；完整真实编译需要固定资源，必要时先运行 `npm run plugins:prepare`（约 203 MB 下载），准备失败应标为阻塞。人工检查生成的桌面/平板/手机截图；不访问用户研究数据。
 
 ### ENG-04 复核 alpha 的数据与权限门槛

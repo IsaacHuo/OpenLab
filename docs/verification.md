@@ -1,10 +1,46 @@
-# Foundation verification
+# Verification record
 
-This record describes the v0.0.1 acceptance boundary. Commands are repeatable; exact workflow outcomes and source commits remain in GitHub Actions and the Release.
+This record retains dated evidence from the v0.0.1 foundation through the current development source. Test counts describe their recorded stage and environment; they are not assertions about every later revision. The published v0.0.1 remains foundation-only. Exact workflow outcomes and tested commits remain in GitHub Actions; current work and dependencies are in [STATUS](STATUS.md) and [ROADMAP](ROADMAP.md).
+
+## Evidence stages
+
+| Date and stage | Recorded local checks | Evidence boundary |
+| --- | --- | --- |
+| 2026-10-24 first preview acceptance | 45 Node tests / 3 Chrome scenarios | [First preview](#final-preview-acceptance-2026-10-24); separate live pinned-skill and direct Crossref records |
+| 2026-10-24 approved workspace redesign | 45 Node tests / 5 Chrome scenarios | [Redesign](#approved-workspace-redesign-2026-10-24); controlled browser data, no live model/retrieval |
+| 2026-10-24 daily research workflow | 51 Node tests / 8 Chrome scenarios | [Daily workflow](#current-product-completion-2026-10-24); frozen context, materials and provider editing |
+| 2026-10-24 plugin document workspace | 57 Node tests / 12 Chrome scenarios | [Plugin stage](#plugin-document-workspace-2026-10-24); real compiler/PDF checks and controlled stalled-Worker fault tests |
+| 2026-10-25 ENG-01 local preflight | 57 Node tests / 12 Chrome scenarios | [Windows preflight](#local-delivery-preflight-2026-10-25); existing BusyTeX cache, no new live model calls |
+
+Node totals include application and governance tests. The dates and environments above remain historical evidence. ENG-02 did not rerun these application checks, builds, browser scenarios or live probes.
+
+## PR #11 CI inspection, 2026-10-25
+
+[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) is open and unmerged. Its head is `1574645b8b8bc4da9b7559d7794540e75775724c`, based on main `99813c6cc890c1e3e6c080e9cc18fa5ab6ba4865`. [Workflow run 40165761893](https://github.com/IsaacHuo/OpenLab/actions/runs/40165761893) checked out GitHub's temporary merge revision `5cd15b4b9582a8195494a58b1ba8fe2d0d285346`; that checkout is not a merge into main. These results do not cover the uncommitted ENG-02 documentation edits.
+
+Windows/Linux repository jobs, actionlint and Gitleaks passed. The [browser acceptance job](https://github.com/IsaacHuo/OpenLab/actions/runs/40165761893/job/121086433393) passed 11 scenarios and failed one; required-checks consequently failed. That job ran Ubuntu 26.04.1, Node.js 24.21.0 and npm 11.19.0. Its production build succeeded with the existing large-chunk advisory. Browser acceptance remains a merge blocker.
+
+The failing scenario is `real XeLaTeX compiles Chinese, formula, image and BibTeX; failure retains the exact previous PDF`. The first completion assertion at `browser-tests/documents.spec.ts:54` did not find `编译完成` within 125,000 ms. The log names a failure screenshot, error context and trace, but this workflow uploaded no artifacts. It does not expose enough compiler or preparation state to identify the cause. The workflow has no separate compiler-preparation step; cold-cache download is a hypothesis, not a demonstrated root cause. The independent controlled stalled-Worker scenario passed and does not explain this real compiler failure.
+
+ENG-03 must obtain preparation state, compiler diagnostics and failure artifacts, reproduce the timeout in an isolated fixture, and repair the demonstrated failure. Cached Windows success remains valid for its recorded conditions, but does not prove fresh CI preparation or the failed Linux path. ENG-04 remains dependent on ENG-03 passing; no checks were remotely rerun by ENG-02.
+
+## Documentation alignment, ENG-02, 2026-10-25
+
+Code inspection confirmed three separate limits: one material is at most 10,000,000 decoded bytes (`app/store.ts`), ordinary request bodies allow 32,000,000 bytes, and the import route allows 128,000,000 bytes (`app/service.ts`). SQLite remains at `user_version=1`; exports carry archive `schemaVersion: 2` and imports accept v1/v2. Existing compatibility cases are in `app/tests/store.test.ts` and `app/tests/documents.test.ts`. ENG-02 changes documentation only; it introduces no API, storage or migration change.
+
+Both README versions already distinguish current source from the v0.0.1 foundation release and were left unchanged. The security policy now makes the same distinction. Historical ADR text and the original vision are retained. Documentation validation results are recorded in [STATUS](STATUS.md); application checks were not rerun for this task.
+
+The planning research inspected these popular projects on 2026-10-25. Star counts below are approximate observations from their GitHub pages, not quality ratings. The adopted documentation practices do not introduce their dependencies or architectures:
+
+| Reference | Observed practice | Application to OpenLab |
+| --- | --- | --- |
+| [GPT Researcher](https://github.com/assafelovic/gpt-researcher), about 30.3k stars; [evaluation method and caveats](https://docs.gptr.dev/docs/gpt-researcher/gptr/context-filter) | Separates benchmark method, results, model/task limits and reproduction | Keep dates, environment and evidence limits beside results; distinguish controlled fixtures, real compiler runs and live provider calls |
+| [Dify](https://github.com/langgenius/dify), about 159.4k stars; [file configuration source](https://github.com/langgenius/dify/blob/main/api/configs/feature/__init__.py) | Defines file-size and batch-count limits separately by resource | Document material bytes and request-body bytes separately, using OpenLab's existing values |
+| [Open WebUI](https://github.com/open-webui/open-webui), about 156.7k stars; [version and commit guidance](https://docs.openwebui.com/getting-started/quick-start/) | Distinguishes rolling main/dev builds, fixed releases and exact commits | Identify historical releases, current source, local checks and the exact CI checkout independently |
 
 ## Local delivery preflight, 2026-10-25
 
-Before submitting the existing research/document workspace changes, native Windows x64 with Node.js 24.19.0 and npm 11.17.0 passed `npm run check` (57 tests, no failures or skips), `npm run build`, all 12 `npm run test:browser` scenarios, actionlint 1.7.12 and Gitleaks 8.30.1. The build still reports existing chunks over 500 kB. These are local preflight results; the eventual PR's exact-commit CI is a separate delivery gate.
+Before submitting the existing research/document workspace changes, native Windows x64 with Node.js 24.19.0 and npm 11.17.0 passed `npm run check` (57 tests, no failures or skips), `npm run build`, all 12 `npm run test:browser` scenarios, actionlint 1.7.12 and Gitleaks 8.30.1. The build still reports existing chunks over 500 kB. These ENG-01 local preflight results cover the implementation submitted as `22d6db524c08abfd4976bded081cf415b25919c1`; `1574645b8b8bc4da9b7559d7794540e75775724c` subsequently updated only STATUS. The failed PR browser CI is recorded separately above.
 
 The real compiler test reused the pinned BusyTeX cache and passed Chinese text, math, a managed chapter, PNG, BibTeX, PDF text checks, failure preservation and the cached offline pdfLaTeX case. Controlled stalled Workers supply cancellation/deadline evidence. Fresh desktop and mobile document screenshots were inspected; generated screenshots and PDFs remain ignored. This run did not re-test cold-cache downloads or call a live model provider. Local installed Skills, hooks and unselected design drafts remain outside the source delivery.
 
@@ -28,7 +64,7 @@ The Chinese vision is byte-identical to the committed file at the start of this 
 
 ## Current product completion, 2026-10-24
 
-The [execution ledger](../plan.md) records the approved daily-workflow batch. Native Windows checks cover 51 unit/integration/governance tests and eight Chrome browser scenarios. Added behavior covers launch-link recovery; project/conversation search and rename; continuous history and scoped refresh restoration; frozen follow-up references, selected old reports, truncation and archive compatibility; selected/empty/default materials; protected provider updates, rollback and active-run blocking. Native worker tests verify that history and material excerpts cross the IPC boundary into the controlled model request without enabling planning tools.
+This historical section records the daily-workflow batch in the [execution ledger](../plan.md). At that stage, native Windows checks covered 51 unit/integration/governance tests and eight Chrome browser scenarios. Added behavior covers launch-link recovery; project/conversation search and rename; continuous history and scoped refresh restoration; frozen follow-up references, selected old reports, truncation and archive compatibility; selected/empty/default materials; protected provider updates, rollback and active-run blocking. Native worker tests verify that history and material excerpts cross the IPC boundary into the controlled model request without enabling planning tools.
 
 The browser suite uses controlled records and a substitute runtime, with no real model calls. It covers Chinese composition/keyboard submission, 1440/1280/1024/768/390-pixel layouts, drawers, old revisions, evidence navigation, material choices, downloads and settings errors. Exercised desktop/mobile axe scans have zero violations. The production build succeeds with the existing advisory about large JavaScript chunks. Earlier live provider/retrieval evidence below remains separate and was not rerun for this batch.
 
@@ -38,7 +74,7 @@ Local screenshots are `.cache/workspace-desktop.png`, `.cache/workspace-mobile.p
 
 ### Final preview acceptance, 2026-10-24
 
-The [acceptance matrix](acceptance.md) maps the first preview requirements to evidence. Native Windows checks now cover 45 unit/integration/governance tests and three Chrome browser scenarios, including direct metadata retrieval without any model, preserved revision selection on provenance navigation, and interrupted-stream protocol closure. Type checking, production build, actionlint, Gitleaks and npm audit pass; audit reports zero vulnerabilities. Initial application work was merged through PRs #7, #8 and #9 after required checks.
+The [acceptance matrix](acceptance.md) maps the first preview requirements to evidence. At this historical stage, native Windows checks covered 45 unit/integration/governance tests and three Chrome browser scenarios, including direct metadata retrieval without any model, preserved revision selection on provenance navigation, and interrupted-stream protocol closure. Type checking, production build, actionlint, Gitleaks and npm audit passed; that audit reported zero vulnerabilities. Initial application work was merged through PRs #7, #8 and #9 after required checks.
 
 A real generic installation fetched OpenLab commit `7b927080f722ca547969ef84eb22a9a7d1b1698f`, preserved 89 files and loaded the first-party literature skill's linked evidence resource. Its live DeepSeek Flash/Crossref task produced five metadata sources, one final report and a passing archive round trip. The isolated Windows Git process initially hit Schannel's unavailable revocation lookup; selecting its OpenSSL backend with certificate verification enabled fixed the fetch. No upstream scripts were executed. A separate direct-tool live Crossref task returned five records, saved one report and recorded zero model calls/tokens. Sanitized local receipts are `.cache/live-skill-install.json`, `.cache/live-pinned-skill-run.json` and `.cache/live-direct-tool.json`.
 
@@ -97,7 +133,7 @@ A separate manual preview opened the existing local project history with the pro
 
 ## Plugin document workspace, 2026-10-24
 
-Current local verification supersedes earlier development test counts: `npm run check` passes Markdown/repository validation, TypeScript and **57 tests**; `npm run build` succeeds; all **12 Chrome browser scenarios** pass. The additional coverage includes capability replacement/disablement, dependency/interface failures, immutable human revisions, optimistic conflicts, idempotent submissions, v1/v2 archives, CSRF-protected document APIs, history pagination, persisted drafts, CodeMirror, comparison, and view fault containment. Existing research confirmation and permission checks remain covered.
+At this historical plugin stage on Windows, `npm run check` passed Markdown/repository validation, TypeScript and **57 tests**; `npm run build` succeeded; all **12 Chrome browser scenarios** passed. These counts extend the earlier local stages without replacing their recorded results. The additional coverage includes capability replacement/disablement, dependency/interface failures, immutable human revisions, optimistic conflicts, idempotent submissions, v1/v2 archives, CSRF-protected document APIs, history pagination, persisted drafts, CodeMirror, comparison, and view fault containment. The existing research confirmation and permission checks were also covered. The 2026-10-25 local rerun and the failed PR CI are recorded separately above.
 
 The pinned BusyTeX WASM actually compiled Chinese text, a formula, a managed chapter, PNG and BibTeX with XeLaTeX. PDF.js extracted the Chinese and bibliography text, and the v2 export retained the real PDF output hash. A second real pdfLaTeX build succeeded with external network requests blocked while the loopback service stayed available. Missing-package and undefined-command builds failed with file/line diagnostics and retained the previous successful PDF with its source-version cue. Cancellation and the 120-second deadline use a deliberately stalled Worker; those fault tests do not claim a real compiler timeout or substitute a fabricated PDF for compilation evidence.
 

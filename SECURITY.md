@@ -12,6 +12,8 @@ The initial security maintainer is [@IsaacHuo](https://github.com/IsaacHuo). Thi
 
 ## Security boundaries
 
-Repository CI runs documentation checks, workflow validation, and a secret scan. These checks do not certify the safety of third-party research code. The planned runtime permission model and local-service protections are specified in [architecture](docs/architecture.md); they are not implemented protections in this release.
+The published v0.0.1 foundation release contains no application runtime or runtime protections. Current development source implements a loopback service with host/origin checks, session and CSRF validation, confirmed plans, scoped decisions, supervised cancellation and server-side credentials with Windows protection. See [development](docs/development.md) for implementation boundaries and [verification](docs/verification.md) for dated controlled tests and live evidence. A supervised worker is not an untrusted-code sandbox, and plugins are statically registered trusted code.
+
+Repository CI runs documentation, type, application, browser, workflow and secret checks. These checks do not certify the safety of third-party research code. Application merge gates apply to the precise PR revision; historical local success is not a substitute for passing required-checks. The longer-term permission and isolation design remains in [architecture](docs/architecture.md).
 
 If a credential is exposed, revoke or rotate it immediately through its provider. Removing it from Git does not invalidate it. Diagnostic reporting follows the [logging specification](docs/logging.md).

@@ -17,6 +17,8 @@ The check includes strict TypeScript validation, documentation validation and No
 
 Browser acceptance uses an installed Chrome through Playwright. Set `OPENLAB_BROWSER_CHANNEL` to another installed Chromium channel if necessary. The synthetic server uses a separate temporary data root and no provider credential. Tests cover desktop and 390-pixel drawers, plan confirmation, structured questions, denied access, report revisions, source/step links, conversation replay, cancellation, UTF-8 attachments and English/Chinese interaction. Axe checks the exercised screens for WCAG A/AA issues; this is automated evidence, not a complete accessibility certification.
 
+The document scenarios also run real BusyTeX compilation and PDF.js checks. A cold compiler cache needs about 203 MB of pinned resources; this network setup is separate from the controlled research fixture and requires no model credential. See [plugin preparation](plugins.md#tex-compiler-and-pdf-preview) and the [verification record](verification.md) for cached local results and the unresolved CI compilation timeout. ENG-03 in the [roadmap](ROADMAP.md#eng-03-复核构建与浏览器验收可复现性) owns reproduction and repair.
+
 ## Implemented core
 
 - `app/contracts.ts` defines platform and replaceable model/tool/runtime boundaries.
@@ -26,7 +28,7 @@ Browser acceptance uses an installed Chrome through Playwright. Set `OPENLAB_BRO
 - `app/runtime.ts` supervises an IPC child with an explicit environment and selected provider configuration. `app/worker.ts` hosts the generic loop. Loss of the parent channel terminates the worker; this process boundary is not a sandbox.
 - `app/model.ts` parses an OpenAI-compatible Chat Completions SSE stream, including fragmented tool calls and reported usage. Incomplete streams and output-limit finishes fail rather than establish success. No automatic model retry is performed; a failed call requires explicit retry to avoid ambiguous duplicate billing.
 
-SQLite schema version 1 is the first development schema; no migration from a shipped application schema is required. A future schema change must back up existing archives and add migration/round-trip tests. Imported runs are historical, terminal and never dispatched. Imported records retain `originalId` for resolving exact report citations without rewriting report bytes.
+SQLite uses `PRAGMA user_version=1`, the first development database schema. Portable archives are versioned separately: exports carry `schemaVersion: 2`, and imports accept versions 1 and 2. The archive v2 document records do not change the SQLite schema or require a database migration. See `app/store.ts` and the compatibility cases in `app/tests/documents.test.ts`. A future database schema change must back up existing archives and add migration/round-trip tests. Imported runs are historical, terminal and never dispatched. Imported records retain `originalId` for resolving exact report citations without rewriting report bytes.
 
 ## Optional live model check
 
@@ -56,7 +58,17 @@ The AG-UI endpoint attaches to an already created run. It validates the route's 
 
 The official assistant-ui adapter receives a platform-bound `HttpAgent`; its transport can only attach to the selected existing run. Remounting the conversation replays a fresh view rather than duplicating model work. Its local subscription abort is not a platform cancel. Decisions and explicit cancellation use separate platform commands. Sources and exact artifact revisions stay outside the UI library. Report Markdown ignores active HTML and external image embedding.
 
-Attachments are copied, hashed and exported with the project. Preview UTF-8 text/Markdown and PNG/JPEG, while other formats remain inert downloads. A run snapshots the selected material identities; saved attachment bytes are checked again before use. The current upload limit is 10 MB per material and the JSON import request limit is 32 MB. The model receives bounded text excerpts; images are preview/download material in this version, not vision model input. Public source content and model interpretations retain separate evidence labels.
+Attachments are copied, hashed and exported with the project. Preview UTF-8 text/Markdown and PNG/JPEG, while other formats remain inert downloads. A run snapshots the selected material identities; saved attachment bytes are checked again before use. The model receives bounded text excerpts; images are preview/download material in this version, not vision model input. Public source content and model interpretations retain separate evidence labels.
+
+The limits apply to different bytes and operations:
+
+| Operation | Limit | Code reference |
+| --- | --- | --- |
+| One material | 10,000,000 bytes (10 MB), before base64 encoding | `Store.material` in `app/store.ts` |
+| Ordinary JSON request body | 32,000,000 bytes (32 MB) | Default `body` limit in `app/service.ts` |
+| `POST /api/v1/import` JSON request body | 128,000,000 bytes (128 MB), including encoded files and records | Import route in `app/service.ts` |
+
+MB here means 1,000,000 bytes. The import body limit is not a per-file allowance.
 
 ## Remaining application gates
 
@@ -76,6 +88,6 @@ In agent mode, omitted `materialIds` retains the existing project-material behav
 
 ## Plugin document workspace
 
-The next local iteration extends the preview with statically registered editor, preview, compilation and comparison providers. Default capabilities use the same registry as replacement implementations. Read the [plugin SDK](plugins.md) for capability registration, host access, preferences, drafts, optimistic revision saves, BusyTeX resource preparation, and portable archive version 2. No external executable plugin installer is included.
+Current development source implements statically registered editor, preview, compilation and comparison providers. Default capabilities use the same registry as replacement implementations. Read the [plugin SDK](plugins.md) for capability registration, host access, preferences, drafts, optimistic revision saves, BusyTeX resource preparation, and portable archive version 2. No external executable plugin installer is included.
 
 Manual document saves create immutable human revisions without changing Agent event history. LaTeX compilation runs in a browser Worker and records exact saved inputs; PDF previews are a separate provider. Editor/comparison/PDF/compiler code is lazy-loaded. Model compatibility remains independently verified; document editing and TeX compilation do not call a model.

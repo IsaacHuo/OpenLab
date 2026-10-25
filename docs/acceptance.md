@@ -2,6 +2,8 @@
 
 Scope: the first local research loop in [product](product.md), with the explicit preview limits below. This record does not claim completion of the founding vision's later compute, multi-agent, institutional or ecosystem phases.
 
+As of 2026-10-25, the latest recorded Windows local preflight passed 57 core/API/governance tests and 12 browser scenarios, using an existing compiler cache. The latest inspected [PR #11 browser CI job](https://github.com/IsaacHuo/OpenLab/actions/runs/40165761893/job/121086433393) passed 11 scenarios and failed the first real XeLaTeX completion wait; required-checks failed. The [verification record](verification.md) identifies the head, tested merge revision, environment and unresolved cause. This document retains earlier stages as dated evidence; local success does not establish the merge gate.
+
 ## Evidence matrix
 
 | Requirement | Evidence and result |
@@ -25,21 +27,22 @@ Scope: the first local research loop in [product](product.md), with the explicit
 | Conversations and follow-up context | Search, rename, continuous history, old-run focus and draft/selection reload checked in Chrome; server freezes at most six terminal runs, 40,000 history characters and a selected report excerpt of 20,000 characters |
 | Context isolation and archives | Foreign conversation revisions rejected; new plans require new confirmation; truncation recorded; context IDs remapped on import and archives without context remain readable |
 | Materials and provider editing | Selected/empty/default material sets frozen; excluded text omitted and foreign IDs rejected; browser selections persist; blank credential retained, failed saves rolled back, active provider edits blocked and changed connections require retesting |
-| Repository delivery | Local type/build/test/actionlint/Gitleaks/audit checks pass; each implementation iteration uses a PR and required Windows/Linux/browser CI before merge |
+| Repository delivery | Historical local preflight results are in [verification](verification.md); PR #11 remains unmerged with failed browser acceptance and required-checks as inspected on 2026-10-25 |
 
-Current local suite: 51 unit/integration/governance tests and eight browser scenarios. Live probes are opt-in and separate from synthetic automation. Exact source/CI identities are retained in the implementation PRs; detailed outcomes are in [verification](verification.md).
+The daily-workflow stage on 2026-10-24 recorded 51 unit/integration/governance tests and eight browser scenarios. The later plugin stage and 2026-10-25 local preflight recorded 57/12. Live probes are opt-in and separate from synthetic automation and real compiler tests; none were repeated for ENG-02. Detailed outcomes and the earlier 45/3 and 45/5 stages are in [verification](verification.md).
 
 ## Preview limits
 
 - Crossref is the available scholarly metadata provider. General public-page reads require scoped permission and public HTTPS addresses. The native network's reserved fake DNS ranges prevent successful general page access; the fixed Crossref endpoint works. No full-text or scientific-claim verification is asserted.
 - Windows is the credential-persistence target. Native DPAPI and Chrome were tested; Linux CI tests use synthetic credentials. Other operating systems, browsers and model providers require their own compatibility evidence.
 - DeepSeek Flash is tested in non-thinking mode. Reported token budgets stop new calls but are not hard billing caps; missing usage stays unknown. Model calls have bounded turns/time and no automatic ambiguous retry.
-- Text/Markdown and PNG/JPEG attachments can be previewed; image model input, PDF extraction, active HTML/code, arbitrary execution, long-running compute, checkpoint recovery and multiple agents are deferred. Per-material upload limit is 10 MB; JSON import requests are limited to 32 MB.
+- Text/Markdown and PNG/JPEG attachments can be previewed; image model input, research-source PDF extraction, active HTML/code, arbitrary execution, long-running compute, checkpoint recovery and multiple agents are deferred. The plugin PDF.js preview of compiled documents does not establish research-source extraction.
+- One material is limited to 10,000,000 bytes before base64 encoding. Ordinary JSON request bodies are limited to 32,000,000 bytes; `POST /api/v1/import` allows 128,000,000 bytes including encoded files and records. See the [code-backed limit table](development.md#local-research-api).
 - Generic skills remain inert files and bounded instructions, with separate upstream declarations and no executed scripts. Supervisor-Skills is not bundled or endorsed; its redistribution terms remain unresolved and are not needed for the first-party preview.
 - OpenAlex, further adapters, diagnostic bundles, packaging/installers, additional security isolation and the longer-term roadmap are subsequent work. The current source preview does not advertise those capabilities.
 
 ## Plugin workspace acceptance
 
-The current local stage passes 57 core/API/governance tests and 12 browser scenarios; see the [verification record](verification.md) and [execution ledger](../plan.md). Default capabilities use the shared plugin catalog and host contract. Markdown/LaTeX editing, platform drafts, immutable manual revisions, explicit comparison/conflicts, standalone documents, v2 archives and v1 imports are implemented. Disabling or crashing a view preserves original downloads and the conversation.
+The plugin stage recorded 57 core/API/governance tests and 12 browser scenarios on Windows on 2026-10-24, repeated in the 2026-10-25 local preflight; see the [verification record](verification.md) and [execution ledger](../plan.md). Default capabilities use the shared plugin catalog and host contract. Markdown/LaTeX editing, platform drafts, immutable manual revisions, explicit comparison/conflicts, standalone documents, v2 archives and v1 imports are implemented. Archive versions are independent of SQLite `user_version=1`. Disabling or crashing a view preserves original downloads and the conversation.
 
-Real XeLaTeX compilation covers Chinese, math, PNG, a managed chapter and BibTeX; PDF.js confirms readable text. Real pdfLaTeX also passes with external network access blocked and components cached. Missing-package recovery preserves the prior PDF; controlled stalled Workers verify cancel/deadline behavior. Desktop, tablet and phone screenshots of the same compiled document were inspected. No additional live model/provider compatibility claim is made by this stage.
+Those local runs covered real XeLaTeX compilation of Chinese, math, PNG, a managed chapter and BibTeX; PDF.js confirmed readable text. Real pdfLaTeX also passed with external network access blocked and components cached. Missing-package recovery preserved the prior PDF; controlled stalled Workers verified cancel/deadline behavior. Desktop, tablet and phone screenshots of the same compiled document were inspected at that stage. ENG-02 did not rerun these checks; the CI timeout remains unresolved. No additional live model/provider compatibility claim is made by this stage.

@@ -27,6 +27,7 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 ### Fixed
 
+- Align development and acceptance documentation with implemented plugin capabilities, request limits and independent archive/database versions; separate historical local verification from the unresolved PR #11 XeLaTeX CI timeout.
 - Preserve the selected report revision when navigating to its producing step, bind creation keys to limits/retry ancestry, reject invalid replay cursor indices, close interrupted AG-UI projections and retain TLS verification during isolated Windows Git installation.
 
 ## [0.0.1] - 2026-10-24
