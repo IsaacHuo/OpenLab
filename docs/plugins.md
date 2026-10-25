@@ -1,6 +1,6 @@
 # Plugin SDK and document workspace
 
-Status: local implementation, 2026-10-24. The [execution ledger](../plan.md) records validation. All bundled capabilities declare the same version-1 manifest contract in `app/plugin-contracts.ts`. This iteration uses static registration; it does not install or evaluate external plugin packages.
+Status: local implementation, 2026-10-24. The [execution ledger](../PLAN.md) records validation. All bundled capabilities declare the same version-1 manifest contract in `app/plugin-contracts.ts`. This iteration uses static registration; it does not install or evaluate external plugin packages.
 
 ## Registration and lifecycle
 

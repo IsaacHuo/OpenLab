@@ -72,6 +72,7 @@ OpenLab 是开放科研平台，不是某个 Agent 框架的封装。平台持�
 
 ## 文档导航
 
+- [开发执行计划](PLAN.md)：当前阶段、顺序任务、验收出口及既有执行台账。
 - [原始产品愿景](docs/vision.zh-CN.md)：保留用户提供的完整规划。
 - [产品规格](docs/product.md)：用户、首版流程和验收条件。
 - [架构与接口](docs/architecture.md)、[技术决策](docs/decisions/0001-foundation.md)。
