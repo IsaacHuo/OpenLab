@@ -1,17 +1,18 @@
 # OpenLab 当前状态与交接
 
-更新时间：2026-10-25（Asia/Shanghai）。当前任务：ENG-01，按用户后续授权整理、提交、推送既有项目改动并进入 PR 检查，不增加业务功能。任务合同见 [ROADMAP](ROADMAP.md)，已确认约束见 [DECISIONS](DECISIONS.md)。
+更新时间：2026-10-25（Asia/Shanghai）。ENG-01 已完成：按用户后续授权整理、提交、推送既有项目改动并建立 PR，不增加业务功能。下一项为 ENG-02。任务合同见 [ROADMAP](ROADMAP.md)，已确认约束见 [DECISIONS](DECISIONS.md)。
 
 ## Git 与环境快照
 
 - 分支：`codex/research-acceptance`。
-- HEAD：`ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7`，2026-10-24，`feat(workspace): ship the local research browser preview`。
+- 初次检查起点：`ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7`，2026-10-24，`feat(workspace): ship the local research browser preview`。当前实现提交为 `22d6db524c08abfd4976bded081cf415b25919c1`，随后仅补交本页交接记录。
 - 检查开始时已有 34 个受跟踪文件修改，无暂存改动；另有未跟踪的应用模块、测试、设计规范、`plan.md`、根 AGENTS、`.agents/`、`.codex/` 和 `output/` 等。目录折叠显示不能当成文件数量。HEAD 不包含当前全部实现。
 - 当前 Windows 环境为 Node.js `v24.19.0`、npm `11.17.0`，依赖已存在。本轮未安装或升级依赖；用户已授权提交、推送，未授权合并 main 或发布版本。
 - `.openlab/`、`.cache/`、`dist/`、`test-results/` 等已有本地产物；按忽略规则保留。本轮没有读取凭据或研究项目内容。
 - 版本文件仍为 `0.0.1`。该历史发布为基础设施版；本次提交不升版、不打 tag、不创建 Release。
 - 已读取远程：`origin/main` 为 `99813c6cc890c1e3e6c080e9cc18fa5ab6ba4865`，其文件树与检查起点 HEAD 完全相同（工作区预览 PR #9 的 squash 提交）。新提交将在该 main 基线上进入 `codex/research-acceptance`，不重复交付旧功能。
 - SSH 被当前网络关闭，HTTPS 和 GitHub 已登录账号可用；使用单次命令的 HTTPS 地址映射，不修改仓库远程配置或暴露凭据。
+- 已推送：`origin/codex/research-acceptance`；推送后读取远程 ref，确认与本地实现提交一致。已建立 [PR #11](https://github.com/IsaacHuo/OpenLab/pull/11)，目标 main，包含 86 个项目文件。本页随随后交接提交同步推送；精确最新 SHA 和 required-checks 状态以该 PR 为准。
 
 ## 本次交付范围
 
@@ -36,7 +37,7 @@
 | ID | 状态 | 当前交接 |
 | --- | --- | --- |
 | ENG-00 | 已完成 | 完善 AGENTS，新增三个协作文档；仅改文档，保留既有台账和 ADR |
-| ENG-01 | 交付中 | 已完成范围盘点与本地验证；按新增授权提交、推送并建立 PR |
+| ENG-01 | 已完成 | 范围盘点、本地验证、项目提交及推送完成；[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 保留未合并 |
 | ENG-02 | 待开始 | 依赖 ENG-01；收敛当前与历史文档口径 |
 | ENG-03 | 待开始 | 依赖 ENG-02；复核构建、浏览器和编译资源准备 |
 | ENG-04 | 待开始 | 依赖 ENG-03；复核 alpha 数据与权限门槛 |
@@ -59,20 +60,21 @@
 - 本轮生成的文档桌面/手机截图已人工检查；截图保留在忽略的 `.cache/`，不提交用户数据或测试产物。
 - `npm run check:actions`：actionlint 1.7.12 通过。
 - `npm run check:secrets`：Gitleaks 8.30.1 历史与工作区扫描通过，输出脱敏。
-- 没有真实付费模型调用或新 live 检索兼容声明。远程 PR CI 与最终推送结果在交付后补记，不用本地通过替代远程门槛。
+- `git diff --check origin/main...HEAD`：通过；清理了新增上下文测试文件末尾多余空行，无测试逻辑或业务行为变化。
+- 没有真实付费模型调用或新 live 检索兼容声明。远程 [PR 检查](https://github.com/IsaacHuo/OpenLab/pull/11/checks) 必须查看精确最新 head；不以本地通过替代远程门槛。本次任务完成的是提交与推送，尚未合并或发布。
 
 ## 已发现的问题与阻塞
 
 | 项目 | 影响 | 下一步与是否阻塞 |
 | --- | --- | --- |
-| 大量工作未形成 Git 交付基线 | 后续对话容易漏掉未跟踪依赖或混入本地工具/试稿 | 本次已明确纳入/排除范围，本地检查全通过；正在提交推送 |
+| 原先大量未提交工作 | 已收敛到远程可审阅的项目基线，本地工具/试稿不进入交付 | 已解决；继续保留 [PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 的提交与检查证据 |
 | 文档混有历史与当前口径 | `acceptance.md` 前段 51/8、后段 57/12；`development.md` 旧段导入 32 MB，而当前接口为 128 MB；部分段落仍写下一轮 | ENG-02 按阶段和实际接口对齐；本轮不额外改这些已有文档 |
-| 远程 CI 仍需精确提交验证 | 本地构建和 12 项浏览器已复核，不能替代 PR CI | 推送后检查 required-checks；ENG-03 后续重点核对冷缓存与 CI 条件，复用有效证据 |
+| 合并门槛 | 本地构建和 12 项浏览器已复核，不能替代精确 head 的 PR CI | 本次不合并；未来合并前检查 required-checks；ENG-03 复用有效证据并核对冷缓存/CI 条件 |
 | TeX 冷缓存需要约 203 MB 固定资源 | 首次浏览器验收与纯本地模型夹具的环境需求不同 | ENG-03 记录下载/缓存/失败条件；尚未证明是 CI 缺陷 |
 | 大分块提示 | 旧构建记录提示部分 JavaScript 超过 500 kB，未提供用户性能影响测量 | 先记录，非当前发布阻塞，不安排无目标重构 |
 | 全文访问、平台与许可范围 | 历史网络无法成功完成通用全文读取；原生凭据持久化为 Windows；Supervisor-Skills 再分发条款未解决 | 保留预览限制；不捆绑上游内容时不阻塞第一方源码预览，扩大声明前单独解决 |
 
-本地提交准备无技术阻塞。本地工具配置和未选稿按贡献规范保留本机；项目源码推送不等于已合并或已发布。
+本次提交、推送已完成，无本地交付阻塞。本地工具配置和未选稿按贡献规范保留本机；项目源码推送不等于已合并或已发布。
 
 ## 下一次对话入口
 
