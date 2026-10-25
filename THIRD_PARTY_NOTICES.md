@@ -38,10 +38,31 @@ These application components are not installed or bundled in the historical v0.0
 
 ## Document plugins and editor dependencies
 
+### Source-preview inventory, 2026-10-25
+
+The v0.1.0-alpha.1 candidate reuses the existing lockfile dependency graph; only the root application version changes. Direct package metadata in the installed lockfile-matched packages was checked as follows, in addition to the React/assistant-ui/AG-UI/Radix/Lucide inventory above:
+
+| Package | Installed version | Declared license |
+| --- | --- | --- |
+| `@codemirror/commands` | 6.11.1 | MIT |
+| `@codemirror/lang-markdown` | 6.5.2 | MIT |
+| `@codemirror/language` | 6.13.1 | MIT |
+| `@codemirror/legacy-modes` | 6.5.5 | MIT |
+| `@codemirror/search` | 6.7.2 | MIT |
+| `@codemirror/state` | 6.7.6 | MIT |
+| `@codemirror/view` | 6.43.15 | MIT |
+| `@lezer/highlight` | 1.2.5 | MIT |
+| `diff` | 9.0.0 | BSD-3-Clause |
+| `pdfjs-dist` | 6.4.299 | Apache-2.0 |
+
+GitHub source archives contain tracked OpenLab code and retained design/license notices. They exclude `node_modules`, `dist`, prepared BusyTeX/font components, research data, protected credentials, local `.agents`/`.codex` installations and unselected mockups. `npm ci` installs dependencies with their own license files. Preparing compiler resources downloads third-party components separately; their terms and sources below still apply. No Supervisor-Skills contents or compiler/font binaries are redistributed by this source release.
+
+### Editor and compiler provenance
+
 The default editors use CodeMirror 6 (`@codemirror/state`, `view`, `commands`, `search`, `language`, `lang-markdown`, `legacy-modes` and `@lezer/highlight`), under MIT licenses. Current upstream sources and licenses are linked from [CodeMirror](https://codemirror.net/); its repositories have moved to the maintainer's forge. OpenLab supplies a React host and a neutral theme, not a fork of the editor.
 
 Version comparison uses [jsdiff](https://github.com/kpdecker/jsdiff), BSD-3-Clause, in a bounded Worker. PDF previews use [PDF.js](https://github.com/mozilla/pdf.js), Apache-2.0; the dependency and worker are loaded only for PDF viewing. Installed versions are pinned in the npm lockfile.
 
 The default TeX adapter uses [BusyTeX](https://github.com/busytex/busytex) release `build_wasm_4499aa69fd3cf77ad86a47287d9a5193cf5ad993_7936974349_1`, source commit `4499aa69fd3cf77ad86a47287d9a5193cf5ad993`. BusyTeX's repository glue is MIT; its compiled binaries include TeX Live and other components under their respective licenses. Those binaries are downloaded into a separate runtime cache, with release/source references and checksums. They are not relicensed as OpenLab code. The pinned pipeline invokes TeX with shell escape disabled.
 
-The compiler additionally supplies [Fandol Song](https://ctan.org/tex-archive/fonts/fandol) 0.3 by the Fandol team, GPL with the font exception described in its COPYING file. Its SHA-256 is `a3820003227d4abe31fe28b493200d94a849ccfd078b50a019264f70353020b0`. Retain the upstream license/source materials when redistributing prepared compiler/font components. The plugin SDK, resource layout and scope are documented in [plugins](docs/plugins.md).
+The compiler additionally supplies [Fandol Song](https://ctan.org/tex-archive/fonts/fandol) 0.3 by the Fandol team, GPL with the font exception described in its COPYING file. Its SHA-256 is `a3820003227d4abe31fe28b493200d94a849ccfd078b50a019264f70353020b0`. Downloads use the [MIT CTAN mirror](https://ctan.csail.mit.edu/fonts/fandol/), with the same bytes and hash; TLS verification is retained. Retain the upstream license/source materials when redistributing prepared compiler/font components. The plugin SDK, resource layout and scope are documented in [plugins](docs/plugins.md).

@@ -2,13 +2,13 @@
 
 更新时间：2026-10-25（Asia/Shanghai）。本文件是用户指定的计划入口，文件名固定为大写 `PLAN.md`。本次按 [ROADMAP](docs/ROADMAP.md) 的 ENG-00 至 ENG-06 顺序执行；当前事实和实际检查结果见 [STATUS](docs/STATUS.md)，详细证据见 [verification](docs/verification.md)。下方保留前两轮历史台账，不把历史限制误当成本轮授权。
 
-## 当前阶段：ENG-04 数据与权限验收
+## 当前阶段：ENG-05 alpha 源码候选
 
-- 前置：ENG-03 已通过本地构建、57 项 Node 测试和 13 项浏览器；[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 的 Windows/Linux/browser、actionlint、Gitleaks、required-checks 全通过，已合并至 main `c9a96f3`。
-- 范围：将 alpha 数据和权限门槛逐项映射到现有实现及测试，不改变已确认的架构。
-- 完成条件：新轮确认、权限拒绝、只读重放、取消/重启、凭据隔离、人工修订、档案 v1/v2 和跨项目引用各有通过证据；预览限制明确记录。
-- 精确验证：`node --test app/tests/platform.test.ts app/tests/runtime.test.ts app/tests/service.test.ts app/tests/store.test.ts app/tests/documents.test.ts app/tests/context.test.ts app/tests/workflow.test.ts`；本轮已运行 30 项，全部通过。
-- 交付：更新验收表、STATUS 和本文件，通过本地文档检查及精确 PR CI 后合并。
+- 前置：[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 修复和 [PR #12](https://github.com/IsaacHuo/OpenLab/pull/12) 数据/权限验收均在精确 PR CI 全通过、无待解决讨论后合并。ENG-04 的 30 项边界测试通过；新基线为 main `14b8a65`。
+- 范围：统一 `VERSION`、npm 根版本、OpenAPI 版本元数据为 `0.1.0-alpha.1`，整理双语启动说明、第三方清单、预览限制和带日期的 changelog；不改变 API 形状或数据库/档案版本。
+- 完成条件：候选只含明确纳入的源码，第三方声明和使用边界完整；本地全检查及精确候选 PR CI 通过后合并。
+- 精确验证：`npm run check`、`npm run build`、`npm run test:browser`、`npm run check:actions`、`npm run check:secrets`、`git diff --check`；核对源代码档案与版本一致性。
+- 交付：候选 PR；随后 ENG-06 等精确 main 的 push CI 通过，再 `npm run release:check -- 0.1.0-alpha.1` 并按既有工作流源码预发布，核对 tag、提交和 prerelease 标志。
 
 ## 阶段清单
 
@@ -18,8 +18,8 @@
 | ENG-01 收敛既有实现 | 已完成 | 项目源码、设计与许可纳入 PR #11，本地工具和研究数据排除 |
 | ENG-02 文档口径 | 已完成 | 能力、限制、版本及历史证据对齐，文档检查通过 |
 | ENG-03 构建与浏览器 | 已完成 | CI 独立准备 TeX；跨文档对比回归先失败后通过；本地 13 项和远程门槛通过，PR #11 已合并 |
-| ENG-04 数据与权限 | 进行中 | 30 项边界测试通过，验收表与预览限制需提交并通过 PR 门槛 |
-| ENG-05 alpha 候选 | 待 ENG-04 | 统一版本 `0.1.0-alpha.1`、启动说明、许可和发布说明；完整检查、构建、浏览器、actionlint、Gitleaks 及精确候选 CI |
+| ENG-04 数据与权限 | 已完成 | 30 项边界测试通过，验收表/预览限制和大写 PLAN 入口在 PR #12 通过全部 CI 后合并 |
+| ENG-05 alpha 候选 | 进行中 | 统一版本 `0.1.0-alpha.1`、启动说明、许可和发布说明；完整检查、构建、浏览器、actionlint、Gitleaks 及精确候选 CI |
 | ENG-06 源码预发布 | 待 ENG-05 | 精确 main 的 push CI、release dry-run 通过后，按既有工作流创建不可变 tag 和 GitHub prerelease，核对版本/提交/说明一致 |
 
 ## 执行约束和完成边界

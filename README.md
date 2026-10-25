@@ -21,7 +21,7 @@ OpenLab is a local-first research workspace being designed to connect open resea
 
 ## Current status
 
-**The published v0.0.1 release is foundation-only.** Current development source includes a runnable local research preview; no installer is provided.
+**This source is the v0.1.0-alpha.1 research preview.** It runs locally with Node.js 24 and a browser; no installer is provided. The historical v0.0.1 release remains foundation-only. See the [changelog](CHANGELOG.md) for the preview boundary and [PLAN](PLAN.md) for delivery progress.
 
 The preview combines projects, a supervised Harness, DeepSeek-tested model configuration, Crossref metadata retrieval, plan confirmation, source-linked Markdown reports and portable research archives. See [development](docs/development.md) and the [implementation plan](docs/implementation-plan.md) for tested scope and remaining gates.
 
@@ -35,6 +35,7 @@ The preview combines projects, a supervised Harness, DeepSeek-tested model confi
 | Supervisor-Skills execution through the platform runtime adapter | Planned; not an endorsed or verified integration yet |
 | Conversation, execution state, and live artifacts workspace | React/assistant-ui with AG-UI; plan, input, denial and replay checked |
 | Source tracking, execution history, and artifact export | Immutable revisions, material copies and verified archive round trips |
+| Markdown/LaTeX document plugins | Recoverable drafts, immutable manual revisions, comparison, BusyTeX and PDF.js; portable v2 archives with v1 imports |
 
 ## Run the development preview
 
@@ -47,6 +48,8 @@ npm start
 ```
 
 Open the launch link printed in the terminal. Add and test your model provider in settings, create a project, and submit a question. Review the plan before research starts. Model planning and execution use your provider account. Windows protects credentials under the current user; saved projects remain readable without provider access. Crossref retrieval needs a network connection. Public-page reading asks for scoped access and can be unavailable; metadata alone does not verify a paper's conclusions. DeepSeek currently uses non-thinking mode.
+
+For direct metadata search, select the metadata tool without a model credential. Document editing and TeX compilation also require no model. Before first TeX use, optionally run `npm run plugins:prepare`: it downloads about 203 MB of pinned components using curl, separately from the source archive. The workspace can prepare them on demand; failed downloads retain ranges for an explicit retry. See [compiler setup and limits](docs/plugins.md#tex-compiler-and-pdf-preview). On PowerShell, use `npm.cmd` if execution policy blocks `npm.ps1`.
 
 ![Native Windows preview with a real DeepSeek/Crossref metadata research record](assets/docs/workspace-preview.png)
 

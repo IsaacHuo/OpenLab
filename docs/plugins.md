@@ -32,6 +32,8 @@ Browser CI runs that preparation as a separate bounded step before Playwright. T
 
 The Fandol Song 0.3 font is supplied as `fonts/FandolSong-Regular.otf` in the compiler's virtual project. For Chinese text, use fontspec and select this font by that relative path. It retains its GPL font-exception licensing. Package and font availability is explicit: cached inputs compile offline, while unavailable dependencies fail visibly.
 
+The font download uses the fixed MIT CTAN mirror at `https://ctan.csail.mit.edu/fonts/fandol/FandolSong-Regular.otf`, retaining the existing 4,947,904-byte size and SHA-256 pin. This avoids selecting a different redirecting CTAN mirror during preparation; certificate verification remains enabled. Candidate CI exposed a certificate failure on one font range when using the rotating mirror endpoint. The replacement file was independently fetched and matched the existing hash before changing the source URL.
+
 Compilation freezes an already saved revision and its resource hashes. Unsaved changes use save-and-compile. Only one compiler invocation runs per browser module at a time; cancellation and the 120-second deadline terminate its Worker. Logs and failed/cancelled status remain inspectable. A failed build does not discard the previous successful PDF; the preview identifies its source revision.
 
 PDF.js CMaps, standard fonts and decoder resources are copied to separate on-demand static assets during the build. PDF.js is a separate lazy preview provider, with pages, zoom, text selection and download. Build records contain input revision/hash, resource hashes, compiler/plugin versions, status, log and output hash. These are client-submitted compiler receipts, not server attestation or scientific-claim verification.
