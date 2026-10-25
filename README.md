@@ -23,6 +23,8 @@ OpenLab is a local-first research workspace being designed to connect open resea
 
 **This source is the v0.1.0-alpha.1 research preview.** It runs locally with Node.js 24 and a browser; no installer is provided. The historical v0.0.1 release remains foundation-only. See the [changelog](CHANGELOG.md) for the preview boundary and [PLAN](PLAN.md) for delivery progress.
 
+The [published source prerelease](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1) includes the reviewed notes and GitHub source archives.
+
 The preview combines projects, a supervised Harness, DeepSeek-tested model configuration, Crossref metadata retrieval, plan confirmation, source-linked Markdown reports and portable research archives. See [development](docs/development.md) and the [implementation plan](docs/implementation-plan.md) for tested scope and remaining gates.
 
 | Capability | Status |

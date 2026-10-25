@@ -2,13 +2,13 @@
 
 更新时间：2026-10-25（Asia/Shanghai）。本文件是用户指定的计划入口，文件名固定为大写 `PLAN.md`。本次按 [ROADMAP](docs/ROADMAP.md) 的 ENG-00 至 ENG-06 顺序执行；当前事实和实际检查结果见 [STATUS](docs/STATUS.md)，详细证据见 [verification](docs/verification.md)。下方保留前两轮历史台账，不把历史限制误当成本轮授权。
 
-## 当前阶段：ENG-05 alpha 源码候选
+## 当前状态：ENG-00 至 ENG-06 已完成
 
-- 前置：[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 修复和 [PR #12](https://github.com/IsaacHuo/OpenLab/pull/12) 数据/权限验收均在精确 PR CI 全通过、无待解决讨论后合并。ENG-04 的 30 项边界测试通过；新基线为 main `14b8a65`。
-- 范围：统一 `VERSION`、npm 根版本、OpenAPI 版本元数据为 `0.1.0-alpha.1`，整理双语启动说明、第三方清单、预览限制和带日期的 changelog；不改变 API 形状或数据库/档案版本。
-- 完成条件：候选只含明确纳入的源码，第三方声明和使用边界完整；本地全检查及精确候选 PR CI 通过后合并。
-- 精确验证：`npm run check`、`npm run build`、`npm run test:browser`、`npm run check:actions`、`npm run check:secrets`、`git diff --check`；核对源代码档案与版本一致性。
-- 交付：候选 PR；随后 ENG-06 等精确 main 的 push CI 通过，再 `npm run release:check -- 0.1.0-alpha.1` 并按既有工作流源码预发布，核对 tag、提交和 prerelease 标志。
+- 已发布：[v0.1.0-alpha.1 源码预览](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1)，2026-10-25 15:17（Asia/Shanghai）。这是科研源码 alpha，不含安装包或托管部署。
+- 交付：[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11)、[PR #12](https://github.com/IsaacHuo/OpenLab/pull/12)、[PR #13](https://github.com/IsaacHuo/OpenLab/pull/13) 均在精确 PR CI 全通过、无待解决讨论后合并。
+- 验证：本地 check（57 项 Node）、build、browser（13 项）、actionlint、Gitleaks、npm audit（零漏洞）通过；ENG-04 的 30 项边界测试通过。并发材料选择与跨文档对比回归均先失败后通过。
+- 发布门槛：[候选 CI](https://github.com/IsaacHuo/OpenLab/actions/runs/40171822447)、[精确 main push CI](https://github.com/IsaacHuo/OpenLab/actions/runs/40172012839)、release dry-run 与[发布工作流](https://github.com/IsaacHuo/OpenLab/actions/runs/40172172425) 均成功。
+- 精确身份：带注释 tag `v0.1.0-alpha.1` 指向 `0e6f348612b56ac17e848c88fd9a3034b61bfc56`；GitHub Release 为非草稿 prerelease。源码档案排除研究数据、凭据、本地工具及运行时二进制；版本与 OpenAPI 元数据一致，API 形状和数据库/档案版本未变。
 
 ## 阶段清单
 
@@ -19,14 +19,16 @@
 | ENG-02 文档口径 | 已完成 | 能力、限制、版本及历史证据对齐，文档检查通过 |
 | ENG-03 构建与浏览器 | 已完成 | CI 独立准备 TeX；跨文档对比回归先失败后通过；本地 13 项和远程门槛通过，PR #11 已合并 |
 | ENG-04 数据与权限 | 已完成 | 30 项边界测试通过，验收表/预览限制和大写 PLAN 入口在 PR #12 通过全部 CI 后合并 |
-| ENG-05 alpha 候选 | 进行中 | 统一版本 `0.1.0-alpha.1`、启动说明、许可和发布说明；完整检查、构建、浏览器、actionlint、Gitleaks 及精确候选 CI |
-| ENG-06 源码预发布 | 待 ENG-05 | 精确 main 的 push CI、release dry-run 通过后，按既有工作流创建不可变 tag 和 GitHub prerelease，核对版本/提交/说明一致 |
+| ENG-05 alpha 候选 | 已完成 | 统一版本、双语启动、许可和发布边界；修复字体证书下载及并发材料选择问题，PR #13 全 CI 通过后合并 |
+| ENG-06 源码预发布 | 已完成 | 精确 main push CI 和 dry-run 通过，既有发布工作流成功，tag/提交/版本/预发布标志一致 |
 
 ## 执行约束和完成边界
 
 2026-10-25 用户已授权连续推进上述阶段，逐阶段提交、建立或更新 PR，并在 required-checks 通过及讨论解决后合并，无需逐阶段确认。发布仍须满足 ENG-05/06 门槛；不绕过 CI，不调用付费模型，不读取或发布用户研究数据，不使用子 Agent。
 
 本轮完成对象是 ENG-00 至 ENG-06 的源码预览路线，不将第二检索源、研究全文提取、任意代码执行、动态外部插件、多 Agent、安装包和团队部署等远期候选视为已经实现。候选须另行具备明确需求及验收。
+
+本轮没有未完成的路线图任务。后续从实际研究需求选择一个独立候选，再定义输入输出、失败边界和验收；当前不自动扩大范围。现有分块体积提示及本机冷下载 TLS/撤销查询限制继续记录在 STATUS，未将其写成通用兼容性保证。
 
 ## 历史：产品完善与插件工作台（2026-10-24）
 

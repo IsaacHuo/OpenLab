@@ -1,12 +1,14 @@
 # OpenLab 长期开发路线图
 
-本文件整理已有项目的后续工作，不重新立项。首次检查日期：2026-10-25；当时基于分支 `codex/research-acceptance`、HEAD `ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7` 及已有未提交实现。随后 ENG-01 按用户授权完成项目提交和推送；实现提交为 `22d6db524c08abfd4976bded081cf415b25919c1`，交接提交为 `1574645b8b8bc4da9b7559d7794540e75775724c`，[PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 尚未合并。任务执行状态统一记录在 [STATUS](STATUS.md)。ENG-02 仅对齐文档，不自动提交、推送、合并 main 或发布版本。
+本文件整理已有项目的任务合同，不重新立项。首次检查日期：2026-10-25；当时基于分支 `codex/research-acceptance`、HEAD `ac2b5274f4693f1b0c7cca3c26f4cac131ffd0a7` 及已有未提交实现。ENG-01 随后按用户授权提交和推送，实现提交为 `22d6db524c08abfd4976bded081cf415b25919c1`，交接提交为 `1574645b8b8bc4da9b7559d7794540e75775724c`；ENG-02 检查时 [PR #11](https://github.com/IsaacHuo/OpenLab/pull/11) 尚未合并，且该文档阶段没有自动推送或发布。任务执行状态统一记录在 [STATUS](STATUS.md)。
+
+2026-10-25 后续执行结果：用户授权连续推进后，ENG-00 至 ENG-06 已全部完成；PR #11、#12、#13 均通过必需检查后合并，精确 main CI 和 release dry-run 通过后发布了 [v0.1.0-alpha.1 源码预览](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1)。上段保留首次规划和 ENG-02 时的历史语境；当前进度以根 [PLAN.md](../PLAN.md) 和 STATUS 为准。以下任务合同保留，不重复实施已完成阶段。
 
 ## 目标与现有基线
 
 长期目标沿用[原始愿景](vision.zh-CN.md)：让研究项目、证据和成果由用户持有，模型、工具、运行时和界面可以替换。近期目标是把已经可运行的本地研究与文档工作台收敛为可复核、可维护的研究预览，再通过既有发布门槛准备 `v0.1.0-alpha.1`。
 
-当前源码已有 TypeScript/Node.js 24、React/Vite、SQLite 与普通文件、受监督 Harness、Crossref、计划确认、来源追溯、导入导出，以及连续研究上下文、静态插件、Markdown/LaTeX 编辑、修订比较、BusyTeX 与 PDF.js；后两轮实现已纳入 PR #11。详细进度和验证边界见 [STATUS](STATUS.md)，不把这些能力重新列为待开发。2026-10-25 检查发现该 PR 浏览器 CI 为 11 项通过、1 项失败；本地 57/12 的历史结果不代表合并门槛通过。
+当前源码已有 TypeScript/Node.js 24、React/Vite、SQLite 与普通文件、受监督 Harness、Crossref、计划确认、来源追溯、导入导出，以及连续研究上下文、静态插件、Markdown/LaTeX 编辑、修订比较、BusyTeX 与 PDF.js；后两轮实现已纳入 PR #11。详细进度和验证边界见 [STATUS](STATUS.md)，不把这些能力重新列为待开发。早期 CI 的 11/12 失败与本地 57/12 记录保留在验证文档；后续候选和精确 main 检查已通过 57 项 Node 和 13 项浏览器，不以历史结果替代新门槛。
 
 ## 文档分工
 
