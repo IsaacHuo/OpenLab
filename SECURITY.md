@@ -2,7 +2,12 @@
 
 ## Supported versions
 
-During the foundation stage, maintainers address security problems in the current `main` branch and latest published foundation release. No application runtime has shipped in v0.0.1. A version support matrix will be added before the first application release.
+Maintainers address security problems in the current `main` branch and latest published research prerelease. The v0.1.0-alpha.1 source preview targets a local Windows-first service; it is not a hosted or multi-user service. No application runtime shipped in v0.0.1.
+
+| Version line | Security scope |
+| --- | --- |
+| Current main / latest v0.1.0 alpha | Current source-preview fixes, with limitations below |
+| v0.0.1 foundation | Historical repository tooling and documentation; no application runtime |
 
 ## Report privately
 

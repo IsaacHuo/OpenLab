@@ -40,6 +40,16 @@ The planning research inspected these popular projects on 2026-10-25. Star count
 
 ## Local delivery preflight, 2026-10-25
 
+### ENG-05 source candidate
+
+ENG-04's [PR #12](https://github.com/IsaacHuo/OpenLab/pull/12) passed [workflow 40170593908](https://github.com/IsaacHuo/OpenLab/actions/runs/40170593908) on head `b1373907f448642991c55840d2c9893c7af1d4b0`, with all required jobs successful and no unresolved review threads, then merged as `14b8a652f63c196b1746878f376bab259a141192`. The source candidate starts from that commit.
+
+The candidate sets VERSION, package.json, both root package-lock version fields and OpenAPI info metadata to `0.1.0-alpha.1`; the generated OpenAPI JSON matches the source exactly. An explicit comparison against the parent lockfile confirmed that the dependency graph is unchanged. API paths/types, database version 1 and archive v1/v2 compatibility are unchanged. The dated changelog includes startup, evidence and preview limits. English/Chinese README instructions, security scope and third-party notices were updated together where applicable.
+
+On native Windows x64, Node.js 24.19.0 / npm 11.17.0, this candidate passed `npm run check` (57 tests, no failures/skips), `npm run build`, all 13 `npm run test:browser` scenarios, `npm run check:actions` (actionlint 1.7.12), `npm run check:secrets` (Gitleaks 8.30.1), `npm audit --audit-level=high` (zero vulnerabilities) and `git diff --check`. The compiler test used the existing pinned cache. The existing large-chunk advisory remains. No live model/retrieval calls were made; the earlier dated live records were reused without broadening their compatibility claims.
+
+Inspection of all 154 tracked paths found uppercase PLAN.md and no tracked research/configuration/cache/dependency/build/test-output directories. Direct dependency version/license metadata was checked against installed lockfile-matched packages; retained component notices remain present. GitHub source archives exclude Supervisor-Skills, local Skills/hooks and prepared TeX/font binaries. Remote candidate CI and exact main push CI remain separate gates; these local results alone do not establish publication.
+
 ### ENG-03 remote completion and ENG-04 gate audit
 
 [Workflow 40170016084](https://github.com/IsaacHuo/OpenLab/actions/runs/40170016084) passed on PR #11 head `73ad1658c7f9f3d4d283d5221af4922668661a99`, using temporary merge checkout `c99db1b22a68a6296889d687cbe51f8400f05ba7`. Both repository jobs, actionlint, Gitleaks, independent compiler preparation, all 13 browser scenarios and required-checks succeeded. Compiler preparation took 12 seconds on that runner. Review threads were empty, and PR #11 was squash merged to main `c9a96f3ca22fd85276ca9fb09defa1a541bd08c1`. This resolves the merge blocker; the old timeout's exact cause remains unproven.

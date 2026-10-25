@@ -38,6 +38,27 @@ These application components are not installed or bundled in the historical v0.0
 
 ## Document plugins and editor dependencies
 
+### Source-preview inventory, 2026-10-25
+
+The v0.1.0-alpha.1 candidate reuses the existing lockfile dependency graph; only the root application version changes. Direct package metadata in the installed lockfile-matched packages was checked as follows, in addition to the React/assistant-ui/AG-UI/Radix/Lucide inventory above:
+
+| Package | Installed version | Declared license |
+| --- | --- | --- |
+| `@codemirror/commands` | 6.11.1 | MIT |
+| `@codemirror/lang-markdown` | 6.5.2 | MIT |
+| `@codemirror/language` | 6.13.1 | MIT |
+| `@codemirror/legacy-modes` | 6.5.5 | MIT |
+| `@codemirror/search` | 6.7.2 | MIT |
+| `@codemirror/state` | 6.7.6 | MIT |
+| `@codemirror/view` | 6.43.15 | MIT |
+| `@lezer/highlight` | 1.2.5 | MIT |
+| `diff` | 9.0.0 | BSD-3-Clause |
+| `pdfjs-dist` | 6.4.299 | Apache-2.0 |
+
+GitHub source archives contain tracked OpenLab code and retained design/license notices. They exclude `node_modules`, `dist`, prepared BusyTeX/font components, research data, protected credentials, local `.agents`/`.codex` installations and unselected mockups. `npm ci` installs dependencies with their own license files. Preparing compiler resources downloads third-party components separately; their terms and sources below still apply. No Supervisor-Skills contents or compiler/font binaries are redistributed by this source release.
+
+### Editor and compiler provenance
+
 The default editors use CodeMirror 6 (`@codemirror/state`, `view`, `commands`, `search`, `language`, `lang-markdown`, `legacy-modes` and `@lezer/highlight`), under MIT licenses. Current upstream sources and licenses are linked from [CodeMirror](https://codemirror.net/); its repositories have moved to the maintainer's forge. OpenLab supplies a React host and a neutral theme, not a fork of the editor.
 
 Version comparison uses [jsdiff](https://github.com/kpdecker/jsdiff), BSD-3-Clause, in a bounded Worker. PDF previews use [PDF.js](https://github.com/mozilla/pdf.js), Apache-2.0; the dependency and worker are loaded only for PDF viewing. Installed versions are pinned in the npm lockfile.

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "OpenLab local research API",
-    "version": "0.1.0-dev",
+    "version": "0.1.0-alpha.1",
     "description": "Loopback only. Use the per-launch link to establish a local session. Mutations require Origin and x-openlab-csrf. Research records are authoritative; SSE attachment never starts work."
   },
   "servers": [

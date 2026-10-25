@@ -1,8 +1,10 @@
 # Changelog
 
-Delivered changes are recorded here. Version tags use `v` followed by a semantic version. Foundation releases describe repository infrastructure; the first runnable preview is planned as `v0.1.0-alpha.1`.
+Delivered changes are recorded here. Version tags use `v` followed by a semantic version. Foundation releases describe repository infrastructure; `v0.1.0-alpha.1` is the first research source-preview version.
 
 ## [Unreleased]
+
+## [0.1.0-alpha.1] - 2026-10-25
 
 ### Added
 
@@ -29,8 +31,17 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 ### Fixed
 
 - Keep comparison revision reads within the selected document; prepare pinned TeX components before browser CI and retain failed compiler diagnostics, screenshots and traces.
-- Align development and acceptance documentation with implemented plugin capabilities, request limits and independent archive/database versions; separate historical local verification from the unresolved PR #11 XeLaTeX CI timeout.
+- Align development and acceptance documentation with implemented plugin capabilities, request limits and independent archive/database versions; retain the initial XeLaTeX CI failure separately from the subsequent passing checks.
 - Preserve the selected report revision when navigating to its producing step, bind creation keys to limits/retry ancestry, reject invalid replay cursor indices, close interrupted AG-UI projections and retain TLS verification during isolated Windows Git installation.
+
+### Preview boundary
+
+- Source preview for Node.js 24 and a locally launched browser workspace; no installer, hosted deployment or npm package is provided.
+- Windows user-scoped credential protection; Crossref metadata research; dated DeepSeek non-thinking compatibility. Metadata and model interpretation do not establish full-text access or scientific claim support.
+- Static trusted plugins and supervised workers are not an untrusted-code sandbox. No arbitrary execution, multiple agents, team hosting or automatic process-loss recovery.
+- TeX/font resources are downloaded separately (202,592,248 bytes), with checksums and resumable ranges; first preparation needs network access and curl. Cached offline compilation is tested. Missing packages fail while retaining the prior PDF; the Worker deadline is 120 seconds.
+- Supervisor-Skills, local research data, credentials, installed local Skills/hooks, generated bundles and compiler/font binaries are excluded from source archives. Third-party licenses remain independent; see THIRD_PARTY_NOTICES.md.
+- Validation includes 57 Node tests and 13 browser scenarios on the candidate, plus required Windows/Linux/browser CI. Historical live model/retrieval evidence remains dated; no new paid provider calls were made for this release preparation.
 
 ## [0.0.1] - 2026-10-24
 
@@ -47,5 +58,6 @@ Delivered changes are recorded here. Version tags use `v` followed by a semantic
 
 This foundation release contains specifications and repository tooling. It does not contain a runnable research application, an installer, a verified Supervisor-Skills integration, or runtime security guarantees.
 
-[Unreleased]: https://github.com/IsaacHuo/OpenLab/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/IsaacHuo/OpenLab/compare/v0.1.0-alpha.1...HEAD
+[0.1.0-alpha.1]: https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1
 [0.0.1]: https://github.com/IsaacHuo/OpenLab/releases/tag/v0.0.1

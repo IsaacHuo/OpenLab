@@ -47,7 +47,7 @@ for (const [path, item] of Object.entries(paths)) {
   if (parameters.length) item.parameters = parameters;
 }
 export const openapi = {
-  openapi: '3.1.0', info: { title: 'OpenLab local research API', version: '0.1.0-dev', description: 'Loopback only. Use the per-launch link to establish a local session. Mutations require Origin and x-openlab-csrf. Research records are authoritative; SSE attachment never starts work.' },
+  openapi: '3.1.0', info: { title: 'OpenLab local research API', version: '0.1.0-alpha.1', description: 'Loopback only. Use the per-launch link to establish a local session. Mutations require Origin and x-openlab-csrf. Research records are authoritative; SSE attachment never starts work.' },
   servers: [{ url: '/api/v1' }], paths,
   components: {
     securitySchemes: { LocalSession: { type: 'apiKey', in: 'cookie', name: 'openlab_session' } },
