@@ -2,6 +2,8 @@
 
 Scope: the first local research loop in [product](product.md), with the explicit preview limits below. This record does not claim completion of the founding vision's later compute, multi-agent, institutional or ecosystem phases.
 
+[v0.1.0-alpha.1](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1) was published on 2026-10-25 from `0e6f348612b56ac17e848c88fd9a3034b61bfc56` after the exact candidate and main push CI, release dry-run and release workflow passed. The final 13 browser scenarios include deterministic concurrent-material selection and cross-document comparison regressions. The preview limits below remain applicable; this publication adds no new live provider or full-text compatibility claim.
+
 As of 2026-10-25, ENG-03 passed 57 Node tests and 13 browser scenarios locally. [PR #11 checks](https://github.com/IsaacHuo/OpenLab/actions/runs/40170016084) passed Windows/Linux repository validation, independently prepared compiler resources, all 13 browser scenarios, actionlint, Gitleaks and required-checks. PR #11 was squash merged as `c9a96f3ca22fd85276ca9fb09defa1a541bd08c1`. The earlier first-compilation timeout and its evidence remain historical in [verification](verification.md). No additional live model calls were made. The current task is in [PLAN](../PLAN.md).
 
 ## Evidence matrix

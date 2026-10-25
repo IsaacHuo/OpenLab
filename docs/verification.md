@@ -2,6 +2,24 @@
 
 This record retains dated evidence from the v0.0.1 foundation through the current development source. Test counts describe their recorded stage and environment; they are not assertions about every later revision. The published v0.0.1 remains foundation-only. Exact workflow outcomes and tested commits remain in GitHub Actions; current work and dependencies are in [STATUS](STATUS.md) and [ROADMAP](ROADMAP.md).
 
+## Source preview release, ENG-06, 2026-10-25
+
+[v0.1.0-alpha.1](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1) was published at 2026-10-25 15:17:03 Asia/Shanghai (07:17:03 UTC), following this verified chain:
+
+| Gate | Exact identity and result |
+| --- | --- |
+| Candidate PR | [PR #13](https://github.com/IsaacHuo/OpenLab/pull/13), final head `bba97f050e83400b9768365ac1f42147482b0155`; [CI 40171822447](https://github.com/IsaacHuo/OpenLab/actions/runs/40171822447) passed every required job; no unresolved review threads |
+| Main source | Squash merge `0e6f348612b56ac17e848c88fd9a3034b61bfc56`; [push CI 40172012839](https://github.com/IsaacHuo/OpenLab/actions/runs/40172012839) passed Windows/Linux repository/build, independent compiler preparation, 13 browser scenarios, actionlint, Gitleaks and required-checks |
+| Local dry-run | `npm.cmd run release:check -- 0.1.0-alpha.1` passed from a clean checkout at that exact main SHA before publication |
+| Publication | [Release workflow 40172172425](https://github.com/IsaacHuo/OpenLab/actions/runs/40172172425), dispatched on main with version `0.1.0-alpha.1`, completed successfully |
+| Remote release | `isDraft=false`, `isPrerelease=true`, tag name `v0.1.0-alpha.1`; no binary attachments, GitHub source archives available |
+| Annotated tag | Tag object `de7a92e79707af54e55b868464baa7392bee3748` resolves to commit `0e6f348612b56ac17e848c88fd9a3034b61bfc56`; fetched locally and dereferenced to the same SHA |
+| Tag protection | Live `OpenLab immutable version tags` ruleset active for `refs/tags/v*`, with update and deletion restrictions |
+
+The actual published-tag source tar was inspected: uppercase PLAN.md, LICENSE and THIRD_PARTY_NOTICES.md are present; research/configuration/cache/dependency/build/test-output directories are absent. Version identity is `0.1.0-alpha.1`. The original vision's Git blob remains `5a8bba30140fd457950e6b51998f1b817f8fa130`, identical to the pre-task main baseline. No tag was moved or deleted and no new paid model call was made.
+
+ENG-00 through ENG-06 are complete within the source-preview boundary. The final documentation handoff records the publication without changing its immutable tag or adding application behavior. Subsequent main documentation commits do not change the release's source identity. Native cold-download TLS/revocation failures, large-chunk advisories and the documented product/compatibility limits remain limitations; they are not represented as passed guarantees for deferred features.
+
 ## Evidence stages
 
 | Date and stage | Recorded local checks | Evidence boundary |

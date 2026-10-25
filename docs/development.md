@@ -1,6 +1,6 @@
 # Application development
 
-The v0.0.1 release remains foundation-only. Current source includes the React/assistant-ui research workspace, platform archive, generic Harness, supervised worker and local research API. There is no installer yet. Follow the [implementation plan](implementation-plan.md) for remaining gates.
+The [v0.1.0-alpha.1 source preview](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1) includes the React/assistant-ui research workspace, platform archive, generic Harness, supervised worker, local research API and document plugins. It is a source release with no installer. The historical v0.0.1 remains foundation-only. See [PLAN](../PLAN.md) for completed delivery stages and [acceptance](acceptance.md) for the preview boundary.
 
 ## Run checks
 
@@ -17,7 +17,7 @@ The check includes strict TypeScript validation, documentation validation and No
 
 Browser acceptance uses an installed Chrome through Playwright. Set `OPENLAB_BROWSER_CHANNEL` to another installed Chromium channel if necessary. The synthetic server uses a separate temporary data root and no provider credential. Tests cover desktop and 390-pixel drawers, plan confirmation, structured questions, denied access, report revisions, source/step links, conversation replay, cancellation, UTF-8 attachments and English/Chinese interaction. Axe checks the exercised screens for WCAG A/AA issues; this is automated evidence, not a complete accessibility certification.
 
-The document scenarios also run real BusyTeX compilation and PDF.js checks. A cold compiler cache needs about 203 MB of pinned resources; this network setup is separate from the controlled research fixture and requires no model credential. See [plugin preparation](plugins.md#tex-compiler-and-pdf-preview) and the [verification record](verification.md) for cached local results and the unresolved CI compilation timeout. ENG-03 in the [roadmap](ROADMAP.md#eng-03-复核构建与浏览器验收可复现性) owns reproduction and repair.
+The document scenarios also run real BusyTeX compilation and PDF.js checks. A cold compiler cache needs about 203 MB of pinned resources; this network setup is separate from the controlled research fixture and requires no model credential. See [plugin preparation](plugins.md#tex-compiler-and-pdf-preview) and the [verification record](verification.md) for cached local results, the historical CI failures and subsequent passing candidate/main checks. CI prepares the components before Playwright and retains failure evidence. The fixed font mirror keeps normal TLS checks and the original SHA-256 pin.
 
 ## Implemented core
 

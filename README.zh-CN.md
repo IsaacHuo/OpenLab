@@ -25,6 +25,8 @@ OpenLab 致力于建立本地优先的科研工作空间，将已有的开源科
 
 **当前源码为 v0.1.0-alpha.1 科研预览。** 使用 Node.js 24 和浏览器在本地运行，尚不提供安装包。历史 v0.0.1 仅交付仓库基础设施；预览边界见[变更日志](CHANGELOG.md)，交付进度见[PLAN](PLAN.md)。
 
+[已发布的源码预览](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1)提供已审阅的发布说明和 GitHub 源码档案。
+
 | 能力 | 状态 |
 | --- | --- |
 | 贡献指南、Issue/PR 模板与发布流程 | 本仓库提供 |

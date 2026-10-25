@@ -1,44 +1,40 @@
 # OpenLab 当前状态与交接
 
-更新时间：2026-10-25（Asia/Shanghai）。当前任务 **ENG-05：alpha 源码候选准备**。ENG-04 的 [PR #12](https://github.com/IsaacHuo/OpenLab/pull/12) 已通过全部必需检查并合并，当前准备 `0.1.0-alpha.1` 版本身份、启动说明、许可和发布材料。计划入口为根 [PLAN.md](../PLAN.md)，详细任务合同见 [ROADMAP](ROADMAP.md)，约束见 [DECISIONS](DECISIONS.md)。
+更新时间：2026-10-25（Asia/Shanghai）。**本轮 ENG-00 至 ENG-06 已全部完成**，[v0.1.0-alpha.1 科研源码预览](https://github.com/IsaacHuo/OpenLab/releases/tag/v0.1.0-alpha.1) 已发布。当前仅整理最终文档交接。根 [PLAN.md](../PLAN.md) 是用户指定的计划入口；任务合同保留在 [ROADMAP](ROADMAP.md)，约束见 [DECISIONS](DECISIONS.md)。
 
-## Git、授权与交付边界
+## 交付与版本身份
 
-- 当前分支：`codex/alpha-source-candidate`，起点为 main `14b8a652f63c196b1746878f376bab259a141192`（[PR #12](https://github.com/IsaacHuo/OpenLab/pull/12) squash 合并）。此前 PR #11 交付实现、ENG-02 文档和 ENG-03 修复。
-- 用户已授权按 ENG-00 至 ENG-06 顺序提交、PR、必需检查通过后合并，满足候选和精确 main CI 门槛后源码预发布；不绕过规则，不调用付费模型，不把远期候选当成已批准功能。
-- Windows x64、Node.js `24.19.0`、npm `11.17.0`；沿用锁文件和已有依赖，未升级依赖。
-- 原小写根计划已按用户要求更名为大写 `PLAN.md`，顶部补当前阶段和验收出口，保留两轮历史台账并同步链接。README 中英文导航已同步。
-- 用户研究数据、保护凭据、本地 Skills/hooks、未选稿、缓存和测试产物保留本机，不纳入源码交付。档案 v2 与 SQLite `user_version=1` 独立；v1 导入兼容。
+- PR #11（实现、文档对齐、构建/浏览器修复）、#12（数据/权限验收、大写 PLAN）和 #13（alpha 候选及候选失败修复）均在精确 PR CI 全通过、无待解决讨论后 squash 合并。
+- 发布源码：`0e6f348612b56ac17e848c88fd9a3034b61bfc56`。带注释 tag `v0.1.0-alpha.1` 的对象为 `de7a92e79707af54e55b868464baa7392bee3748`，远程与本地解引用均指向该源码提交。版本文件、npm 根版本和 OpenAPI 元数据一致。
+- GitHub Release 于 2026-10-25 15:17（Asia/Shanghai）发布，非草稿、prerelease，无二进制附件；提供源码档案，不提供安装包或托管部署。活动 v* tag 规则禁止更新/删除。
+- 当前最终交接分支：`codex/source-preview-handoff`，基于发布提交，仅改文档；后续 main 文档提交不改变已发布 tag。
+- 用户已授权逐阶段提交、PR、检查通过后合并及满足门槛的源码预发布。本轮未调用付费模型，未修改或发布用户研究数据，未使用子 Agent。
 
-## 任务状态
+## 阶段结果
 
-| ID | 状态 | 交接 |
+| ID | 状态 | 交付 |
 | --- | --- | --- |
-| ENG-00 | 已完成 | 协作入口及架构约束已交付 |
-| ENG-01 | 已完成 | 既有实现盘点、提交、推送，PR #11 已合并 |
-| ENG-02 | 已完成 | 文档能力、限制、版本和历史证据对齐；三项文档检查通过 |
-| ENG-03 | 已完成 | 本地 57 项 Node、13 项浏览器、构建和检查通过；精确 PR CI 全通过后合并 |
-| ENG-04 | 已完成 | 30 项边界测试通过，验收映射和大写 PLAN 入口在 PR #12 通过 CI 后合并 |
-| ENG-05 | 进行中 | 固定字体镜像已通过远程准备和真实编译；随后 CI 暴露并发材料选择覆盖，确定性回归先失败后通过，正在复验候选 |
-| ENG-06 | 待开始 | 已授权按门槛发布；依赖 ENG-05、release dry-run 与精确 main push CI |
+| ENG-00 | 已完成 | 协作规则、路线图、状态和决策入口 |
+| ENG-01 | 已完成 | 既有实现分类、提交和推送；本地工具及数据排除 |
+| ENG-02 | 已完成 | 能力、请求限制、档案/数据库版本与历史证据口径一致 |
+| ENG-03 | 已完成 | 独立 TeX 准备、失败证据留存及跨文档比较修复；本地/远程验收通过 |
+| ENG-04 | 已完成 | 30 项边界测试与验收映射，PLAN 大写更名及双语入口，PR #12 已合并 |
+| ENG-05 | 已完成 | 候选身份、许可与说明；固定字体镜像及并发材料选择修复；PR #13 全检查通过后合并 |
+| ENG-06 | 已完成 | 精确 main push CI、release dry-run、发布工作流和 tag/Release 身份核验通过 |
 
-## 本轮实际验证
+## 实际验证
 
-- ENG-03：`npm run check`（57 项 Node，0 失败/跳过）、`npm run build`、`npm run test:browser`（13 项）、`npm run check:actions`、`npm run check:secrets`、`git diff --check` 通过。桌面/平板/手机文档截图已检查。
-- [CI 40170016084](https://github.com/IsaacHuo/OpenLab/actions/runs/40170016084)：head `73ad1658c7f9f3d4d283d5221af4922668661a99` 的 Windows/Linux、独立 TeX 准备、13 项浏览器、actionlint、Gitleaks、required-checks 全通过。该结果不替代后续文档和版本候选的 CI。
-- ENG-04：`node --test app/tests/platform.test.ts app/tests/runtime.test.ts app/tests/service.test.ts app/tests/store.test.ts app/tests/documents.test.ts app/tests/context.test.ts app/tests/workflow.test.ts`：30 项通过，0 失败/跳过。均使用隔离受控夹具，未调用真实模型。
-- [CI 40170593908](https://github.com/IsaacHuo/OpenLab/actions/runs/40170593908)：PR #12 head `b1373907f448642991c55840d2c9893c7af1d4b0` 的全部必需检查通过，已合并为 main `14b8a65`。
-- 本阶段 `npm.cmd run lint:markdown`（36 份）、`npm.cmd run check:repository`（159 个文件）及 `git diff --check` 通过，大写路径和链接已核对；详细阶段证据见 [verification](verification.md)，alpha 门槛映射见 [acceptance](acceptance.md#alpha-data-and-permission-gates-eng-04-2026-10-25)。
-- ENG-05 候选：`npm run check`（57 项）、build、browser（13 项）、actionlint、Gitleaks、npm audit（零漏洞）和空白检查通过；版本/OpenAPI 一致、依赖图未变及 154 个源码路径的排除检查通过。尚未发布；精确候选和 main CI 不用历史结果替代。
-- PR #13 首次 CI `40171037488`：仓库、actionlint、Gitleaks 通过；准备字体的一个分片 curl 60，浏览器未启动。改用固定 MIT CTAN 镜像，Node HTTPS 实取的 4,947,904 字节与既有 SHA-256 完全一致；TLS 验证保持开启。修复后 check（57 项）、actionlint、空白检查再次通过，等待新远程验证。
-- 后续 CI `40171390131`：固定字体准备和真实 TeX 通过，材料选择场景失败，整体 12/13。受控并发上传回归复现旧状态覆盖；修复为基于最新选择合并，针对场景、类型检查、构建及完整 13 项浏览器再次通过；等待新 head CI。
+- 本地：Windows x64、Node.js `24.19.0`、npm `11.17.0`。check（57 项 Node，0 失败/跳过）、build、browser（13 项）、actionlint 1.7.12、Gitleaks 8.30.1、npm audit（零漏洞）、Markdown/仓库和空白检查通过。跨文档对比与确定性并发上传回归均先失败后通过；类型/构建及完整浏览器在对应修复后重跑通过。
+- alpha 专项：既定七文件 `node --test` 命令 30 项通过；计划确认、权限拒绝、重放、取消/重启、凭据隔离、人工修订、v1/v2 往返与跨项目引用均有证据。完整映射见 [acceptance](acceptance.md#alpha-data-and-permission-gates-eng-04-2026-10-25)。
+- [候选 CI 40171822447](https://github.com/IsaacHuo/OpenLab/actions/runs/40171822447)（head `bba97f0`）和[精确 main push CI 40172012839](https://github.com/IsaacHuo/OpenLab/actions/runs/40172012839)（源码 `0e6f348`）均通过全部必需检查，包含新环境字体准备与真实编译。
+- `npm.cmd run release:check -- 0.1.0-alpha.1` 在干净、精确 main 源码上通过；[发布工作流 40172172425](https://github.com/IsaacHuo/OpenLab/actions/runs/40172172425) 成功；发布结果、注释 tag 及活动 tag 保护规则已读取核对。
+- 实际发布 tag 源码 tar 检查通过：PLAN/许可文件存在；本地数据、凭据、Skills/hooks、依赖、缓存、构建、测试和编译器/字体二进制不在档案中。原始愿景与前置 main 的 Git blob 一致。详细证据及历史失败见 [verification](verification.md#source-preview-release-eng-06-2026-10-25)。
 
-## 限制与下一动作
+## 限制与后续
 
-- 早期 XeLaTeX CI 超时的精确原因没有被日志证明；分离准备后的新 CI 已通过。隔离本地冷下载仍观察到 curl 35 TLS 错误，缓存分片保留，明确重试可续传；不把本地 TLS 故障等同于旧 CI 根因。
-- 预览范围保持 Windows 凭据保护、单 Crossref 元数据提供商、具日期的 DeepSeek 非思考模式兼容；没有通用全文/科学论点核实、任意代码、动态插件隔离、多 Agent、安装包或团队部署。Supervisor-Skills 不随源码分发。
-- 现有超过 500 kB 的分块提示保留；尚无用户性能测量，不为发布引入无目标重构。
-- 下一动作：执行 ENG-05 的完整候选检查，建立候选 PR，通过后合并；ENG-06 继续等待精确 main push CI 和 release dry-run。
+- 仍为 Windows 优先、Crossref 元数据研究和具日期的 DeepSeek 非思考模式兼容；通用全文、科学论点核实、任意代码、动态插件隔离、多 Agent、安装包及团队部署均为远期候选。Supervisor-Skills 未分发；数据库版本 1、导出档案 v2、导入 v1/v2 保持原兼容边界。
+- 本机隔离冷下载遇到 TLS/撤销查询错误；已有缓存和新 Linux CI 的真实准备/编译通过。字体固定 MIT 镜像的实取字节与原 SHA-256 一致，TLS 检查未关闭。JavaScript 超过 500 kB 的已有分块提示保留。
+- 本轮没有未完成的路线图任务或发布阻塞。下一动作：保留发布身份，从实际研究需求选择一个远期候选，单独定义输入输出、失败边界和验收后再开发，不重复本轮阶段。
 
 ## 保留的本地预览记录
 
