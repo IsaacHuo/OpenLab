@@ -19,7 +19,7 @@
 | ENG-02 | 已完成 | 文档能力、限制、版本和历史证据对齐；三项文档检查通过 |
 | ENG-03 | 已完成 | 本地 57 项 Node、13 项浏览器、构建和检查通过；精确 PR CI 全通过后合并 |
 | ENG-04 | 已完成 | 30 项边界测试通过，验收映射和大写 PLAN 入口在 PR #12 通过 CI 后合并 |
-| ENG-05 | 进行中 | 版本、双语启动说明、许可及发布边界已整理；完整本地候选检查通过，待精确候选 PR CI |
+| ENG-05 | 进行中 | 本地完整候选检查通过；PR #13 首次 CI 在 Fandol 字体分片证书验证处失败，已固定镜像并验证既有哈希，待新 head CI |
 | ENG-06 | 待开始 | 已授权按门槛发布；依赖 ENG-05、release dry-run 与精确 main push CI |
 
 ## 本轮实际验证
@@ -30,6 +30,7 @@
 - [CI 40170593908](https://github.com/IsaacHuo/OpenLab/actions/runs/40170593908)：PR #12 head `b1373907f448642991c55840d2c9893c7af1d4b0` 的全部必需检查通过，已合并为 main `14b8a65`。
 - 本阶段 `npm.cmd run lint:markdown`（36 份）、`npm.cmd run check:repository`（159 个文件）及 `git diff --check` 通过，大写路径和链接已核对；详细阶段证据见 [verification](verification.md)，alpha 门槛映射见 [acceptance](acceptance.md#alpha-data-and-permission-gates-eng-04-2026-10-25)。
 - ENG-05 候选：`npm run check`（57 项）、build、browser（13 项）、actionlint、Gitleaks、npm audit（零漏洞）和空白检查通过；版本/OpenAPI 一致、依赖图未变及 154 个源码路径的排除检查通过。尚未发布；精确候选和 main CI 不用历史结果替代。
+- PR #13 首次 CI `40171037488`：仓库、actionlint、Gitleaks 通过；准备字体的一个分片 curl 60，浏览器未启动。改用固定 MIT CTAN 镜像，Node HTTPS 实取的 4,947,904 字节与既有 SHA-256 完全一致；TLS 验证保持开启。修复后 check（57 项）、actionlint、空白检查再次通过，等待新远程验证。
 
 ## 限制与下一动作
 

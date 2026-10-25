@@ -29,7 +29,7 @@ export class TexResources {
         if (this.stopped) throw new Error('Compiler preparation cancelled');
         const path = join(texRoot, name);
         if (!existsSync(path) || statSync(path).size !== size) {
-          const url = name === 'FandolSong-Regular.otf' ? 'https://mirrors.ctan.org/fonts/fandol/FandolSong-Regular.otf' : `https://github.com/busytex/busytex/releases/download/${texRelease}/${name}`;
+          const url = name === 'FandolSong-Regular.otf' ? 'https://ctan.csail.mit.edu/fonts/fandol/FandolSong-Regular.otf' : `https://github.com/busytex/busytex/releases/download/${texRelease}/${name}`;
           let downloadUrl = url; try { const head = await fetch(assetIds[name] ? `https://api.github.com/repos/busytex/busytex/releases/assets/${assetIds[name]}` : url, { headers: { Accept: 'application/octet-stream' }, method: 'HEAD', signal: AbortSignal.timeout(20_000) }); if (head.ok) downloadUrl = head.url; } catch { /* curl can still use the original pinned URL. */ }
           const chunkSize = 512 * 1024; const chunks: Buffer[] = new Array(Math.ceil(size / chunkSize)); let next = 0;
           const downloaded = await Promise.allSettled(Array.from({ length: Math.min(16, chunks.length) }, async () => {
