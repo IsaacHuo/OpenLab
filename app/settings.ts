@@ -41,7 +41,35 @@ export class Settings {
     new CompatibleModel({ baseUrl, model, apiKey });
     const entry: ProviderEntry = { id: randomUUID(), name: text(input.name, 'provider name', 200), baseUrl, model, thinkingDisabled: new URL(baseUrl).hostname === 'api.deepseek.com' };
     writeFileSync(join(this.root, 'credentials', `${entry.id}.dpapi`), this.protection.protect(apiKey), { flag: 'wx', mode: 0o600 });
-    this.save([...this.list(), entry]);
+    try { this.save([...this.list(), entry]); }
+    catch (error) { rmSync(join(this.root, 'credentials', `${entry.id}.dpapi`), { force: true }); throw error; }
+    return entry;
+  }
+  update(providerId: string, input: ObjectData): ProviderEntry {
+    id(providerId);
+    if (Object.keys(input).some(key => !['name', 'baseUrl', 'model', 'apiKey'].includes(key))) throw new DomainError('Unsupported provider setting');
+    const entries = this.list();
+    const entry = entries.find(provider => provider.id === providerId);
+    if (!entry) throw new DomainError('Provider not found', 404);
+    const previous = { ...entry };
+    if (input.name !== undefined) entry.name = text(input.name, 'provider name', 200);
+    if (input.baseUrl !== undefined) entry.baseUrl = text(input.baseUrl, 'base URL', 500).replace(/\/$/, '');
+    if (input.model !== undefined) entry.model = text(input.model, 'model', 200);
+    if (input.apiKey !== undefined && typeof input.apiKey !== 'string') throw new DomainError('Invalid API key');
+    const secret = typeof input.apiKey === 'string' && input.apiKey.trim() ? text(input.apiKey, 'API key', 500) : undefined;
+    new CompatibleModel({ baseUrl: entry.baseUrl, model: entry.model, apiKey: secret ?? 'validation-only' });
+    entry.thinkingDisabled = new URL(entry.baseUrl).hostname === 'api.deepseek.com';
+    if (secret || entry.baseUrl !== previous.baseUrl || entry.model !== previous.model) { delete entry.testedAt; delete entry.streaming; delete entry.tools; }
+    const path = join(this.root, 'credentials', `${providerId}.dpapi`);
+    const oldCipher = secret ? readFileSync(path, 'utf8') : undefined;
+    const nextCipher = secret ? this.protection.protect(secret) : undefined;
+    try {
+      if (nextCipher !== undefined) { writeFileSync(path + '.tmp', nextCipher, { mode: 0o600 }); renameSync(path + '.tmp', path); }
+      this.save(entries);
+    } catch {
+      if (oldCipher !== undefined) { writeFileSync(path + '.tmp', oldCipher, { mode: 0o600 }); renameSync(path + '.tmp', path); }
+      throw new DomainError('Could not save provider settings; previous configuration was kept', 500);
+    } finally { rmSync(path + '.tmp', { force: true }); }
     return entry;
   }
   config(providerId: string): ProviderConfig {
@@ -56,6 +84,8 @@ export class Settings {
     rmSync(join(this.root, 'credentials', `${providerId}.dpapi`), { force: true });
   }
   async test(providerId: string, signal = AbortSignal.timeout(90_000)): Promise<ProviderEntry> {
+    const before = this.list().find(provider => provider.id === providerId);
+    const cipher = readFileSync(join(this.root, 'credentials', `${id(providerId)}.dpapi`), 'utf8');
     const config = this.config(providerId);
     const model = new CompatibleModel({ ...config, maxOutputTokens: 128 });
     let streamed = false;
@@ -67,7 +97,8 @@ export class Settings {
     }
     if (!streamed || !tools) throw new DomainError('Selected model did not demonstrate streaming and structured tool calls', 409);
     const entries = this.list();
-    const entry = entries.find(p => p.id === providerId)!;
+    const entry = entries.find(p => p.id === providerId);
+    if (!entry || entry.baseUrl !== before?.baseUrl || entry.model !== before?.model || readFileSync(join(this.root, 'credentials', `${providerId}.dpapi`), 'utf8') !== cipher) throw new DomainError('Provider changed during the test; test the current settings again', 409);
     Object.assign(entry, { testedAt: new Date().toISOString(), streaming: true, tools: true });
     this.save(entries);
     return entry;

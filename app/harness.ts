@@ -8,7 +8,7 @@ export const fullContext: ContextStrategy = { assemble: messages => ({ messages,
 // This loop knows nothing about SQLite, HTTP, scholarly APIs or the browser.
 export async function executeHarness(options: {
   question: string; instructions: string; model: ModelProvider; tools: ToolExecutor;
-  host: HarnessHost; limits: Limits; signal: AbortSignal; context?: ContextStrategy;
+  host: HarnessHost; limits: Limits; signal: AbortSignal; context?: ContextStrategy; history?: Message[];
 }): Promise<void> {
   const { host, model, tools, limits } = options;
   const signal = AbortSignal.any([options.signal, AbortSignal.timeout(limits.durationMs)]);
@@ -17,6 +17,7 @@ export async function executeHarness(options: {
   let unknownUsage = false;
   const messages: Message[] = [
     { role: 'system', content: options.instructions },
+    ...(options.history ?? []),
     { role: 'user', content: options.question },
   ];
   const call = async (planning: boolean): Promise<Message> => {

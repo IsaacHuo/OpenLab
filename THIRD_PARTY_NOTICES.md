@@ -23,7 +23,7 @@ GitHub Actions used by the workflows retain their upstream licenses and are pinn
 
 ### Implemented development dependencies
 
-Current development pins React/React DOM 19.3.1 (MIT), assistant-ui React 0.15.31 (MIT), its AG-UI adapter 0.1.0 (MIT), AG-UI client/core 1.0.3 (MIT), react-markdown 10.1.0 (MIT), and YAML 2.9.1 (ISC). Build/test tooling adds Vite 8.3.5 (MIT), its React plugin 6.1.2 (MIT), Playwright 1.64.1 (Apache-2.0), and axe-core Playwright 4.14.0 (MPL-2.0). Package license metadata was inspected on 2026-10-24. Transitive versions, integrity hashes and license metadata remain in package-lock.json; installed packages retain their license files. OpenLab's supporting UI components are original code; no shadcn or AI Elements source has been copied.
+Current development pins React/React DOM 19.3.1 (MIT), assistant-ui React 0.15.31 (MIT), its AG-UI adapter 0.1.0 (MIT), AG-UI client/core 1.0.3 (MIT), react-markdown 10.1.0 (MIT), and YAML 2.9.1 (ISC). Build/test tooling adds Vite 8.3.5 (MIT), its React plugin 6.1.2 (MIT), Playwright 1.64.1 (Apache-2.0), and axe-core Playwright 4.14.0 (MPL-2.0). Package license metadata was inspected on 2026-10-24. Transitive versions, integrity hashes and license metadata remain in package-lock.json; installed packages retain their license files. Supporting controls now include adaptations of shadcn/ui Select, Popover and Dialog (MIT), plus AI Elements Plan (Apache-2.0). The frontend pins Radix Select 2.4.1, Dialog/Popover 1.3.1, Tabs/Collapsible 1.2.1 (MIT) and Lucide React 1.61.0 (ISC). [Component sources and retained license notices](doc/design/component-sources.md) record the adaptation scope and registry response hashes; the existing assistant-ui/AG-UI runtime remains in place.
 
 Zod is overridden to 4.6.7 to avoid [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The AG-UI client already imports Zod's v4 API despite a v3 package range. Type checks, the official client and browser flows pass with the override; npm audit reports zero vulnerabilities in the verified lockfile. Review this override with future upstream upgrades.
 
@@ -35,3 +35,13 @@ Zod is overridden to 4.6.7 to avoid [GHSA-mrhx-c7xc-m3w5](https://github.com/adv
 - DeepSeek Harness is named in the supplied planning material as architectural inspiration. No upstream implementation or license has been independently established in this revision; no code is copied or bundled on that basis.
 
 These application components are not installed or bundled in the historical v0.0.1 release. Current development's pinned dependencies and verification are recorded above. A design reference does not imply upstream endorsement.
+
+## Document plugins and editor dependencies
+
+The default editors use CodeMirror 6 (`@codemirror/state`, `view`, `commands`, `search`, `language`, `lang-markdown`, `legacy-modes` and `@lezer/highlight`), under MIT licenses. Current upstream sources and licenses are linked from [CodeMirror](https://codemirror.net/); its repositories have moved to the maintainer's forge. OpenLab supplies a React host and a neutral theme, not a fork of the editor.
+
+Version comparison uses [jsdiff](https://github.com/kpdecker/jsdiff), BSD-3-Clause, in a bounded Worker. PDF previews use [PDF.js](https://github.com/mozilla/pdf.js), Apache-2.0; the dependency and worker are loaded only for PDF viewing. Installed versions are pinned in the npm lockfile.
+
+The default TeX adapter uses [BusyTeX](https://github.com/busytex/busytex) release `build_wasm_4499aa69fd3cf77ad86a47287d9a5193cf5ad993_7936974349_1`, source commit `4499aa69fd3cf77ad86a47287d9a5193cf5ad993`. BusyTeX's repository glue is MIT; its compiled binaries include TeX Live and other components under their respective licenses. Those binaries are downloaded into a separate runtime cache, with release/source references and checksums. They are not relicensed as OpenLab code. The pinned pipeline invokes TeX with shell escape disabled.
+
+The compiler additionally supplies [Fandol Song](https://ctan.org/tex-archive/fonts/fandol) 0.3 by the Fandol team, GPL with the font exception described in its COPYING file. Its SHA-256 is `a3820003227d4abe31fe28b493200d94a849ccfd078b50a019264f70353020b0`. Retain the upstream license/source materials when redistributing prepared compiler/font components. The plugin SDK, resource layout and scope are documented in [plugins](docs/plugins.md).

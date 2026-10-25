@@ -7,7 +7,7 @@ import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const errors = [];
-const ignore = new Set(['.git', 'node_modules', '.cache', '.openlab', 'dist', 'coverage', 'test-results', 'playwright-report']);
+const ignore = new Set(['.git', 'node_modules', '.agents', '.cache', '.openlab', 'dist', 'coverage', 'test-results', 'playwright-report']);
 function walk(path) {
   return readdirSync(path, { withFileTypes: true }).flatMap((entry) => {
     if (ignore.has(entry.name)) return [];

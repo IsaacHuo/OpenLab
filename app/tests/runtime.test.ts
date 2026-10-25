@@ -13,12 +13,14 @@ test('native child worker uses isolated configuration and confirms cancellation 
     const chunks = []; for await (const chunk of req) chunks.push(chunk);
     const body = JSON.parse(Buffer.concat(chunks).toString());
     assert.equal(body.tools, undefined);
+    assert.ok(body.messages.some((message: {content: string}) => message.content === 'Previously discussed evidence'));
+    assert.ok(body.messages.some((message: {content: string}) => message.content === 'selected material excerpt'));
     res.writeHead(200, { 'content-type': 'text/event-stream' });
     res.end('data: {"choices":[{"index":0,"delta":{"content":"原生 Windows 研究计划"},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n');
   });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   const address = server.address() as { port: number };
-  const runtime = new WorkerRuntime(async () => ({ provider: { baseUrl: `http://127.0.0.1:${address.port}`, model: 'fixture', apiKey: 'test-only' }, definitions: [], instructions: 'Fixture research' }), async () => { throw new Error('No tools before confirmation'); });
+  const runtime = new WorkerRuntime(async () => ({ provider: { baseUrl: `http://127.0.0.1:${address.port}`, model: 'fixture', apiKey: 'test-only' }, definitions: [], instructions: 'Fixture research', history: [{ role: 'user', content: 'Previously discussed evidence' }, { role: 'user', content: 'selected material excerpt' }] }), async () => { throw new Error('No tools before confirmation'); });
   const f = fixture(runtime);
   const previousOptions = process.env.NODE_OPTIONS;
   process.env.NODE_OPTIONS = '--require=nonexistent-openlab-global-hook';

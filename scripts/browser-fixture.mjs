@@ -9,6 +9,7 @@ import { Research, researchTools } from '../app/research.ts';
 import { Settings } from '../app/settings.ts';
 import { Skills } from '../app/skills.ts';
 import { createService } from '../app/service.ts';
+import { MetadataRuntime, RuntimeRegistry } from '../app/direct-tool.ts';
 
 // Synthetic, network-free acceptance server. It never opens the user's data root.
 const root = resolve('.cache', 'browser-fixture-' + randomUUID());
@@ -41,7 +42,7 @@ const runtime = new SubstituteRuntime(async (run, host, signal) => {
   await tool('publish_report', { content: `# Synthetic final report\n\nThis is controlled acceptance data. [Evidence](source:${sourceId}) is metadata only. Contradictory fixture records are preserved.\n\n## 限制\n\n模型解读未经核实。全文访问被拒绝或不可用。`, final: true, artifactId: draft.artifactId });
   await message('Synthetic report saved. Review the metadata limitations. 合成报告已保存。');
 });
-const platform = new Platform(store, runtime);
+const platform = new Platform(store, new RuntimeRegistry([['openlab-harness-1', runtime], ['openlab-metadata-1', new MetadataRuntime(research)]]));
 const service = await createService({ platform, settings, skills, research, port: Number(process.env.OPENLAB_TEST_PORT ?? 4321) });
 writeFileSync('.cache/browser-launch.json', JSON.stringify({ launchUrl: service.launchUrl, origin: service.origin }));
 console.log('Synthetic browser fixture ready.');

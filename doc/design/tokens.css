@@ -1,0 +1,95 @@
+/*
+ * OpenLab approved light workspace design target, 2026-10-24.
+ * Source of truth: doc/design/README.md and DESIGN.md.
+ * Imported by web/style.css. Change values here rather than duplicating them
+ * in runtime styles; retain the approved neutral palette and composer radius.
+ */
+:root {
+  /* Primitive neutral palette: every RGB channel is equal. */
+  --ol-gray-0: #ffffff;
+  --ol-gray-50: #fafafa;
+  --ol-gray-75: #f7f7f7;
+  --ol-gray-100: #f5f5f5;
+  --ol-gray-150: #f0f0f0;
+  --ol-gray-200: #e8e8e8;
+  --ol-gray-250: #e5e5e5;
+  --ol-gray-300: #d4d4d4;
+  --ol-gray-500: #6b6b6b;
+  --ol-gray-600: #666666;
+  --ol-gray-700: #525252;
+  --ol-gray-800: #333333;
+  --ol-gray-900: #171717;
+
+  /* Semantic roles. */
+  --ol-surface: var(--ol-gray-0);
+  --ol-surface-navigation: var(--ol-gray-75);
+  --ol-surface-subtle: var(--ol-gray-100);
+  --ol-surface-hover: var(--ol-gray-150);
+  --ol-surface-selected: var(--ol-gray-200);
+  --ol-text: var(--ol-gray-900);
+  --ol-text-secondary: var(--ol-gray-600);
+  --ol-placeholder: var(--ol-gray-500);
+  --ol-border: var(--ol-gray-250);
+  --ol-border-control: var(--ol-gray-300);
+  --ol-action: var(--ol-gray-900);
+  --ol-action-hover: var(--ol-gray-800);
+  --ol-action-text: var(--ol-gray-0);
+  --ol-focus: var(--ol-gray-700);
+
+  /* Type. */
+  --ol-font-sans: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --ol-font-mono: "Cascadia Code", Consolas, monospace;
+  --ol-text-brand: 24px;
+  --ol-text-title: 24px;
+  --ol-text-heading: 18px;
+  --ol-text-body: 16px;
+  --ol-text-control: 14px;
+  --ol-text-meta: 12px;
+  --ol-leading-body: 1.75;
+  --ol-leading-control: 1.5;
+  --ol-reading-width: 70ch;
+
+  /* Spacing. */
+  --ol-space-1: 4px;
+  --ol-space-2: 8px;
+  --ol-space-3: 12px;
+  --ol-space-4: 16px;
+  --ol-space-6: 24px;
+  --ol-space-8: 32px;
+  --ol-space-10: 40px;
+  --ol-space-12: 48px;
+
+  /* Shape and interaction. */
+  --ol-radius-small: 6px;
+  --ol-radius-control: 8px;
+  --ol-radius-surface: 10px;
+  --ol-radius-composer: 24px;
+  --ol-border-width: 1px;
+  --ol-focus-width: 2px;
+  --ol-focus-offset: 2px;
+  --ol-duration: 150ms;
+  --ol-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ol-shadow-overlay: 0 8px 24px rgb(0 0 0 / 10%);
+
+  /* Component roles. */
+  --ol-header-height: 72px;
+  --ol-sidebar-width: 256px;
+  --ol-sidebar-width-compact: 224px;
+  --ol-sidebar-rail-width: 56px;
+  --ol-artifact-width: 400px;
+  --ol-artifact-width-compact: 360px;
+  --ol-artifact-width-min: 300px;
+  --ol-artifact-width-max: 640px;
+  --ol-chat-width-min: 560px;
+  --ol-panel-padding: var(--ol-space-6);
+  --ol-control-height: 40px;
+  --ol-touch-target: 44px;
+  --ol-composer-background: var(--ol-surface);
+  --ol-composer-border: var(--ol-border-control);
+  --ol-composer-radius: var(--ol-radius-composer);
+  --ol-composer-padding: var(--ol-space-4);
+  --ol-composer-height-min: 120px;
+  --ol-composer-input-height-max: 240px;
+  --ol-scrollbar-thumb: #000;
+  --ol-scrollbar-size: 4px;
+}

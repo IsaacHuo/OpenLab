@@ -159,6 +159,1017 @@
         }
       }
     },
+    "/plugins": {
+      "get": {
+        "summary": "List statically registered plugin manifests and preferences",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Enable plugins and choose compatible defaults; active research blocks disabling execution providers",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "boolean"
+                    }
+                  },
+                  "defaults": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plugins/openlab.busytex/resources": {
+      "get": {
+        "summary": "Read actual compiler component preparation progress",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Prepare pinned, checksum-verified compiler components; contains no document inputs",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel compiler preparation, retaining validated cached components",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assets/{assetId}": {
+      "get": {
+        "summary": "Download an immutable checksum-verified document resource or build output",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "assetId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/conversations/{conversationId}/documents": {
+      "post": {
+        "summary": "Create a manual document without creating a research run",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "formatId": {
+                    "type": "string"
+                  },
+                  "mainPath": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "requestKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "formatId",
+                  "mainPath",
+                  "content",
+                  "requestKey"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "conversationId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/artifacts/{artifactId}/revisions": {
+      "post": {
+        "summary": "Create an immutable human revision using an idempotent optimistic save",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "requestKey": {
+                    "type": "string"
+                  },
+                  "baseRevisionId": {
+                    "type": "string"
+                  },
+                  "expectedLatestRevisionId": {
+                    "type": "string"
+                  },
+                  "files": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        },
+                        "base64": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "base64"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "content",
+                  "requestKey",
+                  "baseRevisionId",
+                  "expectedLatestRevisionId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "artifactId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/artifacts/{artifactId}/editing-draft": {
+      "get": {
+        "summary": "Read the platform-owned unsent editor draft",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "artifactId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/artifacts/{artifactId}/builds": {
+      "get": {
+        "summary": "List compilation records and exact input/output references",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Record browser compiler output; not scientific verification or a server execution attestation",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestKey": {
+                    "type": "string"
+                  },
+                  "sourceRevisionId": {
+                    "type": "string"
+                  },
+                  "sourceHash": {
+                    "type": "string"
+                  },
+                  "pluginId": {
+                    "type": "string"
+                  },
+                  "pluginVersion": {
+                    "type": "string"
+                  },
+                  "engineVersion": {
+                    "type": "string"
+                  },
+                  "engine": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "succeeded",
+                      "failed",
+                      "cancelled"
+                    ]
+                  },
+                  "log": {
+                    "type": "string"
+                  },
+                  "pdf": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "requestKey",
+                  "sourceRevisionId",
+                  "sourceHash",
+                  "pluginId",
+                  "pluginVersion",
+                  "engineVersion",
+                  "engine",
+                  "status"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "artifactId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
     "/setup": {
       "get": {
         "summary": "Read local runtime diagnostics and public provider configuration",
@@ -542,7 +1553,7 @@
         }
       },
       "patch": {
-        "summary": "Rename, archive or reopen a project",
+        "summary": "Update independent project context, rename, archive or reopen",
         "security": [
           {
             "LocalSession": []
@@ -556,6 +1567,15 @@
                 "type": "object",
                 "properties": {
                   "name": {
+                    "type": "string"
+                  },
+                  "question": {
+                    "type": "string"
+                  },
+                  "discipline": {
+                    "type": "string"
+                  },
+                  "method": {
                     "type": "string"
                   },
                   "archived": {
@@ -1050,12 +2070,120 @@
     },
     "/conversations/{conversationId}": {
       "get": {
-        "summary": "Read platform-owned messages and run history",
+        "summary": "Read platform-owned messages and run history; optional run-group pagination",
         "security": [
           {
             "LocalSession": []
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Rename a conversation without changing history",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Persisted platform result",
@@ -1133,7 +2261,7 @@
     },
     "/conversations/{conversationId}/runs": {
       "post": {
-        "summary": "Create a run once per request key; planning can incur model usage",
+        "summary": "Create a run once per request key with frozen, service-selected conversation context; agent requires a tested provider; metadata calls no model",
         "security": [
           {
             "LocalSession": []
@@ -1152,6 +2280,13 @@
                   "requestKey": {
                     "type": "string"
                   },
+                  "mode": {
+                    "enum": [
+                      "agent",
+                      "metadata"
+                    ],
+                    "default": "agent"
+                  },
                   "providerId": {
                     "type": "string"
                   },
@@ -1164,14 +2299,32 @@
                       "zh"
                     ]
                   },
+                  "limits": {
+                    "$ref": "#/components/schemas/RunLimits"
+                  },
                   "parentRunId": {
                     "type": "string"
+                  },
+                  "materialIds": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Agent mode: omitted uses project materials (frozen on first request); empty array uses none. Metadata mode reads no materials."
+                  },
+                  "contextRevisionId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Optional exact revision from a finished run in this conversation; omitted selects the latest saved report when the run is created; null excludes report context."
                   }
                 },
                 "required": [
                   "question",
-                  "requestKey",
-                  "providerId"
+                  "requestKey"
                 ],
                 "additionalProperties": false
               }
@@ -1748,7 +2901,7 @@
             "name": "Last-Event-ID",
             "schema": {
               "type": "string",
-              "pattern": "^\\d+(?::\\d+)?$"
+              "pattern": "^[0-9]+(?::[0-9]+)?$"
             }
           }
         ]
@@ -1837,7 +2990,7 @@
         }
       },
       "post": {
-        "summary": "Store a user provider credential with Windows user-scoped protection",
+        "summary": "Store a user provider credential with Windows user-scoped protection; DeepSeek uses non-thinking mode",
         "security": [
           {
             "LocalSession": []
@@ -1862,9 +3015,6 @@
                   "apiKey": {
                     "type": "string",
                     "writeOnly": true
-                  },
-                  "thinkingDisabled": {
-                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -1950,6 +3100,103 @@
             "LocalSession": []
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an inactive provider; blank credential keeps the previous value; connection changes invalidate capability tests",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "baseUrl": {
+                    "type": "string"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "apiKey": {
+                    "type": "string",
+                    "writeOnly": true
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Persisted platform result",
@@ -2376,6 +3623,89 @@
         }
       ]
     },
+    "/integrations/{integrationId}": {
+      "delete": {
+        "summary": "Remove an installation after its active runs have stopped; historical archives remain readable",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "integrationId",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
     "/sources/{sourceId}": {
       "get": {
         "summary": "Read source evidence, access limitations and producing run/step links",
@@ -2613,6 +3943,193 @@
           }
         }
       },
+      "put": {
+        "summary": "Preserve an unsent editor draft without publishing a revision",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "string"
+                        },
+                        "base64": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "base64"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "baseRevisionId": {
+                    "type": "string"
+                  },
+                  "expectedLatestRevisionId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "content"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Discard the unsent editing draft; published revisions remain immutable",
+        "security": [
+          {
+            "LocalSession": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Persisted platform result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "in": "path",
@@ -2748,6 +4265,15 @@
           "name": {
             "type": "string"
           },
+          "question": {
+            "type": "string"
+          },
+          "discipline": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
           "archived": {
             "type": "boolean"
           },
@@ -2760,6 +4286,73 @@
           "name",
           "archived",
           "createdAt"
+        ],
+        "additionalProperties": false
+      },
+      "RunLimits": {
+        "type": "object",
+        "properties": {
+          "turns": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60000
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 600000
+          },
+          "callMs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90000
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "ResearchContext": {
+        "type": "object",
+        "properties": {
+          "runIds": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+              "type": "string"
+            }
+          },
+          "messageIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "requestedRevisionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "historyTruncated": {
+            "type": "boolean"
+          },
+          "reportTruncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "runIds",
+          "messageIds",
+          "historyTruncated",
+          "reportTruncated"
         ],
         "additionalProperties": false
       },
@@ -2801,6 +4394,9 @@
           "config": {
             "type": "object",
             "description": "Public selection identifiers only"
+          },
+          "context": {
+            "$ref": "#/components/schemas/ResearchContext"
           }
         }
       },
@@ -2815,7 +4411,11 @@
         ],
         "properties": {
           "schemaVersion": {
-            "const": 1
+            "enum": [
+              1,
+              2
+            ],
+            "description": "Exports use v2; imports accept v1 and v2."
           },
           "projectId": {
             "type": "string"

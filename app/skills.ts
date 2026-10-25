@@ -30,6 +30,12 @@ export class Skills {
     writeFileSync(join(this.root, entry.id, 'openlab.json'), JSON.stringify(entry, null, 2));
     return entry;
   }
+  remove(skillId: string): void {
+    const entry = this.get(skillId);
+    const target = resolve(this.root, id(entry.id));
+    if (!target.startsWith(this.root + (process.platform === 'win32' ? '\\' : '/')) || lstatSync(target).isSymbolicLink()) throw new DomainError('Unsafe skill installation path');
+    rmSync(target, { recursive: true });
+  }
   load(skillId: string, skillPath?: string): { entry: SkillEntry; instructions: string } {
     const entry = this.get(skillId);
     if (!entry.enabled) throw new DomainError('Review and enable the selected skill first', 409);
@@ -99,7 +105,7 @@ export class Skills {
     const temporary = join(this.root, `download-${randomUUID()}`);
     mkdirSync(temporary);
     const git = async (args: string[], maxBuffer = 25_000_000): Promise<Buffer> => {
-      try { return (await promisify(execFile)('git', ['-c', 'core.hooksPath=', '-c', 'protocol.file.allow=never', '-C', temporary, ...args], { windowsHide: true, timeout: 60_000, maxBuffer, encoding: 'buffer', env: { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot, TEMP: process.env.TEMP, GIT_TERMINAL_PROMPT: '0', GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: process.platform === 'win32' ? 'NUL' : '/dev/null' } })).stdout; }
+      try { return (await promisify(execFile)('git', ['-c', 'core.hooksPath=', '-c', 'protocol.file.allow=never', '-c', 'http.sslVerify=true', ...(process.platform === 'win32' ? ['-c', 'http.sslBackend=openssl'] : []), '-C', temporary, ...args], { windowsHide: true, timeout: 60_000, maxBuffer, encoding: 'buffer', env: { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot, TEMP: process.env.TEMP, GIT_TERMINAL_PROMPT: '0', GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: process.platform === 'win32' ? 'NUL' : '/dev/null' } })).stdout; }
       catch { throw new DomainError('Could not fetch pinned public skill repository'); }
     };
     try {

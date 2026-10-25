@@ -4,10 +4,11 @@ import { mkdirSync, realpathSync, existsSync, lstatSync, writeFileSync, readFile
 import { resolve, join } from 'node:path';
 import { DomainError, id, object, text, terminal } from './contracts.ts';
 import type { Json, ObjectData, ResearchEvent, Run } from './contracts.ts';
+import { validateArchivedContext } from './context.ts';
 
 export interface RecordEntry { id: string; kind: string; projectId: string; data: ObjectData }
 export const hash = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
-const kinds = new Set(['project', 'conversation', 'run', 'message', 'source', 'artifact', 'revision', 'material']);
+const kinds = new Set(['project', 'conversation', 'run', 'message', 'source', 'artifact', 'revision', 'material', 'asset', 'build', 'draft']);
 export class Store {
   db!: DatabaseSync;
   root: string;
@@ -109,10 +110,10 @@ export class Store {
     const digest = hash(content);
     const path = this.file(run.projectId, 'artifacts', artifactId, `${revisionId}.md`);
     this.writeImmutable(path, content);
-    const revision: ObjectData = { id: revisionId, projectId: run.projectId, artifactId, runId: run.id, stepId, hash: digest, bytes: Buffer.byteLength(content), committed: commit, createdAt: new Date().toISOString() };
+    const revision: ObjectData = { origin: 'agent', conversationId: run.conversationId, ...(previous?.latest ? { parentRevisionId: previous.latest } : {}), id: revisionId, projectId: run.projectId, artifactId, runId: run.id, stepId, hash: digest, bytes: Buffer.byteLength(content), committed: commit, createdAt: new Date().toISOString() };
     this.transaction(() => {
       this.put('revision', revisionId, run.projectId, revision);
-      this.put('artifact', artifactId, run.projectId, { ...previous, id: artifactId, projectId: run.projectId, runId: run.id, latest: revisionId, draft: !commit });
+      this.put('artifact', artifactId, run.projectId, { ...previous, name: content.match(/^#\s+(.+)/m)?.[1]?.slice(0, 200) ?? previous?.name ?? 'Research report', conversationId: run.conversationId, formatId: 'markdown', mainPath: 'report.md', latestGenerated: revisionId, id: artifactId, projectId: run.projectId, runId: run.id, latest: revisionId, draft: !commit });
       this.appendInTransaction(run.id, 'artifact_saved', { artifactId, revisionId, stepId, committed: commit, hash: digest });
     });
     return revision;
@@ -152,17 +153,18 @@ export class Store {
   export(projectId: string): ObjectData {
     this.get('project', projectId);
     const rows = this.db.prepare('SELECT * FROM records WHERE project_id=? ORDER BY rowid').all(id(projectId));
-    const records: RecordEntry[] = rows.map(row => ({ id: row.id as string, kind: row.kind as string, projectId, data: JSON.parse(row.data as string) as ObjectData }));
+    const records: RecordEntry[] = rows.filter(row => row.kind !== 'draft').map(row => ({ id: row.id as string, kind: row.kind as string, projectId, data: JSON.parse(row.data as string) as ObjectData }));
     const runs = records.filter(r => r.kind === 'run');
     if (runs.some(r => !terminal.has((r.data as unknown as Run).state))) throw new DomainError('Finish or cancel active runs before export', 409);
     const files: ObjectData = {};
     for (const record of records.filter(r => r.kind === 'revision')) files[record.id] = this.readRevision(record.id).content;
     for (const record of records.filter(r => r.kind === 'material')) files[record.id] = this.readMaterial(record.id).bytes.toString('base64');
-    return { schemaVersion: 1, projectId, records: records as unknown as Json, events: runs.flatMap(r => this.events(r.id)) as unknown as Json, files };
+    for (const record of records.filter(r => r.kind === 'asset')) { const bytes = readFileSync(this.file(projectId, 'materials', record.id, 'content.bin')); if (hash(bytes) !== record.data.hash || bytes.length !== record.data.bytes) throw new DomainError('Asset checksum mismatch'); files[record.id] = bytes.toString('base64'); }
+    return { schemaVersion: 2, projectId, records: records as unknown as Json, events: runs.flatMap(r => this.events(r.id)) as unknown as Json, files };
   }
   import(value: unknown): string {
     const archive = object(value);
-    if (archive.schemaVersion !== 1 || !Array.isArray(archive.records) || !Array.isArray(archive.events)) throw new DomainError('Unsupported archive');
+    if (![1, 2].includes(Number(archive.schemaVersion)) || !Array.isArray(archive.records) || !Array.isArray(archive.events)) throw new DomainError('Unsupported archive');
     if (archive.records.length > 10_000 || archive.events.length > 100_000) throw new DomainError('Archive exceeds record limit');
     const files = object(archive.files);
     const records = archive.records.map(value => {
@@ -181,6 +183,7 @@ export class Store {
     const reference = (value: Json | undefined, kind: string) => {
       if (typeof value !== 'string' || byId.get(value)?.kind !== kind) throw new DomainError('Archive contains a missing or foreign reference');
     };
+    const archivedConversation = (artifact: ObjectData) => artifact.conversationId ?? byId.get(String(artifact.runId))?.data.conversationId;
     for (const record of records) {
       const data = record.data;
       if (record.kind !== 'project' && data.projectId !== originalProject) throw new DomainError('Archive contains foreign project data');
@@ -197,10 +200,30 @@ export class Store {
           else text(value, 'selection', 500);
         }
         if (data.parentRunId) reference(data.parentRunId, 'run');
+        validateArchivedContext(data, byId);
       }
       if (record.kind === 'message') { reference(data.runId, 'run'); reference(data.conversationId, 'conversation'); if (typeof data.content !== 'string' || data.content.length > 2_000_000 || !['user', 'assistant'].includes(String(data.role))) throw new DomainError('Invalid archived message'); }
-      if (record.kind === 'artifact') { reference(data.runId, 'run'); reference(data.latest, 'revision'); }
-      if (record.kind === 'revision') { reference(data.runId, 'run'); reference(data.artifactId, 'artifact'); id(text(data.stepId)); }
+      if (record.kind === 'artifact') { if (data.runId) reference(data.runId, 'run'); else reference(data.conversationId, 'conversation'); reference(data.latest, 'revision'); if (data.latestGenerated) reference(data.latestGenerated, 'revision'); if (data.creationRevisionId) reference(data.creationRevisionId, 'revision'); }
+      if (record.kind === 'revision') {
+        reference(data.artifactId, 'artifact');
+        if (data.origin === 'user') { if (archive.schemaVersion !== 2) throw new DomainError('User revision requires archive v2'); reference(data.conversationId, 'conversation'); }
+        else { reference(data.runId, 'run'); id(text(data.stepId)); }
+        if (data.parentRevisionId) { if (records.findIndex(value => value.id === data.parentRevisionId) >= records.findIndex(value => value.id === data.id)) throw new DomainError('Revision ancestry is not ordered'); reference(data.parentRevisionId, 'revision'); if (byId.get(String(data.parentRevisionId))?.data.artifactId !== data.artifactId) throw new DomainError('Foreign parent revision'); }
+        if (data.files !== undefined) { if (!Array.isArray(data.files) || data.files.length > 50) throw new DomainError('Invalid archived resources'); for (const file of data.files) { const f = object(file); reference(f.assetId, 'asset'); if (typeof f.path !== 'string' || f.path.includes('\\') || f.path.split('/').some(part => !part || part === '.' || part === '..')) throw new DomainError('Unsafe archived resource path'); const asset = byId.get(String(f.assetId))!.data; if (f.hash !== asset.hash || f.bytes !== asset.bytes) throw new DomainError('Resource checksum mismatch'); } }
+      }
+      if (record.kind === 'build') { reference(data.artifactId, 'artifact'); reference(data.sourceRevisionId, 'revision'); const source = byId.get(String(data.sourceRevisionId))!.data; if (source.artifactId !== data.artifactId || source.hash !== data.sourceHash) throw new DomainError('Build source mismatch'); if (data.outputAssetId) { reference(data.outputAssetId, 'asset'); if (byId.get(String(data.outputAssetId))!.data.hash !== data.outputHash) throw new DomainError('Build output checksum mismatch'); } }
+      if (record.kind === 'asset' && archive.schemaVersion !== 2) throw new DomainError('Asset requires archive v2');
+      if (record.kind === 'draft') throw new DomainError('Drafts are not portable published revisions');
+      if (record.kind === 'artifact') {
+        if (data.conversationId !== undefined) reference(data.conversationId, 'conversation');
+        if (data.runId && data.conversationId !== undefined && byId.get(String(data.runId))?.data.conversationId !== data.conversationId) throw new DomainError('Artifact conversation mismatch');
+        if (byId.get(String(data.latest))?.data.artifactId !== data.id || (data.latestGenerated && byId.get(String(data.latestGenerated))?.data.artifactId !== data.id)) throw new DomainError('Artifact latest revision mismatch');
+      }
+      if (record.kind === 'revision') {
+        const artifact = byId.get(String(data.artifactId))!.data;
+        if (data.origin === 'user' && archivedConversation(artifact) !== data.conversationId) throw new DomainError('Revision conversation mismatch');
+        if (data.origin !== 'user' && byId.get(String(data.runId))?.data.conversationId !== archivedConversation(artifact)) throw new DomainError('Revision run mismatch');
+      }
       if (record.kind === 'source') {
         text(data.title, 'source title', 2000);
         const url = new URL(text(data.url));
@@ -218,9 +241,10 @@ export class Store {
     for (const record of records) {
       if (record.kind === 'run' && !terminal.has((record.data as unknown as Run).state)) throw new DomainError('Archive contains executable run');
       if (record.kind === 'revision') {
-        const content = text(files[record.id], 'artifact', 2_000_000);
+        const content = record.data.origin === 'user' && files[record.id] === '' ? '' : text(files[record.id], 'artifact', 2_000_000);
         if (hash(content) !== record.data.hash || Buffer.byteLength(content) !== record.data.bytes || !records.some(r => r.kind === 'artifact' && r.id === record.data.artifactId)) throw new DomainError('Archive checksum or reference mismatch');
       }
+      if (record.kind === 'asset') { const encoded = record.data.bytes === 0 && String(record.data.contentType).startsWith('text/') && files[record.id] === '' ? '' : text(files[record.id], 'asset', 14_000_000); const bytes = Buffer.from(encoded, 'base64'); if (bytes.toString('base64') !== encoded || bytes.length > 10_000_000 || hash(bytes) !== record.data.hash || bytes.length !== record.data.bytes) throw new DomainError('Asset archive checksum mismatch'); }
       if (record.kind === 'material') {
         const bytes = Buffer.from(text(files[record.id], 'material', 14_000_000), 'base64');
         if (hash(bytes) !== record.data.hash || bytes.length !== record.data.bytes || bytes.length > 10_000_000) throw new DomainError('Material archive checksum mismatch');
@@ -247,7 +271,7 @@ export class Store {
           // Report bytes remain exact. IDs inside prose remain historical citations.
           this.writeImmutable(this.file(projectId, 'artifacts', String(data.artifactId), `${String(data.id)}.md`), String(files[record.id]));
         }
-        if (record.kind === 'material') this.writeImmutable(this.file(projectId, 'materials', String(data.id), 'content.bin'), Buffer.from(String(files[record.id]), 'base64'));
+        if (record.kind === 'material' || record.kind === 'asset') this.writeImmutable(this.file(projectId, 'materials', String(data.id), 'content.bin'), Buffer.from(String(files[record.id]), 'base64'));
         if (record.kind === 'run') { data.imported = true; delete data.interaction; }
         this.put(record.kind, String(data.id), projectId, data);
       }

@@ -12,3 +12,8 @@ Thumbs.db
 *.diagnostics.zip
 test-results/
 playwright-report/
+
+# Local AI tooling and unselected generated design drafts
+/.agents/
+/.codex/
+/output/design/
